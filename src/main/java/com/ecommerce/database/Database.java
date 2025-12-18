@@ -7,7 +7,9 @@ public class Database {
     public Connection getConnection() {
         Connection conn;
         try {
+
             conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/shop", "root", "2220336");
+
             return conn;
         } catch (Exception e) {
             System.out.println(e.getMessage());

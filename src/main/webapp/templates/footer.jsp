@@ -10,9 +10,11 @@
                     </div>
                     <div class="col-md-6 col-lg-4">
                         <ul class="list-unstyled">
+
                             <li><a href="${pageContext.request.contextPath}/sell-online.jsp">Sell online</a></li>
                             <li><a href="#">Features</a></li>
                             <li><a href="${pageContext.request.contextPath}/cart.jsp">Shopping cart</a></li>
+
                             <li><a href="#">Store builder</a></li>
                         </ul>
                     </div>

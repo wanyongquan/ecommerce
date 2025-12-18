@@ -59,6 +59,9 @@ public class CartControl extends HttpServlet {
         // Initialize default value for quantity and productId.
         int quantity = 1;
         int productId;
+
+        String color = null;
+
         // Check is the total price of order exist or not.
         double totalPrice;
         if (session.getAttribute("total_price") == null) {
@@ -85,6 +88,12 @@ public class CartControl extends HttpServlet {
                         return;
                     }
                 }
+
+                if (request.getParameter("color") != null) {
+                	// Get the color of the product 
+                	color = request.getParameter("color");                	
+                }
+
                 // Check the product has been added to cart yet.
                 if (session.getAttribute("order") == null) {
                     // Create an order and list of product for it.
@@ -96,6 +105,8 @@ public class CartControl extends HttpServlet {
                     cartProduct.setQuantity(quantity);
                     cartProduct.setProduct(product);
                     cartProduct.setPrice(product.getPrice());
+                    cartProduct.setPickedColor(color);
+
 
                     // Count the total price of the order.
                     totalPrice += product.getPrice() * quantity;
@@ -117,6 +128,9 @@ public class CartControl extends HttpServlet {
                     // Increase the product quantity if it is already exist in cart.
                     boolean flag = false;
                     for (CartProduct cartProduct : list) {
+
+                    	//todo:  update the exist CartProduct, only if both ProductID and Color are identity;otherwise, create a new one;
+
                         if (cartProduct.getProduct().getId() == product.getId()) {
                             cartProduct.setQuantity(cartProduct.getQuantity() + quantity);
                             totalPrice += product.getPrice() * quantity;
@@ -130,6 +144,8 @@ public class CartControl extends HttpServlet {
                         cartProduct.setQuantity(quantity);
                         cartProduct.setProduct(product);
                         cartProduct.setPrice(product.getPrice());
+                        cartProduct.setPickedColor(color);
+
                         totalPrice += product.getPrice() * quantity;
                         list.add(cartProduct);
                     }

@@ -1,6 +1,9 @@
 package com.ecommerce.control;
 
 import com.ecommerce.dao.ProductDao;
+
+import com.ecommerce.entity.ColorStock;
+
 import com.ecommerce.entity.Product;
 
 import javax.servlet.RequestDispatcher;
@@ -34,7 +37,10 @@ public class ProductDetail extends HttpServlet {
         }
 
         // Get all products for feature section.
-        List<Product> productList = productDao.getAllProducts();
+
+//        List<Product> productList = productDao.getAllProducts();
+        List<Product> productList = productDao.getAllFullProducts();
+        List<ColorStock> colorList = productDao.getColorStockByProductId(id);
 
         // Set attribute active class for home in header.
         String active = "active";
@@ -44,7 +50,10 @@ public class ProductDetail extends HttpServlet {
         request.setAttribute("shop_active", active);
         request.setAttribute("product", product);
         request.setAttribute("product_list", productList);
+
+        request.setAttribute("product_color_list", colorList);
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("product-detail.jsp");
         requestDispatcher.forward(request, response);
     }
 }
+

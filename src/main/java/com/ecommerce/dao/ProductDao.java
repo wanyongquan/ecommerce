@@ -3,6 +3,9 @@ package com.ecommerce.dao;
 import com.ecommerce.database.Database;
 import com.ecommerce.entity.Account;
 import com.ecommerce.entity.Category;
+
+import com.ecommerce.entity.ColorStock;
+
 import com.ecommerce.entity.Product;
 
 import java.io.ByteArrayOutputStream;
@@ -11,7 +14,11 @@ import java.io.InputStream;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Base64;
+
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+
 
 public class ProductDao {
     Connection connection = null;
@@ -49,7 +56,9 @@ public class ProductDao {
     private List<Product> getListProductQuery(String query) {
         List<Product> list = new ArrayList<>();
         try {
-            Class.forName("com.mysql.jdbc.Driver");
+
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
             connection = new Database().getConnection();
             preparedStatement = connection.prepareStatement(query);
             resultSet = preparedStatement.executeQuery();
@@ -75,18 +84,76 @@ public class ProductDao {
         return list;
     }
 
+
+    // Method to execute query to get list products.
+    private List<Product> getListofFullProductQuery(String query) {
+        List<Product> list = new ArrayList<>();
+        Map<Integer, Product> productMap = new LinkedHashMap<>();
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            connection = new Database().getConnection();
+            preparedStatement = connection.prepareStatement(query);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                int id = resultSet.getInt(1);
+                
+                Product product = productMap.get(id);
+                // 判断产品是否已创建
+                if (product == null ) {                	
+	                String name = resultSet.getString(2);
+	                double price = resultSet.getDouble(4);
+	                String description = resultSet.getString(5);
+	                Category category = categoryDao.getCategory(resultSet.getInt(6));
+	                Account account = accountDao.getAccount(resultSet.getInt(7));
+	                boolean isDelete = resultSet.getBoolean(8);
+	                int amount = resultSet.getInt(9);
+	
+	                // Get base64 image to display.
+	                Blob blob = resultSet.getBlob(3);
+	                String base64Image = getBase64Image(blob);
+	                
+	                product = new Product(id, name, base64Image, price, description, category, account, isDelete, amount);
+	                productMap.put(id, product);
+	                list.add(product);
+                }
+                // 2 每一行只创建一个color_amount; 
+//                、、int colorId = resultSet.getInt("product_id");
+                ColorStock clrStock = new ColorStock();
+                clrStock.setProductId(id);
+                clrStock.setColorName(resultSet.getString("color_name"));
+                clrStock.setAmount(resultSet.getInt("stock_amount"));
+                product.get_ColorStocks().add(clrStock);
+            }
+        } catch (SQLException | ClassNotFoundException | IOException e) {
+            System.out.println(e.getMessage());
+        }
+        return list;
+    }
+    
+
     // Method to get all products from database.
     public List<Product> getAllProducts() {
         String query = "SELECT * FROM product WHERE product_is_deleted = false";
         return getListProductQuery(query);
     }
 
+
+    // Method to get all products from database.
+    public List<Product> getAllFullProducts() {
+        String query = "SELECT * FROM product left join product_color_amount on product.product_id = product_color_amount.product_id " + 
+        			" WHERE  product_is_deleted = false";
+        return getListofFullProductQuery(query);
+    }
+
+
     // Method to get a product by its id from database.
     public Product getProduct(int productId) {
         Product product = new Product();
         String query = "SELECT * FROM product WHERE product_id = " + productId;
         try {
-            Class.forName("com.mysql.jdbc.Driver");
+
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
             connection = new Database().getConnection();
             preparedStatement = connection.prepareStatement(query);
             resultSet = preparedStatement.executeQuery();
@@ -106,6 +173,32 @@ public class ProductDao {
         }
         return product;
     }
+
+    // Method to get a product by its id from database.
+    public List<ColorStock> getColorStockByProductId(int productId) {
+//        Product product = new Product();
+        String query = "SELECT * from product_color_amount " +
+        			" WHERE product_id = " + productId;
+        List<ColorStock> colorList = new ArrayList<ColorStock>();
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            connection = new Database().getConnection();
+            preparedStatement = connection.prepareStatement(query);
+            resultSet = preparedStatement.executeQuery();
+            
+            while (resultSet.next()) {
+            	ColorStock colorEntity = new ColorStock();
+            	colorEntity.setProductId(resultSet.getInt(2));
+            	colorEntity.setColorName(resultSet.getString(3));
+            	colorEntity.setAmount(resultSet.getInt(4));
+            	colorList.add(colorEntity);
+            }
+        } catch (SQLException | ClassNotFoundException  e) {
+            System.out.println(e.getMessage());
+        }
+        return colorList;
+    }
+
 
     // Method to get a categories by its id from database.
     public List<Product> getAllCategoryProducts(int category_id) {
@@ -132,7 +225,9 @@ public class ProductDao {
 
         String query = "UPDATE product SET product_is_deleted = true WHERE product_id = " + productId;
         try {
-            Class.forName("com.mysql.jdbc.Driver");
+
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
             connection = new Database().getConnection();
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.executeUpdate();
@@ -142,13 +237,18 @@ public class ProductDao {
     }
 
     // Method to add product to database.
-    public void addProduct(String productName, InputStream productImage, double productPrice, String productDescription, int productCategory, int sellerId, int productAmount,String size,String color) {
-        String query = "INSERT INTO product (product_name, product_image, product_price, product_description, fk_category_id, fk_account_id, product_is_deleted, product_amount,size,color) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+    public int addProduct(String productName, InputStream productImage, double productPrice, String productDescription, int productCategory, int sellerId, int productAmount) {
+        String query = "INSERT INTO product (product_name, product_image, product_price, product_description, fk_category_id, fk_account_id, product_is_deleted, product_amount) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        int generatedId = -1; // 默认返回-1表示插入失败
         try {
-            Class.forName("com.mysql.jdbc.Driver");
+            Class.forName("com.mysql.cj.jdbc.Driver");
             connection = new Database().getConnection();
-            preparedStatement = connection.prepareStatement(query);
+//            preparedStatement = connection.prepareStatement(query);
+         // 关键修改：使用RETURN_GENERATED_KEYS参数
+            preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+
             preparedStatement.setString(1, productName);
             preparedStatement.setBinaryStream(2, productImage);
             preparedStatement.setDouble(3, productPrice);
@@ -157,19 +257,36 @@ public class ProductDao {
             preparedStatement.setInt(6, sellerId);
             preparedStatement.setBoolean(7, false);
             preparedStatement.setInt(8, productAmount);
-            preparedStatement.setString(9,size);
-            preparedStatement.setString(10,color);
-            preparedStatement.executeUpdate();
+
+            int affectedRows = preparedStatement.executeUpdate();
+         // 如果插入成功，获取生成的ID
+            if (affectedRows > 0) {
+                try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        generatedId = generatedKeys.getInt(1);
+                    }
+                }
+            }
         } catch (ClassNotFoundException | SQLException e) {
             System.out.println(e.getMessage());
         }
+        return generatedId;
     }
+    
+    public int addProductAndReturnID(String productName, InputStream productImage, double productPrice, 
+            String productDescription, int productCategory, int sellerId, int productAmount) {
+    	return addProduct(productName, productImage, productPrice, productDescription, 
+                productCategory, sellerId, productAmount);
+    }
+    
 
     // Method to edit product in database.
     public void editProduct(int productId, String productName, InputStream productImage, double productPrice, String productDescription, int productCategory, int productAmount) {
         String query = "UPDATE product SET product_name = ?, product_image = ?, product_price = ?, product_description = ?, fk_category_id = ?, product_amount = ? WHERE product_id = ?";
         try {
-            Class.forName("com.mysql.jdbc.Driver");
+
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
             connection = new Database().getConnection();
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, productName);
@@ -196,7 +313,9 @@ public class ProductDao {
         int totalProduct = 0;
         String query = "SELECT COUNT(*) FROM product WHERE product_is_deleted = false";
         try {
-            Class.forName("com.mysql.jdbc.Driver");
+
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
             connection = new Database().getConnection();
             preparedStatement = connection.prepareStatement(query);
             resultSet = preparedStatement.executeQuery();
@@ -213,7 +332,9 @@ public class ProductDao {
     public void decreaseProductAmount(int productId, int productAmount) {
         String query = "UPDATE product SET product_amount = product_amount - ? WHERE product_id = ?";
         try {
-            Class.forName("com.mysql.jdbc.Driver");
+
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
             connection = new Database().getConnection();
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1, productAmount);
@@ -223,4 +344,28 @@ public class ProductDao {
             System.out.println(e.getMessage());
         }
     }
+
+    /************  12.17 ************/
+    // 在ProductDao类中添加以下方法
+    public void addProductColors(int productId, Map<String, Integer> colorStocks) {
+        String query = "INSERT INTO product_color_amount (product_id, color_name, stock_amount) VALUES (?, ?, ?)";
+        
+        try (Connection conn = new Database().getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+            
+            for (Map.Entry<String, Integer> entry : colorStocks.entrySet()) {
+                ps.setInt(1, productId);
+                ps.setString(2, entry.getKey());
+                ps.setInt(3, entry.getValue());
+                ps.addBatch();
+            }
+            
+            ps.executeBatch();
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    /************  12.17 ************/
+
 }

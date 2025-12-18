@@ -3,7 +3,9 @@
 <% response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); %>
 
 <!DOCTYPE html>
+
 <html lang="zh-CN">
+
 <jsp:include page="templates/head.jsp"/>
 
 <body>
@@ -14,6 +16,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12 mb-0">
+
                     <a href="/"> 首页 </a>
                     <span class="mx-2 mb-0">/</span>
 
@@ -21,6 +24,7 @@
                     <span class="mx-2 mb-0">/</span>                
                     
                     <strong class="text-black">订单详情</strong>
+
                 </div>
             </div>
         </div>
@@ -34,10 +38,12 @@
                         <table class="table table-bordered">
                             <thead>
                             <tr>
+
                                 <th>商品ID</th>
                                 <th>购买数量</th>
                                 <th>商品单价</th>
                                 <th>商品小计</th>
+
                             </tr>
                             </thead>
                             <tbody>
@@ -48,8 +54,10 @@
                                     <td>${o.quantity}</td>
 
                                     <td>¥${o.price}</td>
+									
+									<td>${o.pickedColor}</td>
+                                    <td>$${o.price * o.quantity}</td>
 
-                                    <td>¥${o.price * o.quantity}</td>
                                 </tr>
                             </c:forEach>
                             </tbody>

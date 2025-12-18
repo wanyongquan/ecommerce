@@ -72,12 +72,16 @@ public class AccountDao {
 
     // Method to get login account from database.
     public Account checkLoginAccount(String username, String password) {
-        String query = "SELECT * FROM account WHERE account_name = '" + username + "' AND account_password = '" + password + "'" + " AND account_is_seller = 0" ;
+
+        String query = "SELECT * FROM account WHERE account_name = '" + username + "' AND account_password = '" + password + "' and account_is_seller = 0";
+
         return queryGetAccount(query);
     }
     // Method to get login account from database.
     public Account checkLoginAccount_Seller(String username, String password) {
-        String query = "SELECT * FROM account WHERE account_name = '" + username + "' AND account_password = '" + password + "'" + " AND account_is_seller = 1" ;
+
+        String query = "SELECT * FROM account WHERE account_name = '" + username + "' AND account_password = '" + password + "' and account_is_seller=1";
+
         return queryGetAccount(query);
     }
 
@@ -102,6 +106,7 @@ public class AccountDao {
             System.out.println(e.getMessage());
         }
     }
+
     public void createAccountSeller(String username, String password, InputStream image) {
         String query = "INSERT INTO account (account_name, account_password, account_image, account_is_seller, account_is_admin) VALUES (?, ?, ?, 1, 0)";
         try {
@@ -116,6 +121,7 @@ public class AccountDao {
             System.out.println(e.getMessage());
         }
     }
+
 
     // Method to edit profile information.
     public void editProfileInformation(int accountId, String firstName, String lastName, String address, String email, String phone, InputStream image) {

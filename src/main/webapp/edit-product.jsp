@@ -2,7 +2,9 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
 <!DOCTYPE html>
+
 <html lang="zh-CN">
+
 <jsp:include page="templates/head.jsp"/>
 
 <body>
@@ -12,8 +14,10 @@
     <div class="bg-light py-3">
         <div class="container">
             <div class="row">
+
                 <div class="col-md-12 mb-0"><a href="/">首页</a> <span class="mx-2 mb-0">/</span> <strong
                         class="text-black">编辑商品</strong></div>
+
             </div>
         </div>
     </div>
@@ -22,7 +26,9 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
+
                     <h2 class="h3 mb-3 text-black">商品信息</h2>
+
                 </div>
 
                 <div class="col-md-7">
@@ -32,7 +38,9 @@
                             <div class="form-group row">
                                 <div class="col-md-12">
                                     <label for="id" class="text-black">
+
                                         商品ID <span class="text-danger">*</span>
+
                                     </label>
 
                                     <input name="product-id" type="text" class="form-control"
@@ -43,7 +51,9 @@
                             <div class="form-group row">
                                 <div class="col-md-12">
                                     <label for="name" class="text-black">
+
                                         商品名称 <span class="text-danger">*</span>
+
                                     </label>
 
                                     <input name="product-name" type="text" class="form-control"
@@ -54,7 +64,9 @@
                             <div class="form-group row">
                                 <div class="col-md-12">
                                     <label for="image" class="text-black">
+
                                         商品图片 <span class="text-danger">*</span>
+
                                     </label>
 
                                     <input name="product-image" type="file" class="form-control"
@@ -65,7 +77,9 @@
                             <div class="form-group row">
                                 <div class="col-md-12">
                                     <label for="price" class="text-black">
+
                                         商品价格 <span class="text-danger">*</span>
+
                                     </label>
 
                                     <input name="product-price" type="number" class="form-control"
@@ -76,7 +90,9 @@
                             <div class="form-group row">
                                 <div class="col-md-12">
                                     <label for="description" class="text-black">
+
                                         商品描述 <span class="text-danger">*</span>
+
                                     </label>
 
                                     <textarea name="product-description" id="description"
@@ -88,7 +104,9 @@
                             <div class="form-group row">
                                 <div class="col-md-12">
                                     <label for="amount" class="text-black">
+
                                         商品库存 <span class="text-danger">*</span>
+
                                     </label>
 
                                     <input name="product-amount" type="number" class="form-control"
@@ -99,7 +117,9 @@
                             <div class="form-group row">
                                 <div class="col-md-12">
                                     <label for="category" class="text-black">
+
                                         商品分类 <span class="text-danger">*</span>
+
                                     </label>
 
                                     <select name="product-category" id="category"
@@ -113,7 +133,9 @@
 
                             <div class="form-group row">
                                 <div class="col-lg-12">
+
                                     <input type="submit" class="btn btn-primary btn-lg btn-block" value="保存修改">
+
                                 </div>
                             </div>
                         </div>
@@ -122,7 +144,9 @@
 
                 <div class="col-md-5 ml-auto">
                     <div class="p-3 border">
+
                         <img src="data:image/jpg;base64,${product.base64Image}" alt="商品图片" width="100%">
+
                     </div>
                 </div>
             </div>

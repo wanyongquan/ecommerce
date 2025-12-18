@@ -1,5 +1,9 @@
 package com.ecommerce.entity;
 
+
+import java.util.ArrayList;
+
+
 public class Product {
     private int id;
     private String name;
@@ -12,15 +16,10 @@ public class Product {
 
     private byte[] image;
     private String base64Image;
-    
-    private String size; // 尺码
-    private String color; // 颜色
 
-    // 新增getter/setter方法
-    public String getSize() { return size; }
-    public void setSize(String size) { this.size = size; }
-    public String getColor() { return color; }
-    public void setColor(String color) { this.color = color; }
+    private ArrayList<ColorStock> colorStocks;
+
+    
 
     public Product() {
     }
@@ -35,6 +34,9 @@ public class Product {
         this.account = account;
         this.isDeleted = isDeleted;
         this.amount = amount;
+
+        this.colorStocks = new ArrayList<ColorStock>();
+
     }
 
     public int getId() {
@@ -117,7 +119,18 @@ public class Product {
         isDeleted = deleted;
     }
 
-    @Override
+    
+
+    public ArrayList<ColorStock> get_ColorStocks() {
+		return colorStocks;
+	}
+
+	public void set_ColorStocks(ArrayList<ColorStock> colorStocks) {
+		this.colorStocks = colorStocks;
+	}
+
+
+	@Override
     public String toString() {
         return "Product{" +
                 "id=" + id +
@@ -130,4 +143,7 @@ public class Product {
                 ", amount=" + amount +
                 '}';
     }
+
+
 }
+

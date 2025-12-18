@@ -4,7 +4,9 @@
 <% response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); %>
 
 <!DOCTYPE html>
+
 <html lang="zh-CN">
+
 <jsp:include page="templates/head.jsp"/>
 
 <body>
@@ -14,8 +16,10 @@
     <div class="bg-light py-3">
         <div class="container">
             <div class="row">
+
                 <div class="col-md-12 mb-0"><a href="/">首页</a> <span class="mx-2 mb-0">/</span> <strong
                         class="text-black">商品商城</strong></div>
+
             </div>
         </div>
     </div>
@@ -28,11 +32,14 @@
 
                     <div class="row">
                         <div class="col-md-12 mb-5">
+
                             <div class="float-md-left mb-4"><h2 class="text-black h5">全部商品</h2></div>
+
                             <div class="d-flex">
                                 <div class="dropdown mr-1 ml-md-auto">
                                     <div class="btn-group">
                                         <button type="button" class="btn btn-secondary btn-sm dropdown-toggle"
+
                                                 id="dropdownMenuReference" data-toggle="dropdown">排序方式
                                         </button>
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuReference">
@@ -42,6 +49,7 @@
                                             <div class="dropdown-divider"></div>
                                             <a class="dropdown-item" href="#">按价格 从低到高</a>
                                             <a class="dropdown-item" href="#">按价格 从高到低</a>
+
                                         </div>
                                     </div>
                                 </div>
@@ -54,13 +62,17 @@
                                 <div class="block-4 text-center border" style="height: 100%">
                                     <figure class="block-4-image">
                                         <a href="product-detail?id=${o.id}">
+
                                             <img src="data:image/jpg;base64,${o.base64Image}" alt="商品图片"
                                                 class="img-fluid" style="width: 200px; height: 250px; object-fit: cover;">
+
                                         </a>
                                     </figure>
                                     <div class="block-4-text p-4">
                                         <h3><a href="product-detail?id=${o.id}">${o.name}</a></h3>
+
                                         <p class="mb-0">¥${o.price}</p>
+
                                     </div>
                                 </div>
                             </div>
@@ -90,7 +102,9 @@
 
                 <div class="col-md-3 order-1 mb-5 mb-md-0">
                     <div class="border p-4 rounded mb-4">
+
                         <h3 class="mb-3 h6 text-uppercase text-black d-block">商品分类</h3>
+
                         <ul class="list-unstyled mb-0">
                             <c:forEach items="${category_list}" var="o">
                                 <li class="mb-1 active">

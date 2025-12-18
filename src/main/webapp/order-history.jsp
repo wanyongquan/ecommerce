@@ -3,7 +3,9 @@
 <% response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); %>
 
 <!DOCTYPE html>
+
 <html lang="zh-CN">
+
 <jsp:include page="templates/head.jsp"/>
 
 <body>
@@ -13,8 +15,10 @@
     <div class="bg-light py-3">
         <div class="container">
             <div class="row">
+
                 <div class="col-md-12 mb-0"><a href="/">首页</a> <span class="mx-2 mb-0">/</span> <strong
                         class="text-black">订单历史</strong></div>
+
             </div>
         </div>
     </div>
@@ -27,10 +31,12 @@
                         <table class="table table-bordered">
                             <thead>
                             <tr>
+
                                 <th>订单ID</th>
                                 <th>订单总额</th>
                                 <th>下单时间</th>
                                 <th style="min-width: 195px">查看详情</th>
+
                             </tr>
                             </thead>
                             <tbody>
@@ -38,7 +44,10 @@
                                 <tr>
                                     <td>${o.id}</td>
 
+
                                     <td>¥${o.total}</td>
+
+
 
                                     <td>${o.date}</td>
 

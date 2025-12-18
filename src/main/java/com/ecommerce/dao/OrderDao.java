@@ -33,7 +33,9 @@ public class OrderDao {
         String query = "SELECT order_id FROM `order` ORDER BY order_id DESC LIMIT 1";
         int orderId = 0;
         try {
-            Class.forName("com.mysql.jdbc.Driver");
+
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
             connection = new Database().getConnection();
             preparedStatement = connection.prepareStatement(query);
             resultSet = preparedStatement.executeQuery();
@@ -48,18 +50,25 @@ public class OrderDao {
 
     // Method to insert order detail information.
     private void createOrderDetail(List<CartProduct> cartProducts) {
-        String query = "INSERT INTO order_detail (fk_order_id, fk_product_id, product_quantity, product_price) VALUES (?, ?, ?, ?);";
+
+        String query = "INSERT INTO order_detail (fk_order_id, fk_product_id, product_quantity, product_price, product_color) VALUES (?, ?, ?, ?, ?);";
+
         // Get latest orderId to insert list of cartProduct to order.
         int orderId = getLastOrderId();
         for (CartProduct cartProduct : cartProducts) {
             productDao.decreaseProductAmount(cartProduct.getProduct().getId(), cartProduct.getQuantity());
             try {
-                Class.forName("com.mysql.jdbc.Driver");
+
+                Class.forName("com.mysql.cj.jdbc.Driver");
+
                 preparedStatement = connection.prepareStatement(query);
                 preparedStatement.setInt(1, orderId);
                 preparedStatement.setInt(2, cartProduct.getProduct().getId());
                 preparedStatement.setInt(3, cartProduct.getQuantity());
                 preparedStatement.setDouble(4, cartProduct.getPrice());
+
+                preparedStatement.setString(5, cartProduct.getPickedColor());
+
                 preparedStatement.executeUpdate();
             } catch (SQLException | ClassNotFoundException e) {
                 System.out.println("Create order_detail catch:");
@@ -73,7 +82,9 @@ public class OrderDao {
         connection = new Database().getConnection();
         String query = "INSERT INTO `order` (fk_account_id, order_total) VALUES (?, ?);";
         try {
-            Class.forName("com.mysql.jdbc.Driver");
+
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1, accountId);
             preparedStatement.setDouble(2, totalPrice);
@@ -93,7 +104,9 @@ public class OrderDao {
         List<CartProduct> list = new ArrayList<>();
         String query = "SELECT * FROM order_detail WHERE fk_product_id = " + productId;
         try {
-            Class.forName("com.mysql.jdbc.Driver");
+
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
             connection = new Database().getConnection();
             preparedStatement = connection.prepareStatement(query);
             resultSet = preparedStatement.executeQuery();
@@ -102,7 +115,9 @@ public class OrderDao {
                 int productQuantity = resultSet.getInt(3);
                 double productPrice = resultSet.getDouble(4);
 
-                list.add(new CartProduct(product, productQuantity, productPrice));
+                String color = resultSet.getString(5);
+                list.add(new CartProduct(product, productQuantity, productPrice, color));
+
             }
         } catch (ClassNotFoundException | SQLException e) {
             System.out.println("Query cart product list catch:");
@@ -116,7 +131,9 @@ public class OrderDao {
         List<Order> list = new ArrayList<>();
         String query = "SELECT * FROM `order` WHERE fk_account_id = " + accountId;
         try {
-            Class.forName("com.mysql.jdbc.Driver");
+
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
             connection = new Database().getConnection();
             preparedStatement = connection.prepareStatement(query);
             resultSet = preparedStatement.executeQuery();
@@ -139,7 +156,9 @@ public class OrderDao {
         List<CartProduct> list = new ArrayList<>();
         String query = "SELECT * FROM order_detail WHERE fk_order_id = " + orderId;
         try {
-            Class.forName("com.mysql.jdbc.Driver");
+
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
             connection = new Database().getConnection();
             preparedStatement = connection.prepareStatement(query);
             resultSet = preparedStatement.executeQuery();
@@ -148,7 +167,10 @@ public class OrderDao {
                 int quantity = resultSet.getInt(3);
                 double price = resultSet.getDouble(4);
 
-                list.add(new CartProduct(product, quantity ,price));
+                String color = resultSet.getString(5);
+                
+                list.add(new CartProduct(product, quantity ,price, color));
+
             }
         } catch (ClassNotFoundException | SQLException e) {
             System.out.println("Get order detail catch:");

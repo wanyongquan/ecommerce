@@ -5,13 +5,19 @@ public class CartProduct {
     private int quantity;
     private double price;
 
+    private String pickedColor;
+
+
     public CartProduct() {
     }
 
-    public CartProduct(Product product, int quantity, double price) {
+
+    public CartProduct(Product product, int quantity, double price, String color) {
         this.product = product;
         this.quantity = quantity;
         this.price = price;
+        this.pickedColor = color;
+
     }
 
     public Product getProduct() {
@@ -38,12 +44,24 @@ public class CartProduct {
         this.price = price;
     }
 
+	
+	public String getPickedColor() {
+		return pickedColor;
+	}
+
+	public void setPickedColor(String pickedColor) {
+		this.pickedColor = pickedColor;
+	}
+
+
     @Override
     public String toString() {
         return "CartProduct{" +
                 ", product=" + product +
                 ", quantity=" + quantity +
                 ", price=" + price +
+                ", color=" + pickedColor +
+
                 '}';
     }
 }

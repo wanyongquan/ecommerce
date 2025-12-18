@@ -2,10 +2,12 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <!DOCTYPE html>
+
 <html lang="zh-CN">
 
 <head>
     <title>用户登录</title>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/png" href="static/images/logo.png"/>
@@ -27,7 +29,7 @@
     <link rel="stylesheet" href="static/css/owl.theme.default.min.css">
     <link rel="stylesheet" href="static/css/aos.css">
     <link rel="stylesheet" href="static/css/style.css">
-    
+
     <style>        
         .permission-denied {
             background-color: #f8d7da;
@@ -38,6 +40,7 @@
             text-align: center;
         }
     </style>
+
 </head>
 
 <body>
@@ -45,6 +48,7 @@
     <div class="container-login100">
         <div class="shadow-lg p-2 p-lg-5 rounded" data-aos="fade-up">
             <div class="wrap-login100 p-t-50 p-b-90">
+
                 <!-- 权限不足提示 -->
                 <c:if test="${param.error == 'permission_denied'}">
                     <div class="permission-denied">
@@ -56,9 +60,11 @@
                 <form action="login?status=typed" method="post" class="login100-form validate-form flex-sb flex-w" id="loginForm">
                     <span class="login100-form-title p-b-51">
                         用户登录
+
                     </span>
 
                     ${alert}
+
 
                     <div class="wrap-input100 validate-input m-b-16" data-validate="用户名不能为空">
                         <input class="input100" type="text" name="username" placeholder="用户名" value="${cookie.username.value}">
@@ -66,27 +72,34 @@
 
                     <div class="wrap-input100 validate-input m-b-16" data-validate="密码不能为空">
                         <input class="input100" type="password" name="password" placeholder="密码">
+
                     </div>
 
                     <div class="flex-sb-m w-full p-t-3 p-b-24">
                         <div class="contact100-form-checkbox">
+
                             <input class="input-checkbox100" id="ckb1" type="checkbox" name="remember-me-checkbox" 
                                    <c:if test="${not empty cookie.username}">checked</c:if>>
                             <label class="label-checkbox100" for="ckb1">
                                 记住我
+
                             </label>
                         </div>
 
                         <div>
                             <a href="#" class="txt1">
+
                                 忘记密码？
+
                             </a>
                         </div>
                     </div>
 
                     <div class="container-login100-form-btn m-t-17">
                         <button type="submit" class="login100-form-btn">
+
                             登录
+
                         </button>
                     </div>
                 </form>
@@ -94,9 +107,11 @@
 
             <div class="text-center">
                 <p class="txt1" style="color: #999999">
+
                     还没有账号？
                     <a href="register.jsp" class="txt1">
                         立即注册
+
                     </a>
                 </p>
             </div>
@@ -123,6 +138,7 @@
 <script src="static/js/jquery.magnific-popup.min.js"></script>
 <script src="static/js/aos.js"></script>
 <script src="static/js/main.js"></script>
+
 
 <!-- 简化的表单验证脚本 -->
 <script>
@@ -155,3 +171,4 @@
 
 </body>
 </html>
+

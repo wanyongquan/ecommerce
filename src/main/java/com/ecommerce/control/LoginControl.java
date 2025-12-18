@@ -19,19 +19,16 @@ public class LoginControl extends HttpServlet {
      * @return 账号实体对象（无则返回null）
      */
     private Account getAccountCookie(HttpServletRequest request) {
-        // 获取浏览器中的Cookie列表
+        // Get list cookies of the browser.
         Cookie[] cookies = request.getCookies();
-        
-        // 空值保护：若Cookie列表为空，直接返回null
-        if (cookies == null) {
-            return null;
-        }
 
         Account account;
         String username = "";
         String password = "";
+
         
         // 遍历Cookie，提取用户名和密码
+
         for (Cookie cookie : cookies) {
             if (cookie.getName().equals("username")) {
                 username = cookie.getValue();
@@ -40,11 +37,14 @@ public class LoginControl extends HttpServlet {
                 password = cookie.getValue();
             }
         }
+
         
         // 验证Cookie中的账号信息
+
         account = accountDao.checkLoginAccount(username, password);
         return account;
     }
+
 
     /**
      * 执行登录逻辑（存储Session、设置Cookie）
@@ -62,6 +62,7 @@ public class LoginControl extends HttpServlet {
         session.setAttribute("account", account);
         
         // 如果勾选"记住我"，设置Cookie（有效期10分钟）
+
         if (rememberMe) {
             Cookie usernameCookie = new Cookie("username", account.getUsername());
             usernameCookie.setMaxAge(600);
@@ -71,6 +72,7 @@ public class LoginControl extends HttpServlet {
             passwordCookie.setMaxAge(600);
             response.addCookie(passwordCookie);
         }
+
         
         // 登录成功后跳转到首页
         response.sendRedirect(request.getContextPath() + "/index.jsp");
@@ -124,6 +126,7 @@ public class LoginControl extends HttpServlet {
 
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
         // 设置响应编码，避免中文乱码
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/html;charset=UTF-8");
@@ -136,8 +139,7 @@ public class LoginControl extends HttpServlet {
             checkLoginAccountFirstTime(request, response);
         } else {
             // Cookie验证成功，直接执行登录
-            executeLogin(request, response, account);
-        }
+		}
     }
 
     @Override
@@ -149,4 +151,7 @@ public class LoginControl extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         service(request, response);
     }
+
 }
+
+

@@ -50,7 +50,9 @@
                             </c:if>
 
                             <li>
-                                <a href="../cart.jsp" class="site-cart">
+
+                                <a href="../test/cart.jsp" class="site-cart">
+
                                     <span class="icon icon-shopping_cart"></span>
 
                                     <c:if test="${order.cartProducts.size() != null}">
@@ -59,11 +61,20 @@
                                 </a>
                             </li>
 
+                             <!-- 新增的商家中心菜单项 -->
+                            <li>
+                                <a href="/test/login-seller.jsp" class="site-merchant-center">
+                                    <span>商家中心</span>
+                                </a>
+                            </li>
+
+
                             <li class="d-inline-block d-md-none ml-md-0">
                                 <a href="#" class="site-menu-toggle js-menu-toggle">
                                     <span class="icon-menu"></span>
                                 </a>
                             </li>
+
                         </ul>
                     </div>
                 </div>
@@ -74,12 +85,14 @@
     <nav class="site-navigation text-right text-md-center" role="navigation">
         <div class="container">
             <ul class="site-menu js-clone-nav d-none d-md-block" style="padding: 0">
+
                 <a href="${pageContext.request.contextPath}/login.jsp" style="padding: 5px 10px; background: #007bff; color: white; text-decoration: none; border-radius: 4px; margin-left: 10px;">登录</a>
                 <li class="${home_active}"><a href="${pageContext.request.contextPath}/">Home</a></li>
                 <li class="${about_active}"><a href="${pageContext.request.contextPath}${pageContext.request.servletPath}/../about.jsp">About</a></li>
                 <li class="${shop_active}"><a href="${pageContext.request.contextPath}/shop">Shop</a></li>
                 <li class="${contact_active}"><a href="${pageContext.request.contextPath}${pageContext.request.servletPath}/../contact.jsp">Contact</a></li>
                 <li class="${product_management_active}"><a href="${pageContext.request.contextPath}${pageContext.request.servletPath}/../product-management.jsp">product-management</a></li>
+
 
                 <c:if test="${sessionScope.account != null}">
                     <li class="${order_history_active}"><a href="order-history">Orders history</a></li>

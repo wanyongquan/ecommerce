@@ -3,7 +3,9 @@
 <% response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); %>
 
 <!DOCTYPE html>
+
 <html lang="zh-CN">
+
 <jsp:include page="templates/head.jsp"/>
 
 <body>
@@ -14,6 +16,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12 mb-0">
+
                     <a href="/"> 首页 </a>
                     <span class="mx-2 mb-0">/</span>
 
@@ -21,6 +24,7 @@
                     <span class="mx-2 mb-0">/</span>
 
                     <strong class="text-black">结算</strong>
+
                 </div>
             </div>
         </div>
@@ -30,13 +34,17 @@
         <div class="container">
             <form class="row" method="post" action="checkout">
                 <div class="col-md-6 mb-5 mb-md-0">
+
                     <h2 class="h3 mb-3 text-black">收货信息</h2>
+
 
                     <div class="p-3 p-lg-5 border">
                         <div class="form-group row">
                             <div class="col-md-6">
                                 <label for="first-name" class="text-black">
+
                                     名 <span class="text-danger">*</span>
+
                                 </label>
 
                                 <input type="text" class="form-control" id="first-name" name="first-name"
@@ -45,7 +53,9 @@
 
                             <div class="col-md-6">
                                 <label for="last-name" class="text-black">
+
                                     姓 <span class="text-danger">*</span>
+
                                 </label>
 
                                 <input type="text" class="form-control" id="last-name" name="last-name"
@@ -56,7 +66,9 @@
                         <div class="form-group row">
                             <div class="col-md-12">
                                 <label for="address" class="text-black">
+
                                     收货地址 <span class="text-danger">*</span>
+
                                 </label>
 
                                 <input type="text" class="form-control" id="address" name="address"
@@ -67,7 +79,9 @@
                         <div class="form-group row mb-5">
                             <div class="col-md-6">
                                 <label for="email" class="text-black">
+
                                     电子邮箱 <span class="text-danger">*</span>
+
                                 </label>
 
                                 <input type="text" class="form-control" id="email" name="email"
@@ -75,7 +89,9 @@
                             </div>
                             <div class="col-md-6">
                                 <label for="phone" class="text-black">
+
                                     手机号码 <span class="text-danger">*</span>
+
                                 </label>
 
                                 <input type="text" class="form-control" id="phone" name="phone"
@@ -88,16 +104,20 @@
                 <div class="col-md-6">
                     <div class="row mb-5">
                         <div class="col-md-12">
+
                             <h2 class="h3 mb-3 text-black">订单信息</h2>
+
 
                             <div class="p-3 p-lg-5 border">
                                 <table class="table site-block-order-table mb-5">
                                     <thead>
                                     <tr>
+
                                         <th style="text-align: center">商品</th>
                                         <th style="text-align: center">单价</th>
                                         <th style="text-align: center">数量</th>
                                         <th style="text-align: center">小计</th>
+
                                     </tr>
                                     </thead>
 
@@ -131,7 +151,9 @@
                                     <tr>
                                         <td></td>
                                         <td></td>
+
                                         <td class="text-black font-weight-bold"><strong>订单总计</strong></td>
+
                                         <td class="text-black font-weight-bold">
                                             <input name="order-total-price" class="form-control-plaintext h5 text-black"
                                                    value="${total_price}" style="text-align: center" readonly>
@@ -142,7 +164,9 @@
 
                                 <div class="form-group">
                                     <button type="submit" class="btn btn-primary btn-lg py-3 btn-block">
+
                                         提交订单
+
                                     </button>
                                 </div>
                             </div>
