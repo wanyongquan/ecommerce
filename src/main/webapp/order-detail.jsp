@@ -37,6 +37,7 @@
                                 <th>Product ID</th>
                                 <th>Quantity</th>
                                 <th>Price</th>
+                                <th>颜色</th>
                                 <th>Total</th>
                             </tr>
                             </thead>
@@ -48,7 +49,8 @@
                                     <td>${o.quantity}</td>
 
                                     <td>$${o.price}</td>
-
+									
+									<td>${o.pickedColor}</td>
                                     <td>$${o.price * o.quantity}</td>
                                 </tr>
                             </c:forEach>

@@ -172,8 +172,9 @@ public class ProductDao {
             connection = new Database().getConnection();
             preparedStatement = connection.prepareStatement(query);
             resultSet = preparedStatement.executeQuery();
-            ColorStock colorEntity = new ColorStock();
+            
             while (resultSet.next()) {
+            	ColorStock colorEntity = new ColorStock();
             	colorEntity.setProductId(resultSet.getInt(2));
             	colorEntity.setColorName(resultSet.getString(3));
             	colorEntity.setAmount(resultSet.getInt(4));

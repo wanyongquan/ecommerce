@@ -50,7 +50,7 @@
                             </c:if>
 
                             <li>
-                                <a href="../cart.jsp" class="site-cart">
+                                <a href="../test/cart.jsp" class="site-cart">
                                     <span class="icon icon-shopping_cart"></span>
 
                                     <c:if test="${order.cartProducts.size() != null}">

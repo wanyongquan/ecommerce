@@ -65,7 +65,7 @@
 			                                <c:forEach items="${product_color_list}" var="colorStock" varStatus="status">
 			                                    <div class="form-check mb-2">
 			                                        <input class="form-check-input" type="radio" 
-			                                               name="selected-color" 
+			                                               name="color" 
 			                                               id="color-${status.index}" 
 			                                               value="${colorStock.colorName}"
 			                                               ${status.first ? 'checked' : ''}>

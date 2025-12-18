@@ -9,10 +9,11 @@ public class CartProduct {
     public CartProduct() {
     }
 
-    public CartProduct(Product product, int quantity, double price) {
+    public CartProduct(Product product, int quantity, double price, String color) {
         this.product = product;
         this.quantity = quantity;
         this.price = price;
+        this.pickedColor = color;
     }
 
     public Product getProduct() {
