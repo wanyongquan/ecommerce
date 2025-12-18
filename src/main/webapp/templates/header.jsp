@@ -87,24 +87,24 @@
             <ul class="site-menu js-clone-nav d-none d-md-block" style="padding: 0">
 
                 <a href="${pageContext.request.contextPath}/login.jsp" style="padding: 5px 10px; background: #007bff; color: white; text-decoration: none; border-radius: 4px; margin-left: 10px;">登录</a>
-                <li class="${home_active}"><a href="${pageContext.request.contextPath}/">Home</a></li>
-                <li class="${about_active}"><a href="${pageContext.request.contextPath}${pageContext.request.servletPath}/../about.jsp">About</a></li>
+                <li class="${home_active}"><a href="${pageContext.request.contextPath}/">主页</a></li>
+                <li class="${about_active}"><a href="${pageContext.request.contextPath}${pageContext.request.servletPath}/../about.jsp">关于</a></li>
                 <li class="${shop_active}"><a href="${pageContext.request.contextPath}/shop">Shop</a></li>
-                <li class="${contact_active}"><a href="${pageContext.request.contextPath}${pageContext.request.servletPath}/../contact.jsp">Contact</a></li>
-                <li class="${product_management_active}"><a href="${pageContext.request.contextPath}${pageContext.request.servletPath}/../product-management.jsp">product-management</a></li>
+                <li class="${contact_active}"><a href="${pageContext.request.contextPath}${pageContext.request.servletPath}/../contact.jsp"> 联系人</a></li>
+                <li class="${product_management_active}"><a href="${pageContext.request.contextPath}${pageContext.request.servletPath}/../product-management.jsp">商品管理</a></li>
 
 
                 <c:if test="${sessionScope.account != null}">
-                    <li class="${order_history_active}"><a href="order-history">Orders history</a></li>
+                    <li class="${order_history_active}"><a href="order-history">订单历史</a></li>
                 </c:if>
 
                 <c:if test="${sessionScope.account.isSeller == 1}">
-                    <li class="${product_management_active}"><a href="product-management">Products management</a></li>
-                    <li class="${order_management_active}"><a href="order-management">Orders management</a></li>
+                    <li class="${product_management_active}"><a href="product-management">商品管理</a></li>
+                    <li class="${order_management_active}"><a href="order-management">订单管理</a></li>
                 </c:if>
 
                 <c:if test="${sessionScope.account.isAdmin == 1}">
-                    <li class="${websitem_active}"><a href="#">Website management</a></li>
+                    <li class="${websitem_active}"><a href="#">网站管理</a></li>
                 </c:if>
             </ul>
         </div>

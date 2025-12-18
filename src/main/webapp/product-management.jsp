@@ -3,9 +3,7 @@
 <% response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); %>
 
 <!DOCTYPE html>
-
 <html lang="zh-CN">
-
 <jsp:include page="templates/head.jsp"/>
 
 <body>
@@ -41,8 +39,6 @@
                                 <th style="max-width: 120px">商品名称</th>
                                 <th>商品价格</th>
                                 <th>商品分类</th>
-                                <th>尺码</th> <!-- 新增：尺码列 -->
-                                <th>颜色</th> <!-- 新增：颜色列 -->
                                 <th>库存总量</th>
                                 <th>状态</th>
                                 <th style="min-width: 195px">操作</th>
@@ -53,15 +49,12 @@
                             <c:forEach items="${product_list}" var="o">
                                 <tr>
                                     <td class="product-thumbnail">
-
                                         <img src="data:image/jpg;base64,${o.base64Image}" alt="商品图片" class="img-fluid">
                                     </td>
                                     <td>${o.id}</td>
                                     <td>${o.name}</td>
                                     <td>¥${o.price}</td>
                                     <td>${o.category.name}</td>
-                                    <td>${o.size}</td> <!-- 新增：展示商品尺码 -->
-                                    <td>${o.color}</td> <!-- 新增：展示商品颜色 -->
                                     <td>${o.amount}</td>
                                     <td>${(o.isDeleted) ? "已下架" : "在售中"}</td>
                                     <td>
@@ -73,8 +66,7 @@
                                         <a href="${pageContext.request.contextPath}/remove-product?product-id=${o.id}"
                                            class="btn btn-primary btn-sm ${(o.isDeleted) ? "disabled" : " "}"
                                            style="background-color: red ; border-color: red">
-                                            <span class="icon icon-trash"></span> 下架
-
+                                            <span class="icon icon-trash"></span>
                                         </a>
                                     </td>
                                 </tr>
@@ -89,16 +81,13 @@
                 <div class="col-md-6">
                     <div class="row mb-5">
                         <div class="col-md-6">
-
                             <button class="btn btn-outline-primary btn-sm btn-block">批量下架</button>
-
+                         </div>
 
                         <!-- Button trigger add product modal -->
                         <div class="col-md-6 mb-3 mb-md-0">
                             <button class="btn btn-primary btn-sm btn-block" data-toggle="modal"
-
                                     data-target="#addProductModal">添加商品
-
                             </button>
                         </div>
 
@@ -143,7 +132,7 @@
                                                         商品图片 <span class="text-danger">*</span>
                                                     </label>
 
-                                                    <input name="product-image" type="file" class="form-control"
+                                                    <input name="product-image" type="file" class="form-control" id="product-image">
                                                 </div>
                                             </div>
 
@@ -173,7 +162,7 @@
                                             <div class="form-group row">
                                                 <div class="col-md-12">
                                                     <label class="text-black">
-                                                        颜色 <span class="text-danger">*</span>
+                                                        规格 <span class="text-danger">*</span>
                                                     </label>
                                                     
                                                     <div id="color-stock-container">
@@ -181,11 +170,11 @@
                                                         <div class="row color-stock-row mb-2">
                                                             <div class="col-md-6">
                                                                 <input type="text" class="form-control color-name" 
-                                                                       name="color-name[]" placeholder="Color (e.g. Red, Blue, Black)" required>
+                                                                       name="color-name[]" placeholder="SKU (例如 颜色、尺码)" required>
                                                             </div>
                                                             <div class="col-md-5">
                                                                 <input type="number" class="form-control color-stock" 
-                                                                       name="color-stock[]" placeholder="Stock" min="0" required>
+                                                                       name="color-stock[]" placeholder="库存" min="0" required>
                                                             </div>
                                                             <div class="col-md-1">
                                                                 <button type="button" class="btn btn-danger btn-sm remove-color-row" disabled>
@@ -197,7 +186,7 @@
                                                     
                                                     <div class="mt-2">
                                                         <button type="button" id="add-color-row" class="btn btn-secondary btn-sm">
-                                                            <span class="icon icon-plus"></span> Add Color
+                                                            <span class="icon icon-plus"></span> 添加规格
                                                         </button>
                                                     </div>
   
@@ -231,7 +220,6 @@
                                                     </select>
                                                 </div>
                                             </div>
-
                                         </div>
                                     </div>
 
@@ -260,7 +248,6 @@
 </div>
 
 <jsp:include page="templates/scripts.jsp"/>
-
 <!-- 颜色管理脚本 -->
     <script>
     $(document).ready(function() {
@@ -419,6 +406,5 @@
         border-color: #dc3545;
     }
     </style>
-
 </body>
 </html>
