@@ -48,7 +48,7 @@ public class AccountDao {
                 account.setLastName(resultSet.getString(9));
                 account.setEmail(resultSet.getString(10));
                 account.setPhone(resultSet.getString(11));
-
+                account.setShopName(resultSet.getString("shop_name"));
                 // Get profile image from database.
                 if (resultSet.getBlob(6) == null) {
                     account.setBase64Image(null);
@@ -66,28 +66,28 @@ public class AccountDao {
 
     // Method to get account by id.
     public Account getAccount(int accountId) {
-        String query = "SELECT * FROM account WHERE account_id = " + accountId;
+        String query = "SELECT * FROM account  left join shop.shop on account.account_Id = shop.shop.fk_account_id  WHERE account_id = " + accountId;
         return queryGetAccount(query);
     }
 
     // Method to get login account from database.
     public Account checkLoginAccount(String username, String password) {
 
-        String query = "SELECT * FROM account WHERE account_name = '" + username + "' AND account_password = '" + password + "' and account_is_seller = 0";
+        String query = "SELECT * FROM account  left join shop.shop on account.account_Id = shop.shop.fk_account_id  WHERE  account_name = '" + username + "' AND account_password = '" + password + "' and account_is_seller = 0";
 
         return queryGetAccount(query);
     }
     // Method to get login account from database.
     public Account checkLoginAccount_Seller(String username, String password) {
 
-        String query = "SELECT * FROM account WHERE account_name = '" + username + "' AND account_password = '" + password + "' and account_is_seller=1";
+        String query = "SELECT * FROM account left join shop.shop on account.account_Id = shop.shop.fk_account_id  WHERE  account_name = '" + username + "' AND account_password = '" + password + "' and account_is_seller=1";
 
         return queryGetAccount(query);
     }
 
     // Method to check is username exist or not.
     public boolean checkUsernameExists(String username) {
-        String query = "SELECT * FROM account WHERE account_name = '" + username + "'";
+        String query = "SELECT * FROM account  left join shop.shop on account.account_Id = shop.shop.fk_account_id  WHERE  account_name = '" + username + "'";
         return (queryGetAccount(query) != null);
     }
 

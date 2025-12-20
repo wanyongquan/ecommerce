@@ -15,6 +15,8 @@ public class Account {
     private byte[] image;
     private String base64Image;
 
+    private String shopName;
+    
     public Account() {
 
     }
@@ -128,4 +130,13 @@ public class Account {
     public void setPhone(String phone) {
         this.phone = phone;
     }
+
+	public String getShopName() {
+		return shopName;
+	}
+
+	public void setShopName(String shopName) {
+		this.shopName = shopName;
+	}
+    
 }

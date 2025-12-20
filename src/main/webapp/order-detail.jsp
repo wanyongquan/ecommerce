@@ -29,6 +29,44 @@
 
     <div class="site-section" data-aos="fade-in">
         <div class="container">
+         	<%-- 新增：收件人信息区域 --%>
+        	<div class="row mb-5">
+                <div class="col-md-12">
+                    <h2 class="h3 mb-3 text-black">收件人信息</h2>
+                    <div class="p-3 p-lg-5 border bg-white">
+                        <c:choose>
+                            <c:when test="${not empty recipientInfo}">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="text-black font-weight-bold">收货人：</label>
+                                        <div class="form-control-plaintext">
+                                            ${recipientInfo.recipientName}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="text-black font-weight-bold">联系电话：</label>
+                                        <div class="form-control-plaintext">
+                                            ${recipientInfo.phone}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 mb-3">
+                                        <label class="text-black font-weight-bold">收货地址：</label>
+                                        <div class="form-control-plaintext">
+                                            ${recipientInfo.address_detail}
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </c:when>
+
+                        </c:choose>                   
+
+                    </div>
+                </div>
+            </div>
             <div class="row mb-5">
                 <div class="col-md-12">
                     <div class="site-blocks-table">

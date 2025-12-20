@@ -86,3 +86,18 @@ CREATE TABLE `order_shipping_address` (
     REFERENCES `order`(`order_id`) 
     ON DELETE CASCADE ON UPDATE CASCADE
  ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='订单收货地址表';
+
+
+CREATE TABLE `shop`.`shop` (
+  `shop_id` INT NOT NULL AUTO_INCREMENT,
+  `shop_name` VARCHAR(100) NOT NULL,
+  `shop_description` VARCHAR(250) NULL,
+  `fk_account_id` INT NULL,
+  PRIMARY KEY (`shop_id`),
+  UNIQUE INDEX `shop_name_UNIQUE` (`shop_name` ASC) VISIBLE,
+  INDEX `fk_account_id_idx` (`fk_account_id` ASC) VISIBLE,
+  CONSTRAINT `fk_account_id`
+    FOREIGN KEY (`fk_account_id`)
+    REFERENCES `shop`.`account` (`account_id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE);

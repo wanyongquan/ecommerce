@@ -1,23 +1,44 @@
 package com.ecommerce.control;
 
 import com.ecommerce.dao.AccountDao;
+import com.ecommerce.dao.ShopDao;
 import com.ecommerce.entity.Account;
+import com.ecommerce.entity.Shop;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.SQLException;
 
 @WebServlet(name = "ProfileControl", value = "/profile-page")
 @MultipartConfig
 public class ProfileControl extends HttpServlet {
     // Call DAO class to access with the database.
     AccountDao accountDao = new AccountDao();
+    ShopDao shopDao = new ShopDao();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        RequestDispatcher requestDispatcher = request.getRequestDispatcher("profile-page.jsp");
+    	 HttpSession session = request.getSession();
+         Account account = (Account) session.getAttribute("account");
+         try {
+	         Shop shop = shopDao.getAccountShop(account.getId());
+	         request.setAttribute("account_shop", shop);
+         }
+         catch (SQLException e) {
+             // 更详细的错误处理
+             System.err.println("数据库操作失败:");
+             System.err.println("SQL状态码: " + e.getSQLState());
+             System.err.println("错误代码: " + e.getErrorCode());
+             System.err.println("错误信息: " + e.getMessage());
+         }
+         catch(Exception e)
+         {
+         	 System.err.println("失败: " + e.getMessage());
+         }
+    	RequestDispatcher requestDispatcher = request.getRequestDispatcher("profile-page.jsp");
         requestDispatcher.forward(request, response);
     }
 

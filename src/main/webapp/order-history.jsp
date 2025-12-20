@@ -35,6 +35,7 @@
                                 <th>订单ID</th>
                                 <th>订单总额</th>
                                 <th>下单时间</th>
+                                <th>订单状态</th>
                                 <th style="min-width: 195px">查看详情</th>
 
                             </tr>
@@ -47,7 +48,12 @@
                                     <td>¥${o.total}</td>
 
                                     <td>${o.date}</td>
-
+									<td><c:choose>
+								        <c:when test="${o.status == 0}">买家已付款</c:when>
+								        <c:when test="${o.status == 1}">已发货</c:when>
+								        <c:when test="${o.status == 2}">已收货</c:when>
+								        <c:otherwise>未知状态</c:otherwise>
+								    </c:choose></td>
                                     <td>
                                         <a href="order-detail?order-id=${o.id}" class="btn btn-primary btn-sm"
                                            style="background-color: green ; border-color: green">

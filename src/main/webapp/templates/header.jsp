@@ -94,7 +94,7 @@
                 <%-- <li class="${product_management_active}"><a href="${pageContext.request.contextPath}${pageContext.request.servletPath}/../product-management.jsp">商品管理</a></li>
  --%>
 
-                <c:if test="${sessionScope.account != null}">
+                <c:if test="${sessionScope.account.isSeller == 0}">
                     <li class="${order_history_active}"><a href="order-history">订单历史</a></li>
                 </c:if>
 
