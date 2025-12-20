@@ -9,6 +9,7 @@ public class Order {
     private List<CartProduct> cartProducts;
     private double total;
     private Date date;
+    private int status;
 
     public Order() {
     }
@@ -19,6 +20,13 @@ public class Order {
         this.total = total;
         this.date = date;
     }
+    // Constructor to get order information of customer.
+    public Order(int id, double total, Date date, int status) {
+        this.id = id;
+        this.total = total;
+        this.date = date;
+        this.status = status;
+    }
 
     public Order(int id, Account account, List<CartProduct> item, double total, Date date) {
         this.id = id;
@@ -26,6 +34,14 @@ public class Order {
         this.cartProducts = item;
         this.total = total;
         this.date = date;
+    }
+    public Order(int id, Account account, List<CartProduct> item, double total, Date date, int status) {
+        this.id = id;
+        this.account = account;
+        this.cartProducts = item;
+        this.total = total;
+        this.date = date;
+        this.status = status;
     }
 
     public int getId() {
@@ -68,7 +84,16 @@ public class Order {
         this.total = total;
     }
 
-    @Override
+    
+    public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
+
+	@Override
     public String toString() {
         return "Order{" +
                 "id=" + id +

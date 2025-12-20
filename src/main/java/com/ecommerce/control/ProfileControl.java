@@ -40,6 +40,6 @@ public class ProfileControl extends HttpServlet {
         System.out.println(accountId + " " + firstName + " " + lastName + " " + address + " " + email + " " + phone);
 
         accountDao.editProfileInformation(accountId, firstName, lastName, address, email, phone, inputStream);
-        response.sendRedirect("login");
+        response.sendRedirect(request.getContextPath() + "/profile-page.jsp");
     }
 }

@@ -4,6 +4,7 @@ import com.ecommerce.database.Database;
 import com.ecommerce.entity.Account;
 import com.ecommerce.entity.CartProduct;
 import com.ecommerce.entity.Order;
+import com.ecommerce.entity.OrderShippingAddress;
 import com.ecommerce.entity.Product;
 //import com.oracle.wls.shaded.org.apache.xpath.operations.Or;
 
@@ -112,11 +113,13 @@ public class OrderDao {
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 Product product = productDao.getProduct(resultSet.getInt(1));
+                int orderId = resultSet.getInt(2);
                 int productQuantity = resultSet.getInt(3);
                 double productPrice = resultSet.getDouble(4);
 
                 String color = resultSet.getString(5);
-                list.add(new CartProduct(product, productQuantity, productPrice, color));
+//                list.add(new CartProduct(product, productQuantity, productPrice, color));
+                list.add(new CartProduct(product, orderId, productQuantity, productPrice, color));
 
             }
         } catch (ClassNotFoundException | SQLException e) {
@@ -126,6 +129,33 @@ public class OrderDao {
         return list;
     }
 
+    // Method to get an Order
+    public Order getOrderById(int orderId) {
+    	
+    	String query = "SELECT * FROM shop.order WHERE order_id = " + orderId;
+        try {
+
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            connection = new Database().getConnection();
+            preparedStatement = connection.prepareStatement(query);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {                
+                //int orderId = resultSet.getInt(1);
+                double orderTotal = resultSet.getDouble(3);
+                Date orderDate = resultSet.getDate(4);
+                int status = resultSet.getInt(5);
+
+                return new Order(orderId, orderTotal, orderDate, status);
+
+            }
+        } catch (ClassNotFoundException | SQLException e) {
+            System.out.println("Query cart product list catch:");
+            System.out.println(e.getMessage());
+        }
+        return null;
+    	
+    }
     // Method to get order history of a customer.
     public List<Order> getOrderHistory(int accountId) {
         List<Order> list = new ArrayList<>();
@@ -141,8 +171,9 @@ public class OrderDao {
                 int orderId = resultSet.getInt(1);
                 double orderTotal = resultSet.getDouble(3);
                 Date orderDate = resultSet.getDate(4);
+                int status = resultSet.getInt(5);
 
-                list.add(new Order(orderId, orderTotal, orderDate));
+                list.add(new Order(orderId, orderTotal, orderDate, status));
             }
         } catch (ClassNotFoundException | SQLException e) {
             System.out.println("Order history catch:");
@@ -177,5 +208,46 @@ public class OrderDao {
             System.out.println(e.getMessage());
         }
         return list;
+    }
+    
+    // method to get recipient information 
+    public OrderShippingAddress getOrderRecipientInfo(int orderId) {
+    	OrderShippingAddress recipientInfo = new OrderShippingAddress();
+    	String query = "SELECT * FROM order_shipping_address WHERE order_id = " + orderId;
+        try {
+
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            connection = new Database().getConnection();
+            preparedStatement = connection.prepareStatement(query);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+            	recipientInfo.setOrderID(orderId);
+            	recipientInfo.setRecipientName(resultSet.getString(3));
+            	recipientInfo.setPhone(resultSet.getString(4));
+            	recipientInfo.setAddress_detail(resultSet.getString(5));
+            }
+       
+	    } catch (ClassNotFoundException | SQLException e) {
+	        System.out.println("Get order shipping address catch:");
+	        System.out.println(e.getMessage());
+	    }
+        return recipientInfo;
+    }
+    
+    // Method to update order status 
+    public int updateOrderStatus(int orderId, int status) throws SQLException  {
+    	 String query = "UPDATE shop.order SET order_status = ? WHERE order_id = ?";
+    	 try (Connection connection = new Database().getConnection();
+    	         PreparedStatement pstmt = connection.prepareStatement(query)) {
+           // 创建预编译语句并设置参数
+    		 pstmt.setInt(1, status);  // 第一个问号
+    		 pstmt.setInt(2, orderId); // 第二个问号
+           // 执行更新，返回受影响的行数
+            int affectedRows = pstmt.executeUpdate();
+            
+            // . 判断是否更新成功（至少有一行被影响）
+            return affectedRows ;
+    	}
     }
 }

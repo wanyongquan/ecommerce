@@ -3,9 +3,7 @@
 <% response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); %>
 
 <!DOCTYPE html>
-
 <html lang="zh-CN">
-
 <jsp:include page="templates/head.jsp"/>
 
 <body>
@@ -16,7 +14,6 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12 mb-0">
-
                     <a href="/">首页</a> <span class="mx-2 mb-0">/</span>
                     <strong class="text-black">个人资料</strong></div>
 
@@ -146,7 +143,7 @@
                         </div>
 
                         <div class="form-group">
-                            <button type="button" onclick="window.location.href='${pageContext.request.contextPath}/index.jsp'" class="btn btn-primary btn-lg py-3 btn-block">更新资料</button>
+                            <button type="submit" onclick="window.location.href='${pageContext.request.contextPath}/index.jsp'" class="btn btn-primary btn-lg py-3 btn-block">更新资料</button>
 
                         </div>
                     </div>

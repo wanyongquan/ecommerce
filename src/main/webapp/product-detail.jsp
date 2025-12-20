@@ -3,9 +3,7 @@
 <% response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); %>
 
 <!DOCTYPE html>
-
 <html lang="zh-CN">
-
 <jsp:include page="templates/head.jsp"/>
 
 <body>
@@ -15,10 +13,8 @@
     <div class="bg-light py-3">
         <div class="container">
             <div class="row">
-
                 <div class="col-md-12 mb-0"><a href="/">首页</a> <span class="mx-2 mb-0">/</span> <strong
-
-                        class="text-black">${product.name}</strong></div>
+                        class="text-black">${product.account.lastName}</strong></div>
             </div>
         </div>
     </div>
@@ -27,9 +23,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-6">
-
                     <img src="data:image/jpg;base64,${product.base64Image}" alt="商品图片" class="img-fluid">
-
                 </div>
 
                 <div class="col-md-6">
@@ -50,20 +44,12 @@
                                 </div>
 
                                 <input id="quantity" name="quantity" type="text" class="form-control text-center"
-
                                        value="1" placeholder="" aria-label="Example text with button addon"
-
                                        aria-describedby="button-addon1" style="max-width: 50px">
 
                                 <div class="input-group-append">
                                     <button class="btn btn-outline-primary js-btn-plus" type="button">&plus;</button>
                                 </div>
-
-                               
-                            </div>
-                        </div>
-
-                       
 
                               <%--   <label for="quantity" class="form-label text-black">
                                     Available products: ${product.amount}
@@ -97,7 +83,6 @@
                         <p>
                             <button type="submit" class="buy-now btn btn-sm btn-primary" ${disabled}>
                                 加入购物车
-
                             </button>
                         </p>
                     </form>
