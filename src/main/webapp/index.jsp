@@ -10,15 +10,15 @@
 <div class="site-wrap">
     <jsp:include page="templates/header.jsp"/>
 
-    <div class="site-blocks-cover" style="background-image: url(static/images/hero_1.jpg);" data-aos="fade">
+    <div class="site-blocks-cover" style="background-image: url(static/images/Clothing.jpg);" data-aos="fade">
         <div class="container">
             <div class="row align-items-start align-items-md-center justify-content-end">
                 <div class="col-md-5 text-center text-md-left pt-5 pt-md-0">
 
-                    <h1 class="mb-2">找到属于你的完美鞋履</h1>
+                    <h1 class="mb-2" style="background-color: rgba(60, 100, 200, 0.5); color: white; display: inline-block; padding: 12px 24px; border-radius: 6px;">找到属于你的完美服装</h1>
 
                     <div class="intro-text text-center text-md-left">
-                        <p class="mb-4">我们精选各类优质鞋款，兼顾舒适与时尚，满足你不同场景的穿搭需求。</p>
+                        <p class="mb-4" style="background-color: rgba(60, 100, 200, 0.5); color: white; display: inline-block; padding: 10px 20px; border-radius: 6px;">我们精选各类优质服装，兼顾舒适与时尚，满足你不同场景的穿搭需求。</p>
 
                         <p>
                             <a href="shop" class="btn btn-sm btn-primary">立即选购</a>

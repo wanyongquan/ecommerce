@@ -98,6 +98,7 @@ public class OrderDao {
 
         // Call create order detail method.
         createOrderDetail(cartProducts);
+        
     }
 
     // Method to get order detail list of a seller.
@@ -243,6 +244,24 @@ public class OrderDao {
            // 创建预编译语句并设置参数
     		 pstmt.setInt(1, status);  // 第一个问号
     		 pstmt.setInt(2, orderId); // 第二个问号
+           // 执行更新，返回受影响的行数
+            int affectedRows = pstmt.executeUpdate();
+            
+            // . 判断是否更新成功（至少有一行被影响）
+            return affectedRows ;
+    	}
+    }
+    
+    // Method to update recipient  
+    public int SaveRecipient(int orderId, String recipient_name, String address, String phone) throws SQLException  {
+    	 String query = "INSERT into shop.order_shipping_address (order_id, recipient_name, address_detail, phone) values ( ?, ?, ?, ?)";
+    	 try (Connection connection = new Database().getConnection();
+    	         PreparedStatement pstmt = connection.prepareStatement(query)) {
+           // 创建预编译语句并设置参数
+    		 pstmt.setInt(1, orderId);  // 第一个问号
+    		 pstmt.setString(2, recipient_name); // 第二个问号
+    		 pstmt.setString(3, address); // 第三个问号
+    		 pstmt.setString(4, phone); // 第四个问号
            // 执行更新，返回受影响的行数
             int affectedRows = pstmt.executeUpdate();
             

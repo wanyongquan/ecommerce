@@ -22,7 +22,7 @@ public class CartControl extends HttpServlet {
     ProductDao productDao = new ProductDao();
 
     // Method to remove a product from cart.
-    private void removeCartProduct(int productId, Order order, double totalPrice) {
+    private void removeCartProduct(int productId, Order order, double totalPrice, String color) {
         // Get list of products from the existing order.
         List<CartProduct> list = order.getCartProducts();
 
@@ -31,8 +31,9 @@ public class CartControl extends HttpServlet {
             // Get the cart product object from list.
             CartProduct cartProduct = iterator.next();
 
-            // Delete the product if its id equals the id of deleting product.
-            if (cartProduct.getProduct().getId() == productId) {
+            // 只有当product id和pickedcolor都匹配时才移除
+            if (cartProduct.getProduct().getId() == productId && 
+            		cartProduct.getPickedColor().equals(color)) {
                 // Remove price of deleting product from total price.
                 totalPrice -= (cartProduct.getPrice() * cartProduct.getQuantity());
 
@@ -45,13 +46,17 @@ public class CartControl extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
-
+        String color = null;
+        if (request.getParameter("color") != null) {
+        	// Get the color of the product 
+        	color = request.getParameter("color");                	
+        }
         // Check if request is remove product from cart or not.
         if (request.getParameter("remove-product-id") != null) {
             Order order = (Order) session.getAttribute("order");
             double totalPrice = (double) session.getAttribute("total_price");
             int productId = Integer.parseInt(request.getParameter("remove-product-id"));
-            removeCartProduct(productId, order, totalPrice);
+            removeCartProduct(productId, order, totalPrice, color);
             response.sendRedirect("cart.jsp");
             return;
         }
@@ -60,7 +65,6 @@ public class CartControl extends HttpServlet {
         int quantity = 1;
         int productId;
 
-        String color = null;
 
         // Check is the total price of order exist or not.
         double totalPrice;
@@ -89,10 +93,7 @@ public class CartControl extends HttpServlet {
                     }
                 }
 
-                if (request.getParameter("color") != null) {
-                	// Get the color of the product 
-                	color = request.getParameter("color");                	
-                }
+
 
                 // Check the product has been added to cart yet.
                 if (session.getAttribute("order") == null) {
@@ -129,13 +130,20 @@ public class CartControl extends HttpServlet {
                     boolean flag = false;
                     for (CartProduct cartProduct : list) {
 
-                    	//todo:  update the exist CartProduct, only if both ProductID and Color are identity;otherwise, create a new one;
+                    	//TODO:  update the exist CartProduct, only if both ProductID and Color are identity;otherwise, create a new one;
 
-                        if (cartProduct.getProduct().getId() == product.getId()) {
-                            cartProduct.setQuantity(cartProduct.getQuantity() + quantity);
-                            totalPrice += product.getPrice() * quantity;
-                            flag = true;
-                        }
+//                        if (cartProduct.getProduct().getId() == product.getId()) {
+//                            cartProduct.setQuantity(cartProduct.getQuantity() + quantity);
+//                            totalPrice += product.getPrice() * quantity;
+//                            flag = true;
+//                        }
+                    	if(cartProduct.getProduct().getId() == product.getId() && 
+                    			cartProduct.getPickedColor().equals(color)) {
+                    		// id 和规格都相同，则增加cartProduct的数量
+                    		cartProduct.setQuantity(cartProduct.getQuantity() + quantity);
+                    		totalPrice += product.getPrice() * quantity;
+                    		flag = true;
+                    	}
                     }
 
                     // Add new product to existing cart.

@@ -101,3 +101,14 @@ CREATE TABLE `shop`.`shop` (
     REFERENCES `shop`.`account` (`account_id`)
     ON DELETE CASCADE
     ON UPDATE CASCADE);
+    
+    
+--12.21
+
+ALTER TABLE `shop`.`account` 
+ADD COLUMN `account_balance` DECIMAL(10,2) NULL DEFAULT 0.00 AFTER `account_phone`,
+CHANGE COLUMN `account_is_seller` `account_is_seller` INT NULL DEFAULT 0 ;
+
+
+ALTER TABLE `shop`.`product` 
+CHANGE COLUMN `product_price` `product_price` DECIMAL(10,2) NULL DEFAULT 0.00 ;

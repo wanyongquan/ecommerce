@@ -95,7 +95,7 @@
  --%>
 
                 <c:if test="${sessionScope.account.isSeller == 0}">
-                    <li class="${order_history_active}"><a href="order-history">订单历史</a></li>
+                    <li class="${order_history_active}"><a href="order-history">我的订单</a></li>
                 </c:if>
 
                 <c:if test="${sessionScope.account.isSeller == 1}">

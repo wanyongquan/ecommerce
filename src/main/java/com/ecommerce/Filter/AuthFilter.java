@@ -43,6 +43,7 @@ public class AuthFilter extends HttpFilter implements Filter {
         AUTH_RULES.put("/order-history", Set.of(AuthFilter.USER));
         AUTH_RULES.put("/order-detail", Set.of(AuthFilter.USER));
         AUTH_RULES.put("/checkout", Set.of(AuthFilter.USER));
+        AUTH_RULES.put("/cart", Set.of(AuthFilter.USER));
         
         // 商家管理页面
         AUTH_RULES.put("/order-management", Set.of(AuthFilter.SELLER));

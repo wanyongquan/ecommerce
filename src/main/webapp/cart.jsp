@@ -33,6 +33,7 @@
 
                                 <th class="product-thumbnail">商品图片</th>
                                 <th class="product-name">商品名称</th>
+                                <th class="product-name">规格</th>
                                 <th class="product-price">单价</th>
                                 <th class="product-quantity">购买数量</th>
                                 <th class="product-total">小计</th>
@@ -56,7 +57,10 @@
                                         <input name="product-name" class="form-control-plaintext h5 text-black"
                                                value="${o.product.name}" style="text-align: center" readonly>
                                     </td>
-
+									<td>
+                                        <input name="color" class="form-control-plaintext h5 text-black"
+                                               value="${o.pickedColor}" style="text-align: center" readonly>
+                                    </td>
                                     <td>
                                         <input name="product-price" class="form-control-plaintext h5 text-black"
                                                value="${o.price}" style="text-align: center" readonly>
@@ -90,7 +94,7 @@
                                     </td>
 
 
-                                    <td><a href="cart?remove-product-id=${o.product.id}" class="btn btn-primary btn-sm">X</a></td>
+                                    <td><a href="cart?remove-product-id=${o.product.id}&color=${o.pickedColor}" class="btn btn-primary btn-sm">X</a></td>
 
                                 </tr>
                             </c:forEach>
@@ -167,5 +171,86 @@
 </div>
 
 <jsp:include page="templates/scripts.jsp"/>
+<script>
+$(document).ready(function() {
+    // 计算单行小计
+    function calculateRowSubtotal(row) {
+        var price = parseFloat(row.find('input[name="product-price"]').val()) || 0;
+        var quantity = parseInt(row.find('input[name="product-quantity"]').val()) || 0;
+        return price * quantity;
+    }
+    
+    // 更新总计价格
+    function updateTotalPrice() {
+        var total = 0;
+        
+        // 遍历每一行商品
+        $('tbody tr').each(function() {
+            total += calculateRowSubtotal($(this));
+        });
+        
+        // 更新总计显示
+        $('input[name="order-price-total"]').val(total.toFixed(2));
+    }
+    
+ // 更新单行小计
+    function updateRowSubtotal(row) {
+        var subtotal = calculateRowSubtotal(row);
+        row.find('input[name="product-price-total"]').val(subtotal.toFixed(2));
+        updateTotalPrice();
+    }
+    // 监听数量输入框的变化（包括手动输入和按钮修改）
+    $(document).on('change input', 'input[name="product-quantity"]', function() {
+        
+        var $input = $(this);
+        var quantity = parseInt($input.val()) || 0;
+        var $row = $input.closest('tr');
+        
+        // 如果输入的数量为0，执行删除操作
+        if (quantity === 0) {
+            var $removeBtn = $row.find('a[href*="remove-product-id="]');
+            if ($removeBtn.length > 0) {
+                window.location.href = $removeBtn.attr('href');
+                return; // 不继续执行价格更新
+            }
+        }
+    	updateRowSubtotal($(this).closest('tr'));
+    });
+    
+ // ===== 关键修改：监控加减按钮点击事件 =====
+    $(document).on('click', '.js-btn-plus, .js-btn-minus', function() {
+ 
+        var $button = $(this);
+        var isMinusBtn = $button.hasClass('js-btn-minus');
+        
+        // 给加减按钮点击事件一个小的延迟，确保数量输入框的值已经更新
+        setTimeout(function() {
+            // 对于减号按钮，需要检查数量是否为0
+            if (isMinusBtn) {
+                var $input = $button.closest('.input-group').find('input[name="product-quantity"]');
+                var quantity = parseInt($input.val()) || 0;
+                
+                // 如果数量为0，执行删除操作
+                if (quantity === 0) {
+                    // 找到同行的删除按钮并触发点击
+                    var $removeBtn = $button.closest('tr').find('a[href*="remove-product-id="]');
+                    if ($removeBtn.length > 0) {
+                        // 跳转到删除URL，移除商品
+                        window.location.href = $removeBtn.attr('href');
+                        return; // 不需要再更新价格，因为页面会刷新
+                    }
+                }
+            }
+         	// 正常情况：找到最近的商品行并更新价格
+            $('input[name="product-quantity"]').each(function() {
+                updateRowSubtotal($(this).closest('tr'));
+            });
+        }, 10);
+    });
+ 
+    // 页面加载时计算一次
+    updateTotalPrice();
+});
+</script>
 </body>
 </html>

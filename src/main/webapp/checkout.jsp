@@ -40,27 +40,17 @@
 
                     <div class="p-3 p-lg-5 border">
                         <div class="form-group row">
-                            <div class="col-md-6">
-                                <label for="first-name" class="text-black">
+                            <div class="col-md-12">
+                                <label for="recipient-name" class="text-black">
 
-                                    名 <span class="text-danger">*</span>
+                                    收件人 <span class="text-danger">*</span>
 
                                 </label>
 
                                 <input type="text" class="form-control" id="first-name" name="first-name"
                                        value="${account.firstName}" required>
                             </div>
-
-                            <div class="col-md-6">
-                                <label for="last-name" class="text-black">
-
-                                    姓 <span class="text-danger">*</span>
-
-                                </label>
-
-                                <input type="text" class="form-control" id="last-name" name="last-name"
-                                       value="${account.lastName}" required>
-                            </div>
+                            
                         </div>
 
                         <div class="form-group row">
@@ -78,16 +68,6 @@
 
                         <div class="form-group row mb-5">
                             <div class="col-md-6">
-                                <label for="email" class="text-black">
-
-                                    电子邮箱 <span class="text-danger">*</span>
-
-                                </label>
-
-                                <input type="text" class="form-control" id="email" name="email"
-                                       value="${account.email}" required>
-                            </div>
-                            <div class="col-md-6">
                                 <label for="phone" class="text-black">
 
                                     手机号码 <span class="text-danger">*</span>
@@ -97,6 +77,17 @@
                                 <input type="text" class="form-control" id="phone" name="phone"
                                        value="${account.phone}" required>
                             </div>
+                            <div class="col-md-6">
+                                <label for="email" class="text-black">
+
+                                    电子邮箱 <span class="text-danger"></span>
+
+                                </label>
+
+                                <input type="text" class="form-control" id="email" name="email"
+                                       value="${account.email}" required>
+                            </div>
+                            
                         </div>
                     </div>
                 </div>
