@@ -73,9 +73,19 @@ public class LoginControl extends HttpServlet {
             response.addCookie(passwordCookie);
         }
 
+        // 3. 获取目标URL（用户在登录前想访问的页面）
+        String targetUrl = (String) session.getAttribute("targetUrl");
         
-        // 登录成功后跳转到首页
-        response.sendRedirect(request.getContextPath() + "/index.jsp");
+        // 4. 移除session中的目标URL（避免重复使用）
+        session.removeAttribute("targetUrl");
+        if (targetUrl != null && !targetUrl.isEmpty()) {
+        	response.sendRedirect(targetUrl);
+        }
+        else {
+          // 登录成功后跳转到首页
+          response.sendRedirect(request.getContextPath() + "/index.jsp");
+        }
+
     }
 
     /**

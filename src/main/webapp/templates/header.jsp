@@ -86,9 +86,9 @@
         <div class="container">
             <ul class="site-menu js-clone-nav d-none d-md-block" style="padding: 0">
 
-                <a href="${pageContext.request.contextPath}/login.jsp" style="padding: 5px 10px; background: #007bff; color: white; text-decoration: none; border-radius: 4px; margin-left: 10px;">登录</a>
+                <%-- <a href="${pageContext.request.contextPath}/login.jsp" style="padding: 5px 10px; background: #007bff; color: white; text-decoration: none; border-radius: 4px; margin-left: 10px;">登录</a> --%>
                 <li class="${home_active}"><a href="${pageContext.request.contextPath}/">主页</a></li>
-                <li class="${about_active}"><a href="${pageContext.request.contextPath}${pageContext.request.servletPath}/../about.jsp">关于</a></li>
+                
                 <li class="${shop_active}"><a href="${pageContext.request.contextPath}/shop">商城</a></li>
                 <li class="${contact_active}"><a href="${pageContext.request.contextPath}${pageContext.request.servletPath}/../contact.jsp"> 售后服务</a></li>
                 <%-- <li class="${product_management_active}"><a href="${pageContext.request.contextPath}${pageContext.request.servletPath}/../product-management.jsp">商品管理</a></li>
@@ -100,13 +100,14 @@
 
                 <c:if test="${sessionScope.account.isSeller == 1}">
                     <li class="${product_management_active}"><a href="product-management">商品管理</a></li>
-                    <li class="${order_management_active}"><a href="order-management">订单管理</a></li>
-                    <li class="${order_management_active}"><a href="order-management-seller">新订单管理</a></li>
+                 <%--    <li class="${order_management_active}"><a href="order-management">订单管理</a></li> --%>
+                    <li class="${order_management_active}"><a href="order-management-seller">订单管理</a></li>
                 </c:if>
 
                 <c:if test="${sessionScope.account.isAdmin == 1}">
                     <li class="${websitem_active}"><a href="#">网站管理</a></li>
                 </c:if>
+                <li class="${about_active}"><a href="${pageContext.request.contextPath}${pageContext.request.servletPath}/../about.jsp">关于</a></li>
             </ul>
         </div>
     </nav>

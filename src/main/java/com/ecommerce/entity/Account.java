@@ -138,5 +138,7 @@ public class Account {
 	public void setShopName(String shopName) {
 		this.shopName = shopName;
 	}
-    
+    public String getRole() {
+    	return (this.isSeller == 0 ) ? "USER" : "SELLER";
+    }
 }

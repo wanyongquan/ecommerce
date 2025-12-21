@@ -41,6 +41,7 @@ public class LoginControlSeller extends HttpServlet {
         boolean rememberMe = (request.getParameter("remember-me-checkbox") != null);
 
         session.setAttribute("account", account);
+            
         if (rememberMe) {
             Cookie usernameCookie = new Cookie("username", account.getUsername());
             usernameCookie.setMaxAge(600);
@@ -52,7 +53,18 @@ public class LoginControlSeller extends HttpServlet {
 
             response.addCookie(passwordCookie);
         }
-        response.sendRedirect(request.getContextPath()+"/index.jsp");
+        
+        // 3. 获取目标URL（用户在登录前想访问的页面）
+        String targetUrl = (String) session.getAttribute("targetUrl");
+    
+        // 4. 移除session中的目标URL（避免重复使用）
+        session.removeAttribute("targetUrl");
+        if (targetUrl != null && !targetUrl.isEmpty()) {
+        	response.sendRedirect(targetUrl);
+        }
+        else { 
+               response.sendRedirect(request.getContextPath()+"/index_seller.jsp"); 
+        }
     }
 
     private void checkLoginAccountFirstTime(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

@@ -28,7 +28,7 @@ public class ShippingOrderDetailControl extends HttpServlet {
         
          
         request.setAttribute("order_detail_list", list);
-        // todo: 订单详情页显示 买家账号， 收件人信息；
+        // 订单详情页显示 买家账号， 收件人信息；
         request.setAttribute("order", order);
         request.setAttribute("recipientInfo", recipientInfo);
         
