@@ -44,6 +44,9 @@ public class AuthFilter extends HttpFilter implements Filter {
         AUTH_RULES.put("/order-detail", Set.of(AuthFilter.USER));
         AUTH_RULES.put("/checkout", Set.of(AuthFilter.USER));
         AUTH_RULES.put("/cart", Set.of(AuthFilter.USER));
+       
+        AUTH_RULES.put("/recipient-addresses", Set.of(AuthFilter.USER));
+        
         
         // 商家管理页面
         AUTH_RULES.put("/order-management", Set.of(AuthFilter.SELLER));
@@ -51,7 +54,7 @@ public class AuthFilter extends HttpFilter implements Filter {
         AUTH_RULES.put("/shipping-order-detail", Set.of(AuthFilter.SELLER));
         
         // 多角色共用页面
-        AUTH_RULES.put("/order-detail",  Set.of(AuthFilter.USER, AuthFilter.SELLER));
+        AUTH_RULES.put("/profile-page",  Set.of(AuthFilter.USER, AuthFilter.SELLER));
     }
     
   

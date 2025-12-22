@@ -112,3 +112,10 @@ CHANGE COLUMN `account_is_seller` `account_is_seller` INT NULL DEFAULT 0 ;
 
 ALTER TABLE `shop`.`product` 
 CHANGE COLUMN `product_price` `product_price` DECIMAL(10,2) NULL DEFAULT 0.00 ;
+
+ALTER TABLE `shop`.`shipping_address` 
+ADD COLUMN `email` VARCHAR(45) NULL AFTER `address_label`;
+
+ALTER TABLE `shop`.`shipping_address` 
+CHANGE COLUMN `phone` `phone` VARCHAR(11) NOT NULL COMMENT '手机号码' AFTER `address_detail`,
+CHANGE COLUMN `email` `email` VARCHAR(45) NULL DEFAULT NULL AFTER `phone`;

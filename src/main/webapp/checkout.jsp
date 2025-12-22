@@ -3,11 +3,8 @@
 <% response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); %>
 
 <!DOCTYPE html>
-
 <html lang="zh-CN">
-
 <jsp:include page="templates/head.jsp"/>
-
 <body>
 <div class="site-wrap">
     <jsp:include page="templates/header.jsp"/>
@@ -33,66 +30,59 @@
     <div class="site-section">
         <div class="container">
             <form class="row" method="post" action="checkout">
-                <div class="col-md-6 mb-5 mb-md-0">
+                  <div class="col-md-12 mb-3">
+	                <h4 class="text-black font-weight-bold">收货人信息</h4>
+	                <hr class="mb-4">
+	            </div>
+	                      <c:forEach items="${address_list}" var="address" varStatus="status">
+	                      
+	        				<div class="col-md-4 mb-3">
+				            
+				                <input type="hidden" name="addr_id" value="${address.addr_id}">
+				                <div class="card border h-100">
+				                    <div class="card-header bg-light">
+				                        <div class="custom-control custom-radio">
+					                        <input type="radio" id="address${address.addr_id}" 
+					                               name="selectedAddress" value="${address.addr_id}"
+					                               class="custom-control-input" 
+					                               <c:if test="${address.isDefault==1}">checked</c:if>>
+					                        <label class="custom-control-label" for="address${address.addr_id}">
+					                            <c:if test="${not empty address.addressLabel}">
+					                                <span class="badge badge-info mr-2">${address.addressLabel}</span>
+					                            </c:if>
+					                            <c:if test="${address.isDefault==1}">
+					                                <span class="badge badge-success ml-2">默认</span>
+					                            </c:if>
+					                        </label>
+					                    </div>
+				                    </div>
+				                    <div class="card-body p-3">
+				                        <div class="mb-2">
+				                            <span class="text-black">收件人：</span>
+				                            <span>${address.recipientName}</span>
+				                        </div>
+				                        <div class="mb-2">
+				                            <span class="text-black">电话：</span>
+				                            <span>${address.phone}</span>
+				                        </div>
+				                        <div class="mb-2">
+				                            <span class="text-black">地区：</span>
+				                            <span>${address.distinct}</span>
+				                        </div>
+				                        <div class="mb-2">
+				                            <span class="text-black">详细地址：</span>
+				                            <span>${address.address_detail}</span>
+				                        </div>
+				                    </div>
+				                </div>
+				            
+				        </div>
+	                         
+	                    </c:forEach>
+	               
+	         
 
-                    <h2 class="h3 mb-3 text-black">收货信息</h2>
-
-
-                    <div class="p-3 p-lg-5 border">
-                        <div class="form-group row">
-                            <div class="col-md-12">
-                                <label for="recipient-name" class="text-black">
-
-                                    收件人 <span class="text-danger">*</span>
-
-                                </label>
-
-                                <input type="text" class="form-control" id="first-name" name="first-name"
-                                       value="${account.firstName}" required>
-                            </div>
-                            
-                        </div>
-
-                        <div class="form-group row">
-                            <div class="col-md-12">
-                                <label for="address" class="text-black">
-
-                                    收货地址 <span class="text-danger">*</span>
-
-                                </label>
-
-                                <input type="text" class="form-control" id="address" name="address"
-                                       value="${account.address}" required>
-                            </div>
-                        </div>
-
-                        <div class="form-group row mb-5">
-                            <div class="col-md-6">
-                                <label for="phone" class="text-black">
-
-                                    手机号码 <span class="text-danger">*</span>
-
-                                </label>
-
-                                <input type="text" class="form-control" id="phone" name="phone"
-                                       value="${account.phone}" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="email" class="text-black">
-
-                                    电子邮箱 <span class="text-danger"></span>
-
-                                </label>
-
-                                <input type="text" class="form-control" id="email" name="email"
-                                       value="${account.email}" required>
-                            </div>
-                            
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
+                <div class="col-md-12">
                     <div class="row mb-5">
                         <div class="col-md-12">
 

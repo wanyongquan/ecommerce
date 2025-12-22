@@ -2,6 +2,7 @@ package com.ecommerce.control;
 
 import com.ecommerce.dao.AccountDao;
 import com.ecommerce.dao.ShopDao;
+import com.ecommerce.database.Database;
 import com.ecommerce.entity.Account;
 import com.ecommerce.entity.Shop;
 
@@ -10,6 +11,8 @@ import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 @WebServlet(name = "ProfileControl", value = "/profile-page")
@@ -18,10 +21,13 @@ public class ProfileControl extends HttpServlet {
     // Call DAO class to access with the database.
     AccountDao accountDao = new AccountDao();
     ShopDao shopDao = new ShopDao();
-
+    Database dbManager = new Database();
+    
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    	 HttpSession session = request.getSession();
+    	// 设置请求编码，避免中文乱码
+        request.setCharacterEncoding("UTF-8"); 
+    	HttpSession session = request.getSession();
          Account account = (Account) session.getAttribute("account");
          try {
 	         Shop shop = shopDao.getAccountShop(account.getId());
@@ -45,6 +51,9 @@ public class ProfileControl extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
+        
+     // 设置请求编码，避免中文乱码
+        request.setCharacterEncoding("UTF-8");
         Account account = (Account) session.getAttribute("account");
 
         int accountId = account.getId();
@@ -59,8 +68,16 @@ public class ProfileControl extends HttpServlet {
         InputStream inputStream = part.getInputStream();
 
         System.out.println(accountId + " " + firstName + " " + lastName + " " + address + " " + email + " " + phone);
-
-        accountDao.editProfileInformation(accountId, firstName, lastName, address, email, phone, inputStream);
+        
+        try (Connection connection = dbManager.getConnection();) {
+        
+			 accountDao.editProfileInformation(connection, accountId, firstName, lastName, address, email, phone, inputStream);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+       
+       
         response.sendRedirect(request.getContextPath() + "/profile-page.jsp");
     }
 }

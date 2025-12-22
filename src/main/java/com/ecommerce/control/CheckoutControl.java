@@ -2,8 +2,10 @@ package com.ecommerce.control;
 
 import com.ecommerce.dao.AccountDao;
 import com.ecommerce.dao.OrderDao;
+import com.ecommerce.database.Database;
 import com.ecommerce.entity.Account;
 import com.ecommerce.entity.Order;
+import com.ecommerce.entity.ShippingAddress;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -13,23 +15,43 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 
 @WebServlet(name = "CheckoutControl", value = "/checkout")
 public class CheckoutControl extends HttpServlet {
     // Call DAO class to access with database.
     OrderDao orderDao = new OrderDao();
     AccountDao accountDao = new AccountDao();
+    Database dbManager = new Database();
+    
 
     @Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO 读取收货信息列表
+//		super.doGet(req, resp);
+    	request.setCharacterEncoding("UTF-8"); 
+    	HttpSession session = request.getSession();
+    	Account account = (Account) session.getAttribute("account");
+    	try (Connection connection = dbManager.getConnection();) {
+    		 List<ShippingAddress> address_list = accountDao.getAddressList(connection, account.getId());
+    		 request.setAttribute("address_list", address_list);
+    	 } catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	RequestDispatcher requestDispatcher = request.getRequestDispatcher("/checkout.jsp");
+        requestDispatcher.forward(request, response);
+	}
+
+
+
+
+	@Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
         // Get information from input field.
-        String recipientName = request.getParameter("recipient-name");
-        String lastName = request.getParameter("last-name");
-        String address = request.getParameter("address");
-        String email = request.getParameter("email");
-        String phone = request.getParameter("phone");
 
         if (session.getAttribute("account") == null) {
             response.sendRedirect("login.jsp");
@@ -39,18 +61,22 @@ public class CheckoutControl extends HttpServlet {
             Order order = (Order) session.getAttribute("order");
             Account account = (Account) session.getAttribute("account");
 
-            try {
+            try (Connection connection = dbManager.getConnection();) {
 	            //TODO：使用事务
+            	dbManager.beginTransaction();
 	            // Insert information to account.
 	            int accountId = account.getId();
-	            accountDao.updateProfileInformation(accountId, recipientName, lastName, address, email, phone);
+	            int addressId = Integer.parseInt(request.getParameter("addr_id"));
+	            
+//	            accountDao.updateProfileInformation(accountId, recipientName, lastName, address, email, phone);
 	            // Insert order to database.
-	            orderDao.createOrder(account.getId(), totalPrice, order.getCartProducts());
+	            int new_orderId =  orderDao.createOrder(connection, account.getId(), totalPrice, order.getCartProducts());
 	           
 	            // 记录收件人信息； 
-	            int orderId = orderDao.getLastOrderId();
-	            orderDao.SaveRecipient(orderId, recipientName, address, phone);
-	            
+//	            int orderId = orderDao.getLastOrderId();
+//	            orderDao.SaveRecipient(connection, new_orderId, recipientName, address, phone);
+	            orderDao.SaveRecipientAddress(connection, new_orderId, addressId);
+	            dbManager.commitTransaction();
 	            session.removeAttribute("order");
 	            session.removeAttribute("total_price");
             }

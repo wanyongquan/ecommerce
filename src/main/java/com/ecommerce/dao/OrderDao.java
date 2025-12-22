@@ -50,20 +50,18 @@ public class OrderDao {
     }
 
     // Method to insert order detail information.
-    private void createOrderDetail(List<CartProduct> cartProducts) {
+    private void createOrderDetail(Connection connection, int newOrderId, List<CartProduct> cartProducts) throws SQLException {
 
         String query = "INSERT INTO order_detail (fk_order_id, fk_product_id, product_quantity, product_price, product_color) VALUES (?, ?, ?, ?, ?);";
 
         // Get latest orderId to insert list of cartProduct to order.
-        int orderId = getLastOrderId();
+//        int orderId = getLastOrderId();
         for (CartProduct cartProduct : cartProducts) {
             productDao.decreaseProductAmount(cartProduct.getProduct().getId(), cartProduct.getQuantity());
-            try {
-
-                Class.forName("com.mysql.cj.jdbc.Driver");
+            
 
                 preparedStatement = connection.prepareStatement(query);
-                preparedStatement.setInt(1, orderId);
+                preparedStatement.setInt(1, newOrderId);
                 preparedStatement.setInt(2, cartProduct.getProduct().getId());
                 preparedStatement.setInt(3, cartProduct.getQuantity());
                 preparedStatement.setDouble(4, cartProduct.getPrice());
@@ -71,34 +69,35 @@ public class OrderDao {
                 preparedStatement.setString(5, cartProduct.getPickedColor());
 
                 preparedStatement.executeUpdate();
-            } catch (SQLException | ClassNotFoundException e) {
-                System.out.println("Create order_detail catch:");
-                System.out.println(e.getMessage());
-            }
+            
         }
     }
 
     // Method to insert order information to database.
-    public void createOrder(int accountId, double totalPrice, List<CartProduct> cartProducts) {
-        connection = new Database().getConnection();
+    public int createOrder(Connection connection, int accountId, double totalPrice, List<CartProduct> cartProducts) throws SQLException {
+        
         String query = "INSERT INTO `order` (fk_account_id, order_total) VALUES (?, ?);";
-        try {
+        
 
-            Class.forName("com.mysql.cj.jdbc.Driver");
-
-            preparedStatement = connection.prepareStatement(query);
+            preparedStatement = connection.prepareStatement(query,Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setInt(1, accountId);
             preparedStatement.setDouble(2, totalPrice);
-            preparedStatement.executeUpdate();
-
-        } catch (ClassNotFoundException | SQLException e) {
-            System.out.println("Create order catch:");
-            System.out.println(e.getMessage());
-        }
+            int affectedRows = preparedStatement.executeUpdate();
+            
+            int newOrderId = -1;
+            if (affectedRows > 0) {
+                try (ResultSet rs = preparedStatement.getGeneratedKeys()) {
+                    if (rs.next()) {
+                         newOrderId= rs.getInt(1);  // 返回自增ID
+                    }
+                }
+            }
+            
 
         // Call create order detail method.
-        createOrderDetail(cartProducts);
+        createOrderDetail(connection, newOrderId, cartProducts);
         
+        return newOrderId;
     }
 
     // Method to get order detail list of a seller.
@@ -253,10 +252,10 @@ public class OrderDao {
     }
     
     // Method to update recipient  
-    public int SaveRecipient(int orderId, String recipient_name, String address, String phone) throws SQLException  {
+    public int SaveRecipient(Connection connection, int orderId, String recipient_name, String address, String phone) throws SQLException  {
     	 String query = "INSERT into shop.order_shipping_address (order_id, recipient_name, address_detail, phone) values ( ?, ?, ?, ?)";
-    	 try (Connection connection = new Database().getConnection();
-    	         PreparedStatement pstmt = connection.prepareStatement(query)) {
+    	 
+    	   PreparedStatement pstmt = connection.prepareStatement(query) ;
            // 创建预编译语句并设置参数
     		 pstmt.setInt(1, orderId);  // 第一个问号
     		 pstmt.setString(2, recipient_name); // 第二个问号
@@ -267,6 +266,26 @@ public class OrderDao {
             
             // . 判断是否更新成功（至少有一行被影响）
             return affectedRows ;
-    	}
+    	
+    }
+    // Method to update recipient  
+    public int SaveRecipientAddress(Connection connection, int orderId, int addressId) throws SQLException  {
+    	 StringBuilder sb_query = new StringBuilder("INSERT into shop.order_shipping_address (order_id, recipient_name, address_detail, phone) " );
+    	 sb_query.append(" SELECT ?, recipient_name, ");
+    	 sb_query.append(" CONCAT_WS(' ', address, address_detail) as full_address, ");
+    	 sb_query.append(" phone");
+    	 sb_query.append(" FROM shipping_address " ); 
+    	 sb_query.append(" WHERE id = ?  ");
+    	 
+    	   PreparedStatement pstmt = connection.prepareStatement(sb_query.toString()) ;
+           // 创建预编译语句并设置参数
+    		 pstmt.setInt(1, orderId);  // 第一个问号    		
+    		 pstmt.setInt(2, addressId); // 第2个问号
+           // 执行更新，返回受影响的行数
+            int affectedRows = pstmt.executeUpdate();
+            
+            // . 判断是否更新成功（至少有一行被影响）
+            return affectedRows ;
+    	
     }
 }

@@ -153,7 +153,7 @@
 
                             <div class="row">
                                 <div class="col-md-12">
-                                    <a href="checkout.jsp" class="btn btn-primary btn-lg py-3 btn-block">
+                                    <a href="${pageContext.request.contextPath}/checkout" class="btn btn-primary btn-lg py-3 btn-block">
 
                                         去结算
 

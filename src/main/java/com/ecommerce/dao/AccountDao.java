@@ -7,7 +7,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
+
+import com.ecommerce.entity.ShippingAddress;
 
 public class AccountDao {
     Connection connection = null;
@@ -124,7 +128,7 @@ public class AccountDao {
 
 
     // Method to edit profile information.
-    public void editProfileInformation(int accountId, String firstName, String lastName, String address, String email, String phone, InputStream image) {
+    public void editProfileInformation(Connection connection, int accountId, String firstName, String lastName, String address, String email, String phone, InputStream image) {
         String query = "UPDATE account SET " +
                 "account_first_name = ?, " +
                 "account_last_name = ?, " +
@@ -134,8 +138,8 @@ public class AccountDao {
                 "account_image = ?" +
                 "WHERE account_id = ?";
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            connection = new Database().getConnection();
+            
+            
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, firstName);
             preparedStatement.setString(2, lastName);
@@ -145,7 +149,7 @@ public class AccountDao {
             preparedStatement.setBinaryStream(6, image);
             preparedStatement.setInt(7, accountId);
             preparedStatement.executeUpdate();
-        } catch (ClassNotFoundException | SQLException e) {
+        } catch ( SQLException e) {
             System.out.println("Update profile catch: " + e.getMessage());
         }
     }
@@ -173,5 +177,90 @@ public class AccountDao {
         } catch (ClassNotFoundException | SQLException e) {
             System.out.println("Update profile catch: " + e.getMessage());
         }
+    }
+    
+    public void createRecipientAddress(Connection connection, int accountId, String recipientName, String distinct, String addressDetail, String phone, String email, int isDefault, String addressLabel) throws SQLException{
+    	String query = "INSERT  into shop.shipping_address (account_id, recipient_name, address, address_detail, phone, email, is_default, address_label) values (?,?,?,?,?,?,?,?) ";
+    	PreparedStatement pstmt = connection.prepareStatement(query);
+    	pstmt.setInt(1, accountId);
+    	pstmt.setString(2, recipientName);
+    	pstmt.setString(3, distinct);
+    	pstmt.setString(4, addressDetail);
+    	pstmt.setString(5, phone);
+    	pstmt.setString(6, email);
+    	pstmt.setInt(7, isDefault);
+    	pstmt.setString(8, addressLabel);
+    	pstmt.executeUpdate();
+    }
+    
+    // Method  to remove the flag of  the current default address;
+    public void removeRecipientAddressDefault(Connection connection) throws SQLException {
+    	StringBuilder  sb_query = new StringBuilder("UPDATE shop.shipping_address set is_default = 0 where is_default=1");
+    	PreparedStatement pstmt = connection.prepareStatement(sb_query.toString());
+    	pstmt.executeUpdate();
+    }
+    
+    //  Method to set a address as default;
+    public void setRecipientAddressDefault(Connection connection, int addressId) throws SQLException {
+    	StringBuilder  sb_query = new StringBuilder("UPDATE shop.shipping_address set is_default = 1 where id= ?");
+    	PreparedStatement pstmt = connection.prepareStatement(sb_query.toString());
+    	pstmt.setInt(1, addressId);
+    	pstmt.executeUpdate();
+    }
+    
+    // Method to edit existing address;
+    public void editRecipientAddress(Connection connection, int addressId, String recipientName, String distinct, String addressDetail, String phone, String email, int isDefault, String addressLabel) throws SQLException{
+    	StringBuilder  sb_query = new StringBuilder("UPDATE  shop.shipping_address SET " );
+    	sb_query.append(" recipient_name = ?, ");
+    	sb_query.append(" address = ?, ");
+    	sb_query.append(" address_detail = ?, ");
+    	sb_query.append(" phone = ?, ");
+    	sb_query.append(" email = ?, ");
+    	sb_query.append(" is_default = ?, ");
+    	sb_query.append(" address_label = ? ");
+    	sb_query.append(" where id = ? ");
+    			
+    	PreparedStatement pstmt = connection.prepareStatement(sb_query.toString());
+    	
+    	pstmt.setString(1, recipientName);
+    	pstmt.setString(2, distinct);
+    	pstmt.setString(3, addressDetail);
+    	pstmt.setString(4, phone);
+    	pstmt.setString(5, email);
+    	pstmt.setInt(6, isDefault);
+    	pstmt.setString(7, addressLabel);
+    	pstmt.setInt(8,	addressId);
+    	pstmt.executeUpdate();
+    }
+    
+    // Method to delete a address
+    public void deleteRecipientAddress(Connection connection, int addressId) throws SQLException {
+    	StringBuilder  sb_query = new StringBuilder("DELETE from shop.shipping_address where id= ? ");
+    	PreparedStatement pstmt = connection.prepareStatement(sb_query.toString());
+    	pstmt.setInt(1, addressId);
+    	pstmt.executeUpdate();
+    }
+    
+    public List<ShippingAddress> getAddressList(Connection connection, int accountId)  throws SQLException{
+    	List<ShippingAddress> list = new ArrayList<>();
+    	String query = "select * from shop.shipping_address  where account_id = ? order by is_default desc, recipient_name asc";
+    	PreparedStatement pstmt = connection.prepareStatement(query);
+    	pstmt.setInt(1, accountId);
+    	resultSet = pstmt.executeQuery();
+    	while(resultSet.next()) {
+    		int addressId = resultSet.getInt(1);
+    		
+    		String recipientName = resultSet.getString(3);
+    		String distinct = resultSet.getString(4);
+    		String addressDetail = resultSet.getString(5);
+    		String phone = resultSet.getString(6);
+    		String email = resultSet.getString(7);
+    		int is_default = resultSet.getInt(8);
+    		String addressLabel = resultSet.getString(9);
+    		ShippingAddress address = new ShippingAddress(addressId, accountId, recipientName, distinct, addressDetail, phone, email, is_default, addressLabel);
+    		list.add(address);
+    	}
+    	return list;
+    	
     }
 }

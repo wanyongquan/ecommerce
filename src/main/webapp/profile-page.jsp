@@ -100,7 +100,7 @@
                             <div class="col-md-12">
                                 <label for="address" class="text-black">
 
-                                    收货地址 <span class="text-danger">*</span>
+                                    地址 <span class="text-danger">*</span>
 
                                 </label>
 
