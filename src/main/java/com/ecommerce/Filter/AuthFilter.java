@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.ecommerce.Exception.AppException;
 import com.ecommerce.entity.Account;
 
 /**
@@ -116,8 +117,12 @@ public class AuthFilter extends HttpFilter implements Filter {
         }
          // 已登录但无权限
         if (!rule.contains(account.getRole().toUpperCase())) {
-            resp.sendError(HttpServletResponse.SC_FORBIDDEN, "无权限访问");
-            return;
+//            resp.sendError(HttpServletResponse.SC_FORBIDDEN, "无权限访问");
+        	throw new AppException(
+        		    HttpServletResponse.SC_FORBIDDEN,
+        		    "您没有权限访问该页面"        		   
+        		);
+            
         }
         // 放行
         chain.doFilter(req, resp);

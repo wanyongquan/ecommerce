@@ -1,5 +1,6 @@
 package com.ecommerce.control;
 
+import com.ecommerce.Exception.AppException;
 import com.ecommerce.dao.AccountDao;
 import com.ecommerce.dao.ShopDao;
 import com.ecommerce.database.Database;
@@ -53,85 +54,104 @@ public class RecipientAddressesControl extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession();
+       
         
      // 设置请求编码，避免中文乱码
         request.setCharacterEncoding("UTF-8");
-        Account account = (Account) session.getAttribute("account");
-
+        
         String action = request.getParameter("action");
         if ("create".equals(action)) {
-        	int accountId = account.getId();
-            String recipientName = request.getParameter("recipientName");
-            String distinct = request.getParameter("address");
-            String addressDetail = request.getParameter("address-detail");
-            String email = request.getParameter("email");
-            String phone = request.getParameter("phone");
-            String addr_label = request.getParameter("address-label");
-            String is_default_addr = request.getParameter("isDefault");
-            
-            int is_default = 0;
-            if (is_default_addr != null && !is_default_addr.isEmpty()) { is_default = Integer.parseInt(is_default_addr);}
-
-                    
-            try (Connection connection = dbManager.getConnection();) {
-            	 accountDao.createRecipientAddress(connection, accountId, recipientName, distinct, addressDetail, phone, email, is_default, addr_label);
-    			 
-    		} catch (SQLException e) {
-    			// TODO Auto-generated catch block
-    			e.printStackTrace();
-    		}
-            catch(Exception e) {
-            	e.printStackTrace();
-            }
+        	createRecipientAddress(request);
         }
         else if ("delete".equals(action)) {
-            // 处理删除
-            int addressId = Integer.parseInt( request.getParameter("addr_id"));
-            // 调用删除逻辑
-            try (Connection connection = dbManager.getConnection();) {
-            	accountDao.deleteRecipientAddress(connection, addressId);
-            } catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+        	deleteRecipientAddress(request);
             
         } else if ("edit".equals(action)) {
-            // 处理编辑
-        	
-            int addressId = Integer.parseInt( request.getParameter("addr_id"));
-            // 编辑逻辑
-            String recipientName = request.getParameter("recipientName");
-            String distinct = request.getParameter("address");
-            String addressDetail = request.getParameter("address-detail");
-            String email = request.getParameter("email");
-            String phone = request.getParameter("phone");
-            String addr_label = request.getParameter("address-label");
-            String is_default_addr = request.getParameter("isDefault");
-            int is_default = 0;
-            if (is_default_addr != null && !is_default_addr.isEmpty()) { is_default = Integer.parseInt(is_default_addr);}
-            try (Connection connection = dbManager.getConnection();) {
-            	accountDao.editRecipientAddress(connection, addressId, recipientName, distinct, addressDetail, phone, email, is_default, addr_label);
-            } catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+        	editRecipientAddress(request);
         }
         else if ("setDefault".equals(action)) {
-        	 int addressId = Integer.parseInt( request.getParameter("addr_id"));
-        	 try (Connection connection = dbManager.getConnection();) {
-        		 dbManager.beginTransaction();
-        		 accountDao.removeRecipientAddressDefault(connection);
-        		 accountDao.setRecipientAddressDefault(connection, addressId);
-        		 dbManager.commitTransaction();
-        		 
-        	 } catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+        	setDefaultRecipientAddress(request);
         }
        
        
         response.sendRedirect(request.getContextPath() + "/recipient-addresses");
+    }
+    
+    private void createRecipientAddress(HttpServletRequest request) {
+    	HttpSession session = request.getSession();
+    	Account account = (Account) session.getAttribute("account");
+
+    	int accountId = account.getId();
+        String recipientName = request.getParameter("recipientName");
+        String distinct = request.getParameter("address");
+        String addressDetail = request.getParameter("address-detail");
+        String email = request.getParameter("email");
+        String phone = request.getParameter("phone");
+        String addr_label = request.getParameter("address-label");
+        String is_default_addr = request.getParameter("isDefault");
+        
+        int is_default = 0;
+        if (is_default_addr != null && !is_default_addr.isEmpty()) { is_default = Integer.parseInt(is_default_addr);}
+
+                
+        try (Connection connection = dbManager.getConnection();) {
+        	 accountDao.createRecipientAddress(connection, accountId, recipientName, distinct, addressDetail, phone, email, is_default, addr_label);
+		}
+        
+        catch (SQLException e) {			
+			throw new AppException(e.getMessage(), e.getErrorCode(), e);
+		}
+        catch(Exception e) {
+        	e.printStackTrace();
+        }	
+    }
+    
+    private void editRecipientAddress(HttpServletRequest request) {
+    	// 处理编辑
+    	
+        int addressId = Integer.parseInt( request.getParameter("addr_id"));
+        // 编辑逻辑
+        String recipientName = request.getParameter("recipientName");
+        String distinct = request.getParameter("address");
+        String addressDetail = request.getParameter("address-detail");
+        String email = request.getParameter("email");
+        String phone = request.getParameter("phone");
+        String addr_label = request.getParameter("address-label");
+        String is_default_addr = request.getParameter("isDefault");
+        int is_default = 0;
+        if (is_default_addr != null && !is_default_addr.isEmpty()) { is_default = Integer.parseInt(is_default_addr);}
+        
+        try (Connection connection = dbManager.getConnection();) {
+        	
+        	accountDao.editRecipientAddress(connection, addressId, recipientName, distinct, addressDetail, phone, email, is_default, addr_label);
+        	
+        } catch (SQLException e) {
+			
+			throw new AppException(e.getMessage(), e.getErrorCode(), e);
+		}
+    }
+    
+    private void deleteRecipientAddress(HttpServletRequest request) {
+    	 // 处理删除
+        int addressId = Integer.parseInt( request.getParameter("addr_id"));
+        // 调用删除逻辑
+        try (Connection connection = dbManager.getConnection();) {
+        	accountDao.deleteRecipientAddress(connection, addressId);
+        } catch (SQLException e) {
+        	throw new AppException(e.getMessage(), e.getErrorCode(), e);
+		}
+    }
+    
+    private void setDefaultRecipientAddress(HttpServletRequest request) {
+    	 int addressId = Integer.parseInt( request.getParameter("addr_id"));
+    	 try (Connection connection = dbManager.getConnection();) {
+    		 dbManager.beginTransaction();
+    		 accountDao.removeRecipientAddressDefault(connection);
+    		 accountDao.setRecipientAddressDefault(connection, addressId);
+    		 dbManager.commitTransaction();
+    		 
+    	 } catch (SQLException e) {
+			throw new AppException(e.getMessage(), e.getErrorCode(), e);
+		}
     }
 }
