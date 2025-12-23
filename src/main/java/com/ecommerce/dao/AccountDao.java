@@ -6,6 +6,7 @@ import com.ecommerce.entity.Account;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -59,7 +60,7 @@ public class AccountDao {
                 } else {
                     account.setBase64Image(getBase64Image(resultSet.getBlob(6)));
                 }
-
+                account.setBalance(resultSet.getBigDecimal("account_balance"));
                 return account;
             }
         } catch (ClassNotFoundException | SQLException | IOException e) {

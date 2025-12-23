@@ -63,20 +63,45 @@ public class ProductDao {
             preparedStatement = connection.prepareStatement(query);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                int id = resultSet.getInt(1);
-                String name = resultSet.getString(2);
-                double price = resultSet.getDouble(4);
-                String description = resultSet.getString(5);
-                Category category = categoryDao.getCategory(resultSet.getInt(6));
-                Account account = accountDao.getAccount(resultSet.getInt(7));
-                boolean isDelete = resultSet.getBoolean(8);
-                int amount = resultSet.getInt(9);
+//                int id = resultSet.getInt(1);
+//                String name = resultSet.getString(2);
+//                double price = resultSet.getDouble(4);
+//                String description = resultSet.getString(5);
+//                Category category = categoryDao.getCategory(resultSet.getInt(6));
+//                Account account = accountDao.getAccount(resultSet.getInt(7));
+//                boolean isDelete = resultSet.getBoolean(8);
+//                int amount = resultSet.getInt(9);
+//
+//                // Get base64 image to display.
+//                Blob blob = resultSet.getBlob(3);
+//                String base64Image = getBase64Image(blob);
+            	Product product = new Product();
+            	product.setId(resultSet.getInt("product_id"));
+                product.setName(resultSet.getString("product_name"));
+                product.setPrice(resultSet.getDouble("product_price"));
+                product.setDescription(resultSet.getString("product_description"));
+                product.setDeleted(resultSet.getBoolean("product_is_deleted"));
+                product.setAmount(resultSet.getInt("product_amount"));
+                
+                Blob blob = resultSet.getBlob("product_image");
+                product.setBase64Image(getBase64Image(blob));
 
-                // Get base64 image to display.
-                Blob blob = resultSet.getBlob(3);
-                String base64Image = getBase64Image(blob);
+                product.setCategory(
+                    categoryDao.getCategory(resultSet.getInt("fk_category_id"))
+                );
+                product.setAccount(
+                    accountDao.getAccount(resultSet.getInt("fk_account_id"))
+                );
+             // ====== 关键：销量字段 ======
+                try {
+                    product.setSalesAmount(resultSet.getInt("sales"));
+                } catch (SQLException ignore) {
+                    product.setSalesAmount(0);
+                }
 
-                list.add(new Product(id, name, base64Image, price, description, category, account, isDelete, amount));
+                list.add(product);
+                
+//                list.add(new Product(id, name, base64Image, price, description, category, account, isDelete, amount));
             }
         } catch (SQLException | ClassNotFoundException | IOException e) {
             System.out.println(e.getMessage());
@@ -303,8 +328,56 @@ public class ProductDao {
     }
 
     // Method to get 12 products to display on each page.
-    public List<Product> get12ProductsOfPage(int index) {
-        String query = "SELECT * FROM product WHERE product_is_deleted = false LIMIT " + ((index - 1) * 12) + ", 12";
+    public List<Product> get12ProductsOfPage(int index, String sort_method) {
+    	
+        StringBuilder sb_query = new StringBuilder( ""); 
+        sb_query.append("""
+                SELECT 
+                    p.product_id,
+                    p.product_name,
+                    p.product_image,
+                    p.product_price,
+                    p.product_description,
+                    p.fk_category_id,
+                    p.fk_account_id,
+                    p.product_is_deleted,
+                    p.product_amount,
+                    p.product_created_date,
+                    IFNULL(SUM(od.product_quantity), 0) AS sales
+                FROM product p
+                LEFT JOIN order_detail od 
+                    ON od.fk_product_id = p.product_id
+                WHERE p.product_is_deleted = false
+            """);
+
+            sb_query.append(" GROUP BY p.product_id ");
+
+            switch (sort_method) {
+            case "time_asc":
+            	sb_query.append(" ORDER BY p.product_created_date ASC ");
+                break;
+            case "time_desc":
+            	sb_query.append(" ORDER BY p.product_created_date DESC ");
+                break;
+            case "sales_asc":
+            	sb_query.append(" ORDER BY sales ASC ");
+                break;
+            case "sales_desc":
+            	sb_query.append(" ORDER BY sales DESC ");
+                break;
+            case "price_asc":
+            	sb_query.append(" ORDER BY p.product_price ASC ");
+                break;
+            case "price_desc":
+            	sb_query.append(" ORDER BY p.product_price DESC ");
+                break;
+            default:
+            	sb_query.append(" ORDER BY p.product_id DESC ");
+        }
+
+            sb_query.append(" LIMIT " + ((index - 1) * 12) + ", 12");
+
+       String query = sb_query.toString();
         return getListProductQuery(query);
     }
 

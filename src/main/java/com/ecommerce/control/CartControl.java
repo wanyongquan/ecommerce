@@ -113,8 +113,13 @@ public class CartControl extends HttpServlet {
                     totalPrice += product.getPrice() * quantity;
 
                     // Add product to list.
+                    
                     list.add(cartProduct);
-
+                    // set seller account id;
+                    if ( order.getSeller_account_id() == -1) {
+                    	order.setSeller_account_id(product.getAccount().getId());
+                    }
+                    
                     // Add list of cart products to order.
                     order.setCartProducts(list);
 

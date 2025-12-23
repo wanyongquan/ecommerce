@@ -1,5 +1,7 @@
 package com.ecommerce.entity;
 
+import java.math.BigDecimal;
+
 public class Account {
     private int id;
     private String username;
@@ -14,6 +16,7 @@ public class Account {
 
     private byte[] image;
     private String base64Image;
+    private BigDecimal balance;
 
     private String shopName;
     
@@ -130,6 +133,15 @@ public class Account {
     public void setPhone(String phone) {
         this.phone = phone;
     }
+    
+
+	public BigDecimal getBalance() {
+		return balance;
+	}
+
+	public void setBalance(BigDecimal balance) {
+		this.balance = balance;
+	}
 
 	public String getShopName() {
 		return shopName;

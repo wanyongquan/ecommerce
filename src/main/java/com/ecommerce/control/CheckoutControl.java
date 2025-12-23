@@ -1,5 +1,6 @@
 package com.ecommerce.control;
 
+import com.ecommerce.Exception.AppException;
 import com.ecommerce.dao.AccountDao;
 import com.ecommerce.dao.OrderDao;
 import com.ecommerce.database.Database;
@@ -60,36 +61,35 @@ public class CheckoutControl extends HttpServlet {
             double totalPrice = (double) session.getAttribute("total_price");
             Order order = (Order) session.getAttribute("order");
             Account account = (Account) session.getAttribute("account");
-
-            try (Connection connection = dbManager.getConnection();) {
-	            //TODO：使用事务
+            Connection connection = null;
+            try {
+            	connection = dbManager.getConnection(); 
+            
+	            //使用事务
             	dbManager.beginTransaction();
 	            // Insert information to account.
 	            int accountId = account.getId();
 	            int addressId = Integer.parseInt(request.getParameter("addr_id"));
 	            
-//	            accountDao.updateProfileInformation(accountId, recipientName, lastName, address, email, phone);
+
 	            // Insert order to database.
-	            int new_orderId =  orderDao.createOrder(connection, account.getId(), totalPrice, order.getCartProducts());
+	            int new_orderId =  orderDao.createOrder(connection, account.getId(), totalPrice, order.getCartProducts(), order.getSeller_account_id());
 	           
 	            // 记录收件人信息； 
-//	            int orderId = orderDao.getLastOrderId();
-//	            orderDao.SaveRecipient(connection, new_orderId, recipientName, address, phone);
+
 	            orderDao.SaveRecipientAddress(connection, new_orderId, addressId);
 	            dbManager.commitTransaction();
 	            session.removeAttribute("order");
 	            session.removeAttribute("total_price");
-            }
-            catch (SQLException e) {
-                // 更详细的错误处理
-                System.err.println("数据库操作失败:");
-                System.err.println("SQL状态码: " + e.getSQLState());
-                System.err.println("错误代码: " + e.getErrorCode());
-                System.err.println("错误信息: " + e.getMessage());
-    		}
-    		 catch(Exception e)
-            {
-            	 System.err.println("失败: " + e.getMessage());
+            }catch (Exception e) {
+                dbManager.rollbackTransaction();
+                throw new AppException("数据库操作异常",e); // 继续向上抛
+            }finally {
+                if (connection != null) {
+                    try {
+                        connection.close();
+                    } catch (SQLException ignored) {}
+                }
             }
             
             RequestDispatcher requestDispatcher = request.getRequestDispatcher("thankyou.jsp");

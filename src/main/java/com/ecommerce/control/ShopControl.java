@@ -11,6 +11,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -27,9 +29,23 @@ public class ShopControl extends HttpServlet {
         if (index == null) {
             index = "1";
         }
+        HttpSession session = request.getSession();
+        String sort = request.getParameter("sort");
+        if (sort != null) {
+            // 用户刚刚选择了排序
+            session.setAttribute("product_sort", sort);
+        } else {
+            // 翻页等场景
+            sort = (String) session.getAttribute("product_sort");
+        }
 
+        if (sort == null) {
+            sort = "time_desc";
+        }
+
+      
         // Get 12 products from database to display on each page.
-        List<Product> productList = productDao.get12ProductsOfPage(Integer.parseInt(index));
+        List<Product> productList = productDao.get12ProductsOfPage(Integer.parseInt(index), sort);
 
         // Get all categories from database.
         List<Category> categoryList = categoryDao.getAllCategories();
@@ -52,4 +68,6 @@ public class ShopControl extends HttpServlet {
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("shop.jsp");
         requestDispatcher.forward(request, response);
     }
+    
+    
 }

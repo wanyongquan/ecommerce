@@ -119,3 +119,7 @@ ADD COLUMN `email` VARCHAR(45) NULL AFTER `address_label`;
 ALTER TABLE `shop`.`shipping_address` 
 CHANGE COLUMN `phone` `phone` VARCHAR(11) NOT NULL COMMENT '手机号码' AFTER `address_detail`,
 CHANGE COLUMN `email` `email` VARCHAR(45) NULL DEFAULT NULL AFTER `phone`;
+
+-- 12.23 产品表增加 上架时间 
+ALTER TABLE `shop`.`product` 
+ADD COLUMN `product_created_date` VARCHAR(45) NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `product_amount`;

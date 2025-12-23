@@ -130,6 +130,7 @@
                                 <input type="text" class="form-control" id="phone" name="phone"
                                        value="${account.phone}">
                             </div>
+                             
                         </div>
 
                         <div class="form-group">
@@ -149,6 +150,24 @@
                     </div>
                 </div>
             </form>
+             <!-- 新增：店铺信息管理区域 -->
+             <c:if test="${sessionScope.account.isSeller == 0}">
+            <div class="row mb-5">
+                <div class="col-md-12">
+                    <h2 class="h3 mb-3 text-black">账户信息</h2>
+                     ${alert}
+                     <div class="col-md-6">
+                          <label for="balance" class="text-black">
+
+                              账户余额 <span class="text-danger">*</span>
+
+                          </label>
+
+                          <input type="text" readonly class="form-control" id="balance" name="balance"
+                                 value="${account.balance}">
+                      </div>
+            </div>
+            </c:if>  
             <!-- 新增：店铺信息管理区域 -->
              <c:if test="${sessionScope.account.isSeller == 1}">
             <div class="row mb-5">

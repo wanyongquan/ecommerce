@@ -10,7 +10,8 @@ public class Order {
     private double total;
     private Date date;
     private int status;
-
+    private int seller_account_id = -1;
+    
     public Order() {
     }
 
@@ -91,6 +92,15 @@ public class Order {
 
 	public void setStatus(int status) {
 		this.status = status;
+	}
+
+	
+	public int getSeller_account_id() {
+		return seller_account_id;
+	}
+
+	public void setSeller_account_id(int seller_account_id) {
+		this.seller_account_id = seller_account_id;
 	}
 
 	@Override

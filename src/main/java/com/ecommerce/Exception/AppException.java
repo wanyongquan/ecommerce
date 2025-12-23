@@ -18,9 +18,9 @@ public class AppException extends RuntimeException{
         this.userMessage = userMessage;
         this.errorCode = errorCode;
     }
-    public AppException(int status, String userMessage, Throwable cause) {
+    public AppException(String userMessage, Throwable cause) {
         super(cause);
-		this.status = status;
+		this.status = 0;
        
         this.userMessage = userMessage;
      

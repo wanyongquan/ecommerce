@@ -43,12 +43,14 @@
                                                 id="dropdownMenuReference" data-toggle="dropdown">排序方式
                                         </button>
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuReference">
-                                            <a class="dropdown-item" href="#">按相关性</a>
-                                            <a class="dropdown-item" href="#">按名称 A-Z</a>
-                                            <a class="dropdown-item" href="#">按名称 Z-A</a>
-                                            <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="#">按价格 从低到高</a>
-                                            <a class="dropdown-item" href="#">按价格 从高到低</a>
+											<a class="dropdown-item" href="shop?sort=time_desc&index=1">按上架时间 降序</a>
+											<a class="dropdown-item" href="shop?sort=time_asc&index=1">按上架时间 升序</a>
+											<div class="dropdown-divider"></div>
+											<a class="dropdown-item" href="shop?sort=sales_desc&index=1">按销量 高到低</a>
+											<a class="dropdown-item" href="shop?sort=sales_asc&index=1">按销量 低到高</a>
+											<div class="dropdown-divider"></div>
+											<a class="dropdown-item" href="shop?sort=price_asc&index=1">按价格 从低到高</a>
+											<a class="dropdown-item" href="shop?sort=price_desc&index=1">按价格 从高到低</a>
 
                                         </div>
                                     </div>
@@ -59,7 +61,7 @@
                     <div class="row mb-5">
                         <c:forEach items="${product_list}" var="o">
                             <div class="col-sm-6 col-lg-4 mb-4" data-aos="fade-up">
-                                <div class="block-4 text-center border" style="height: 100%">
+                                <div class="block-4 text-center border d-flex flex-column" style="height: 100%">
                                     <figure class="block-4-image">
                                         <a href="product-detail?id=${o.id}">
 
@@ -68,12 +70,13 @@
 
                                         </a>
                                     </figure>
-                                    <div class="block-4-text p-4">
+                                    <div class="block-4-text p-4  mt-auto">
                                         <h3><a href="product-detail?id=${o.id}">${o.name}</a></h3>
 
                                         <p class="mb-0">¥${o.price}</p>
-
+ 										<p class="mb-0">已售：${o.salesAmount}</p>
                                     </div>
+                                    
                                 </div>
                             </div>
                         </c:forEach>

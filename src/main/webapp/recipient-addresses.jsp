@@ -333,7 +333,7 @@ $(document).ready(function() {
     	        
     	        // 添加模式：重置表单
     	        $('#addressForm')[0].reset();
-    	        $('#formAction').val('add');
+    	        $('#formAction').val('create');
     	        $('#formAddrId').val('');
     	        $('#addAddressModalLabel').text('创建收货地址');
     	        $('#saveAddressBtn').text('保存收货地址');

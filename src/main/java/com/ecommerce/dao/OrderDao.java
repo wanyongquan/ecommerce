@@ -1,5 +1,6 @@
 package com.ecommerce.dao;
 
+import com.ecommerce.Exception.AppException;
 import com.ecommerce.database.Database;
 import com.ecommerce.entity.Account;
 import com.ecommerce.entity.CartProduct;
@@ -74,26 +75,28 @@ public class OrderDao {
     }
 
     // Method to insert order information to database.
-    public int createOrder(Connection connection, int accountId, double totalPrice, List<CartProduct> cartProducts) throws SQLException {
+    public int createOrder(Connection connection, int buyer_accountId, double totalPrice, List<CartProduct> cartProducts, int seller_account_id) throws SQLException {
         
         String query = "INSERT INTO `order` (fk_account_id, order_total) VALUES (?, ?);";
         
 
-            preparedStatement = connection.prepareStatement(query,Statement.RETURN_GENERATED_KEYS);
-            preparedStatement.setInt(1, accountId);
-            preparedStatement.setDouble(2, totalPrice);
-            int affectedRows = preparedStatement.executeUpdate();
-            
-            int newOrderId = -1;
-            if (affectedRows > 0) {
-                try (ResultSet rs = preparedStatement.getGeneratedKeys()) {
-                    if (rs.next()) {
-                         newOrderId= rs.getInt(1);  // 返回自增ID
-                    }
+        preparedStatement = connection.prepareStatement(query,Statement.RETURN_GENERATED_KEYS);
+        preparedStatement.setInt(1, buyer_accountId);
+        preparedStatement.setDouble(2, totalPrice);
+        int affectedRows = preparedStatement.executeUpdate();
+        
+        int newOrderId = -1;
+        if (affectedRows > 0) {
+            try (ResultSet rs = preparedStatement.getGeneratedKeys()) {
+                if (rs.next()) {
+                     newOrderId= rs.getInt(1);  // 返回自增ID
                 }
             }
+        }
+        
+        //TODO: 从买家账户扣款； 增加收款到卖家账户；
+        handleOrderPayment(connection, newOrderId, buyer_accountId, seller_account_id, totalPrice);
             
-
         // Call create order detail method.
         createOrderDetail(connection, newOrderId, cartProducts);
         
@@ -287,5 +290,31 @@ public class OrderDao {
             // . 判断是否更新成功（至少有一行被影响）
             return affectedRows ;
     	
+    }
+    
+    public void handleOrderPayment(Connection connection, int orderId, int buyer_account_id, int seller_account_id, double order_price) throws SQLException {
+    	// 检查买家余额是否足够
+        String checkBalanceQuery = "SELECT account_balance FROM ACCOUNT WHERE account_id = ?";
+        try (PreparedStatement checkStmt = connection.prepareStatement(checkBalanceQuery)) {
+            checkStmt.setInt(1, buyer_account_id);
+            ResultSet rs = checkStmt.executeQuery();
+            if (rs.next() && rs.getDouble("account_balance") < order_price) {
+                throw new AppException("买家余额不足");
+            }
+        }
+        // 扣款
+    	String deduct_query = "UPDATE ACCOUNT SET account_balance = account_balance - ?  where account_id = ? ;" ;
+    	
+    	 PreparedStatement deduct_pstmt = connection.prepareStatement(deduct_query) ;
+    	 deduct_pstmt.setDouble(1, order_price);
+    	 deduct_pstmt.setInt(2, buyer_account_id);
+    	 deduct_pstmt.executeUpdate();
+    	 // 加款
+    	 String add_query = "UPDATE ACCOUNT SET account_balance = account_balance + ? where account_id = ?";
+    	 PreparedStatement add_pstmt = connection.prepareStatement(add_query) ;
+    	 add_pstmt.setDouble(1, order_price);
+    	 add_pstmt.setInt(2, seller_account_id);
+    	 add_pstmt.executeUpdate();
+    	 
     }
 }

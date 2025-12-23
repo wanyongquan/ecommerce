@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Priority;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -23,7 +24,8 @@ import com.ecommerce.entity.Account;
 /**
  * Servlet Filter implementation class AuthFilter
  */
-@WebFilter("/*")
+//@WebFilter("/*")
+
 public class AuthFilter extends HttpFilter implements Filter {
 	static String USER = "USER";
 	static String SELLER = "SELLER";
@@ -46,7 +48,7 @@ public class AuthFilter extends HttpFilter implements Filter {
         AUTH_RULES.put("/checkout", Set.of(AuthFilter.USER));
         AUTH_RULES.put("/cart", Set.of(AuthFilter.USER));
        
-        AUTH_RULES.put("/recipient-addresses", Set.of(AuthFilter.USER));
+
         
         
         // 商家管理页面
@@ -56,6 +58,7 @@ public class AuthFilter extends HttpFilter implements Filter {
         
         // 多角色共用页面
         AUTH_RULES.put("/profile-page",  Set.of(AuthFilter.USER, AuthFilter.SELLER));
+        AUTH_RULES.put("/recipient-addresses", Set.of(AuthFilter.USER, AuthFilter.SELLER));
     }
     
   

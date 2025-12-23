@@ -19,7 +19,7 @@ public class Product {
 
     private ArrayList<ColorStock> colorStocks;
 
-    
+    private int salesAmount;
 
     public Product() {
     }
@@ -129,6 +129,15 @@ public class Product {
 		this.colorStocks = colorStocks;
 	}
 
+	
+
+	public int getSalesAmount() {
+		return salesAmount;
+	}
+
+	public void setSalesAmount(int salesAmount) {
+		this.salesAmount = salesAmount;
+	}
 
 	@Override
     public String toString() {

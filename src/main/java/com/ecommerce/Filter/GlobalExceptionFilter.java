@@ -1,6 +1,9 @@
 package com.ecommerce.Filter;
 
 import java.io.IOException;
+import java.sql.SQLException;
+
+import javax.annotation.Priority;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -17,7 +20,8 @@ import com.ecommerce.Exception.AppException;
 /**
  * Servlet Filter implementation class GlobalExceptionFilter
  */
-@WebFilter("/*")
+//@WebFilter("/*")
+//@Priority(1000) 
 public class GlobalExceptionFilter extends HttpFilter implements Filter {
        
     /**
@@ -56,9 +60,9 @@ public class GlobalExceptionFilter extends HttpFilter implements Filter {
             HttpServletResponse resp = (HttpServletResponse) response;
 
          // 设置友好的用户消息
-            String userMessage = getFriendlyMessage(ex);
+            String userMessage = getFriendlyMessage(req, ex);
             req.setAttribute("errorMessage", userMessage);
-            req.setAttribute("errorCode", ex.getErrorCode());
+           
             req.setAttribute("errorType", ex.getErrorCode());
             
             req.getRequestDispatcher("error.jsp").forward(req, resp);
@@ -86,23 +90,28 @@ public class GlobalExceptionFilter extends HttpFilter implements Filter {
 	}
 
 	
-    private String getFriendlyMessage(Exception e) {
-        if (e instanceof AppException) {
+    private String getFriendlyMessage(HttpServletRequest req, Exception e) {
+        if (e.getCause() != null) {
+	        // 根据不同异常类型返回不同的友好消息
+	        if (e.getCause() instanceof javax.servlet.ServletException) {
+	            return "服务器处理请求时出错，请稍后再试。";
+	        } else if (e.getCause() instanceof java.sql.SQLException) {
+	        	 req.setAttribute("errorCode", ((SQLException)e.getCause()).getErrorCode());
+	            return "数据库操作失败，请检查数据或联系管理员。";
+	        } else if (e.getCause() instanceof java.lang.NullPointerException) {
+	            return "系统内部错误，缺少必要的数据。";
+	        } else if (e.getCause() instanceof java.lang.NumberFormatException) {
+	            return "数据格式不正确，请检查输入。";
+	        } else {
+	        	return "系统出现未知错误，请稍后再试。";
+	        }
+        } else if (e instanceof AppException) {
             return ((AppException) e).getUserMessage();
         }
-        
-        // 根据不同异常类型返回不同的友好消息
-        if (e instanceof javax.servlet.ServletException) {
-            return "服务器处理请求时出错，请稍后再试。";
-        } else if (e instanceof java.sql.SQLException) {
-            return "数据库操作失败，请检查数据或联系管理员。";
-        } else if (e instanceof java.lang.NullPointerException) {
-            return "系统内部错误，缺少必要的数据。";
-        } else if (e instanceof java.lang.NumberFormatException) {
-            return "数据格式不正确，请检查输入。";
-        } else {
+         else {
             return "系统出现未知错误，请稍后再试。";
         }
+        
     }
     
 }
