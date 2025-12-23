@@ -38,7 +38,7 @@ public class ProductManagementControl extends HttpServlet {
         // Set attribute active status for product management tab in header.
         request.setAttribute("product_management_active", "active");
         // Get request dispatcher and render to product-management page.
-        RequestDispatcher requestDispatcher = request.getRequestDispatcher("product-management.jsp");
+        RequestDispatcher requestDispatcher = request.getRequestDispatcher("/WEB-INF/product-management.jsp");
         requestDispatcher.forward(request, response);
     }
 }

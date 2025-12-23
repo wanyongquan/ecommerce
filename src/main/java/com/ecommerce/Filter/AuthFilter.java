@@ -52,6 +52,7 @@ public class AuthFilter extends HttpFilter implements Filter {
         
         
         // 商家管理页面
+        AUTH_RULES.put("/seller_home", Set.of(AuthFilter.SELLER));
         AUTH_RULES.put("/order-management", Set.of(AuthFilter.SELLER));
         AUTH_RULES.put("/product-management", Set.of(AuthFilter.SELLER));
         AUTH_RULES.put("/shipping-order-detail", Set.of(AuthFilter.SELLER));
@@ -108,7 +109,7 @@ public class AuthFilter extends HttpFilter implements Filter {
             chain.doFilter(req, resp);
             return;
         }
-        
+        System.out.println("当前访问的路径：" + uri); 
         HttpSession session = req.getSession(false);
         Account account = (session == null)
                 ? null
@@ -147,8 +148,7 @@ public class AuthFilter extends HttpFilter implements Filter {
                 || uri.startsWith("/css/")
                 || uri.startsWith("/js/")
                 || uri.startsWith("/images/")
-                || uri.equals("/test/index.jsp")
-                || uri.equals("/test/index_seller.jsp");
+                || uri.equals("/test/index.jsp");
     }
     /** 根据角色配置跳转登录页 */
     private void redirectToLogin(HttpServletRequest request,
@@ -168,7 +168,8 @@ public class AuthFilter extends HttpFilter implements Filter {
     	// 取第一个角色
         String role = rule.iterator().next();
         String loginPage = ROLE_LOGIN_PAGE.get(role);
-
+        
+        System.out.println("当前访问的路径 要求先登录 " + loginPage); 
         if(loginPage == null) {
             loginPage = "/login.jsp"; // 默认兜底
         }

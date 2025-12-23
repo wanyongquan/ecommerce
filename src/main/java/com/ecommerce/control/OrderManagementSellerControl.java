@@ -28,7 +28,7 @@ public class OrderManagementSellerControl extends HttpServlet {
         // Set attribute active for order management tab.
         request.setAttribute("order_history_active", "active");
         // Get request dispatcher and render to order-management page.
-        RequestDispatcher requestDispatcher = request.getRequestDispatcher("order-management-seller.jsp");
+        RequestDispatcher requestDispatcher = request.getRequestDispatcher("/WEB-INF/order-management-seller.jsp");
         requestDispatcher.forward(request, response);
     }
 }

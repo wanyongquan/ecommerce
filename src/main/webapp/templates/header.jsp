@@ -64,7 +64,7 @@
 
                              <!-- 新增的商家中心菜单项 -->
                             <li>
-                                <a href="/test/index_seller.jsp" class="site-merchant-center">
+                                <a href="/test/seller_home" class="site-merchant-center">
                                     <span>商家中心</span>
                                 </a>
                             </li>

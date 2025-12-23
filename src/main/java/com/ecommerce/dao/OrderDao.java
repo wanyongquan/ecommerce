@@ -317,4 +317,15 @@ public class OrderDao {
     	 add_pstmt.executeUpdate();
     	 
     }
+    // 返回指定商家的全部订单
+    public int getAmountOfOrder(Connection connection, int account_id) throws SQLException {
+    	String query = "select count(*) from shop.order where seller_account_id = ? ";
+    	PreparedStatement pstmt = connection.prepareStatement(query);
+    	pstmt.setInt(1, account_id);
+    	resultSet = pstmt.executeQuery();
+    	while (resultSet.next()) {
+    		return resultSet.getInt(1);
+    	}
+    	return 0;
+    }
 }

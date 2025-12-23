@@ -17,6 +17,8 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 
+/* deprecated */
+
 @WebServlet(name = "OrderManagementControl", value = "/order-management")
 public class OrderManagementControl extends HttpServlet {
     // Call DAO class to access with database.

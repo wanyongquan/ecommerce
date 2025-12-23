@@ -439,6 +439,16 @@ public class ProductDao {
             e.printStackTrace();
         }
     }
-    /************  12.17 ************/
-
+   
+    //  返回指定商家的在售商品总数
+    public int getAmountOfProduct(Connection connection, int account_id) throws SQLException {
+    	String query = "select count(*) from product where fk_account_id = ? and product_is_deleted = false ";
+    	PreparedStatement pstmt = connection.prepareStatement(query);
+    	pstmt.setInt(1, account_id);
+    	resultSet = pstmt.executeQuery();
+    	while (resultSet.next()) {
+    		return resultSet.getInt(1);
+    	}
+    	return 0;
+    }
 }
