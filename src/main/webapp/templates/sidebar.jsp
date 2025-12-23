@@ -13,7 +13,7 @@
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu">
                 <li class="nav-item">
-                    <a href="seller_home" class="nav-link active">
+                    <a href="seller_home" class="nav-link ${dashboard_active}">
                         <i class="nav-icon fas fa-tachometer-alt"></i>
                         <p>仪表盘</p>
                     </a>
@@ -43,8 +43,8 @@
                         <p>全部订单管理</p>
                     </a>
                 </li>
-                 <li class="nav-item">
-                      <a href="profile-page" class="nav-link">
+                 <li class="nav-item ${income_order_management_active}">
+                      <a href="incomeorder-management" class="nav-link">
                           <i class="nav-icon fas fa-truck"></i>
                           <p>待发货订单</p>
                       </a>

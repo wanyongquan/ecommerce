@@ -148,8 +148,8 @@ public class OrderDao {
                 double orderTotal = resultSet.getDouble(3);
                 Date orderDate = resultSet.getDate(4);
                 int status = resultSet.getInt(5);
-
-                return new Order(orderId, orderTotal, orderDate, status);
+                int seller_id = resultSet.getInt(6);
+                return new Order(orderId, orderTotal, orderDate, seller_id, status);
 
             }
         } catch (ClassNotFoundException | SQLException e) {
@@ -175,8 +175,9 @@ public class OrderDao {
                 double orderTotal = resultSet.getDouble(3);
                 Date orderDate = resultSet.getDate(4);
                 int status = resultSet.getInt(5);
+                int seller_id = resultSet.getInt(6);
 
-                list.add(new Order(orderId, orderTotal, orderDate, status));
+                list.add(new Order(orderId, orderTotal, orderDate, seller_id, status));
             }
         } catch (ClassNotFoundException | SQLException e) {
             System.out.println("Order history catch:");
@@ -327,5 +328,57 @@ public class OrderDao {
     		return resultSet.getInt(1);
     	}
     	return 0;
+    }
+    
+    public enum OrderStatus {
+        PENDING(0),   // 待发货
+        SHIPPED(1),   // 已发货
+        FINISHED(2);  // 已完成
+
+        private final int value;
+
+        OrderStatus(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
+    }
+    // 返回 商家的待发货的订单；
+    public List<Order> getIncomeOrderListOfSeller(Connection  connection, int seller_accountId) throws SQLException{
+    	return getOrderListOfSeller(connection, seller_accountId, OrderStatus.PENDING);
+    }
+ 
+    // 返回商家的全部订单；
+    public List<Order> getFullOrderListOfSeller(Connection  connection, int seller_accountId) throws SQLException{
+    	return getOrderListOfSeller(connection, seller_accountId, null);    
+    }
+    
+    // Method to get order history of a seller.
+    public List<Order> getOrderListOfSeller(Connection  connection, int seller_accountId, OrderStatus status) throws SQLException {
+        List<Order> list = new ArrayList<>();
+        String query = "SELECT * FROM `order` WHERE seller_account_id = ? " ;
+        if (status != null) {
+        	query += " AND order_status = ?";
+        }
+                
+        preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setInt(1, seller_accountId);
+        if (status != null) {
+        	preparedStatement.setInt(2, status.getValue());
+        }
+        resultSet = preparedStatement.executeQuery();
+        while (resultSet.next()) {
+            int orderId = resultSet.getInt(1);
+            double orderTotal = resultSet.getDouble(3);
+            Date orderDate = resultSet.getDate(4);
+            int order_status = resultSet.getInt(5);
+            int seller_id = resultSet.getInt(6);
+
+            list.add(new Order(orderId, orderTotal, orderDate, seller_id, order_status));
+        }
+   
+        return list;
     }
 }

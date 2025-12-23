@@ -109,7 +109,7 @@ public class AuthFilter extends HttpFilter implements Filter {
             chain.doFilter(req, resp);
             return;
         }
-        System.out.println("当前访问的路径：" + uri); 
+        System.out.print("\n当前访问的路径：" + uri); 
         HttpSession session = req.getSession(false);
         Account account = (session == null)
                 ? null
@@ -169,7 +169,7 @@ public class AuthFilter extends HttpFilter implements Filter {
         String role = rule.iterator().next();
         String loginPage = ROLE_LOGIN_PAGE.get(role);
         
-        System.out.println("当前访问的路径 要求先登录 " + loginPage); 
+        System.out.println(" 要求先登录 " + loginPage); 
         if(loginPage == null) {
             loginPage = "/login.jsp"; // 默认兜底
         }

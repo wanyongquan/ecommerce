@@ -14,27 +14,27 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-@WebServlet(name = "OrderManagementSellerControl", value = "/order-management-seller")
-public class OrderManagementSellerControl extends HttpServlet {
+@WebServlet(name = "IncomeOrderManagementSellerControl", value = "/incomeorder-management")
+public class IncomeOrderManagementSellerControl extends HttpServlet {
     // Call DAO class to access with database.
 	// Oder management DAO for seller; 
     OrderDao orderDao = new OrderDao();
     Database dbManager = new Database();
+    
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Get account from session.
         HttpSession session = request.getSession();
         Account account = (Account) session.getAttribute("account");
-        // Get order history of account from database.
         
         Connection connection = null;
         try {
         	
         	connection = dbManager.getConnection();
-        	List<Order> orderList = orderDao.getFullOrderListOfSeller(connection, account.getId());
+        	List<Order> orderList = orderDao.getIncomeOrderListOfSeller(connection, account.getId());
         	request.setAttribute("order_list", orderList);
             // Set attribute active for order management tab.
-            request.setAttribute("order_management_active", "active");
+            request.setAttribute("income_order_management_active", "active");
         }
         catch (Exception e) {
             
@@ -46,7 +46,6 @@ public class OrderManagementSellerControl extends HttpServlet {
                 } catch (SQLException ignored) {}
             }
         }
-        
         // Get request dispatcher and render to order-management page.
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("/WEB-INF/order-management-seller.jsp");
         requestDispatcher.forward(request, response);

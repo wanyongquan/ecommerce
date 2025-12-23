@@ -45,7 +45,8 @@ public class HomeSellerControl extends HttpServlet {
 	    	
 	    	request.setAttribute("product_amount", product_amount);
 	    	request.setAttribute("order_amount", order_amount);
-	    	 
+	    	request.setAttribute("dashboard_active", "active");
+	       
 	    	 
 	    }catch (Exception e) {
 	        dbManager.rollbackTransaction();
@@ -70,7 +71,7 @@ public class HomeSellerControl extends HttpServlet {
         // Set attribute active class for home in header.
         request.setAttribute("home_active", "active");
         // Get request dispatcher and render to index page.
-        RequestDispatcher requestDispatcher = request.getRequestDispatcher("index_seller.jsp");
+        RequestDispatcher requestDispatcher = request.getRequestDispatcher("/WEB-INF/index_seller.jsp");
         requestDispatcher.forward(request, response);
     }
 }

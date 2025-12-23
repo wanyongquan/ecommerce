@@ -16,16 +16,18 @@ public class Order {
     }
 
     // Constructor to get order information of customer.
-    public Order(int id, double total, Date date) {
+    public Order(int id, double total, Date date, int seller_id) {
         this.id = id;
         this.total = total;
         this.date = date;
+        this.seller_account_id = seller_id;
     }
     // Constructor to get order information of customer.
-    public Order(int id, double total, Date date, int status) {
+    public Order(int id, double total, Date date, int seller_id, int status) {
         this.id = id;
         this.total = total;
         this.date = date;
+        this.seller_account_id = seller_id;
         this.status = status;
     }
 

@@ -17,23 +17,9 @@
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
-    <!-- Navbar -->
-    <nav class="main-header navbar navbar-expand navbar-white navbar-light">
-        <!-- 左侧导航 -->
-        <ul class="navbar-nav">
-            <li class="nav-item">
-                <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
-            </li>
-        </ul>
-        <!-- 右侧用户信息 -->
-        <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-                <a class="nav-link" href="#">欢迎, <c:out value="${sessionScope.account.firstName}"/><c:out value="${sessionScope.account.lastName}" /></a>
-            </li>
-        </ul>
-    </nav>
-    <!-- /.navbar -->
-  <%--   <jsp:include page="templates/header.jsp"/> --%>
+    <!-- 顶部 navbar -->
+    <jsp:include page="/templates/navbar.jsp"/>
+  	<%--   <jsp:include page="templates/header.jsp"/> --%>
 	<!-- 左侧 Sidebar -->
    <jsp:include page="/templates/sidebar.jsp"/>
 

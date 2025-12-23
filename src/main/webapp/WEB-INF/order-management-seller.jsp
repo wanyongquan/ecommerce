@@ -8,22 +8,8 @@
 
 <body class="hold-transition sidebar-mini">
 	<div class="wrapper">
-	    <!-- Navbar -->
-	    <nav class="main-header navbar navbar-expand navbar-white navbar-light">
-	        <!-- 左侧导航 -->
-	        <ul class="navbar-nav">
-	            <li class="nav-item">
-	                <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
-	            </li>
-	        </ul>
-	        <!-- 右侧用户信息 -->
-	        <ul class="navbar-nav ml-auto">
-	            <li class="nav-item">
-	                <a class="nav-link" href="#">欢迎, <c:out value="${sessionScope.account.firstName}"/><c:out value="${sessionScope.account.lastName}" /></a>
-	            </li>
-	        </ul>
-	    </nav>
-	    <!-- /.navbar -->
+	    <!-- 顶部 navbar -->
+    	<jsp:include page="/templates/navbar.jsp"/>
 	    
     <!-- 左侧 Sidebar -->
    	<jsp:include page="../templates/sidebar.jsp"/>
@@ -42,7 +28,7 @@
 	                    <li class="breadcrumb-item">
 	                        <a href="${pageContext.request.contextPath}/">首页</a>
 	                    </li>
-	                    <li class="breadcrumb-item active">个人中心</li>
+	                    <li class="breadcrumb-item active">订单管理</li>
 	                </ol>
 	            </div>
 	        </div>
