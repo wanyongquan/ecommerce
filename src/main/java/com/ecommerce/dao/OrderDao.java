@@ -13,7 +13,9 @@ import com.ecommerce.entity.TopNProductSales;
 import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class OrderDao {
     Connection connection = null;
@@ -412,4 +414,27 @@ public class OrderDao {
     	return new BigDecimal(0);
     }
     
+    public Map<String, BigDecimal>  getLastNSalesAmount(Connection connection, int account_id) throws SQLException{
+    	Map<String, BigDecimal>  list = new HashMap<String, BigDecimal> ();
+    	String query = "SELECT "
+                + "    DATE(o.order_date_create) AS order_date, "
+                + "    sum(order_total) as total_amount "
+                + " FROM `order` o "
+                + " WHERE "
+                + "    o.seller_account_id = ? "
+                + "    AND o.order_status = 2 "
+                + "    AND o.order_date_create >= DATE_SUB(CURDATE(), INTERVAL 6 DAY) "
+                + "GROUP BY DATE(o.order_date_create) "
+                + "ORDER BY order_date; ";
+    	PreparedStatement pstmt = connection.prepareStatement(query);
+    	pstmt.setInt(1, account_id);
+    	resultSet = pstmt.executeQuery();
+    	while (resultSet.next()) {
+    		String date = resultSet.getString(1);
+    		BigDecimal amount = resultSet.getBigDecimal(2);
+    		list.put(date, amount);
+    	}
+    	return list;
+    	
+    }
 }

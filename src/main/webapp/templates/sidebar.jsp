@@ -52,7 +52,7 @@
                 <li class="nav-item">
                       <a href="order-management" class="nav-link">
                           <i class="nav-icon fas fa-chart-line"></i>
-                          <p>商品销量排行</p>
+                         <!--  <p>商品销量排行</p> -->
                       </a>
                 </li>
             </ul>

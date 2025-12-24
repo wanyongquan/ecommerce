@@ -123,7 +123,7 @@
 			                <h3 class="card-title">近 7 日累计销售额</h3>
 			                <div class="card-tools">
 			                    <a href="sales-statistics" class="btn btn-sm btn-primary">
-			                        查看详细
+			                       <!--  查看详细 -->
 			                    </a>
 			                </div>
 			            </div>
@@ -164,10 +164,10 @@
     const salesChart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: ${last7DaysLabels},   // 例如 ["06-01","06-02",...]
+            labels: ${xAxisData},   // 例如 ["06-01","06-02",...]
             datasets: [{
                 label: '销售额（元）',
-                data: ${last7DaysSales}, // 例如 [1200, 900, 1500, ...]
+                data: ${seriesData}, // 例如 [1200, 900, 1500, ...]
                 borderColor: '#007bff',
                 fill: false,
                 tension: 0.1

@@ -122,7 +122,7 @@ CHANGE COLUMN `email` `email` VARCHAR(45) NULL DEFAULT NULL AFTER `phone`;
 
 -- 12.23 产品表增加 上架时间 
 ALTER TABLE `shop`.`product` 
-ADD COLUMN `product_created_date` VARCHAR(45) NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `product_amount`;
+ADD COLUMN `product_created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `product_amount`;
 
 
 -- 订单表增加卖家id
@@ -136,3 +136,7 @@ ADD CONSTRAINT `fk_seller_id`
   REFERENCES `shop`.`account` (`account_id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
+
+  
+  ALTER TABLE `shop`.`order` 
+CHANGE COLUMN `order_total` `order_total` DECIMAL(10,2) NULL DEFAULT NULL ;
