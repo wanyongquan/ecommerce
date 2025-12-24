@@ -40,7 +40,7 @@ public class orderDetailControl extends HttpServlet {
         request.setAttribute("recipientInfo", recipientInfo);
         request.setAttribute("order", order);
         // Get request dispatcher and render to order-detail page.
-        RequestDispatcher requestDispatcher = request.getRequestDispatcher("order-detail.jsp");
+        RequestDispatcher requestDispatcher = request.getRequestDispatcher("/WEB-INF/order-detail.jsp");
         requestDispatcher.forward(request, response);
     }
 }

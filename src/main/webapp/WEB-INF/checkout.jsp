@@ -4,10 +4,10 @@
 
 <!DOCTYPE html>
 <html lang="zh-CN">
-<jsp:include page="templates/head.jsp"/>
+<jsp:include page="/templates/head.jsp"/>
 <body>
 <div class="site-wrap">
-    <jsp:include page="templates/header.jsp"/>
+     <jsp:include page="/templates/header.jsp"/>
 
     <div class="bg-light py-3">
         <div class="container">
@@ -158,9 +158,10 @@
         </div>
     </div>
 
-    <jsp:include page="templates/footer.jsp"/>
-</div>
+    <%--     <jsp:include page="../templates/footer.jsp"/> --%>
+</div><!-- /.wrapper -->
 
-<jsp:include page="templates/scripts.jsp"/>
+<jsp:include page="../templates/scripts.jsp"/>
+<style>
 </body>
 </html>

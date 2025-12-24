@@ -35,7 +35,7 @@ public class EditProductControl extends HttpServlet {
 
         request.setAttribute("product", product);
         request.setAttribute("category_list", categoryList);
-        RequestDispatcher requestDispatcher = request.getRequestDispatcher("edit-product.jsp");
+        RequestDispatcher requestDispatcher = request.getRequestDispatcher("/WEB-INF/edit-product.jsp");
         requestDispatcher.forward(request, response);
     }
 

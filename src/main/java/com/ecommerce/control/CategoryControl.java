@@ -29,7 +29,7 @@ public class CategoryControl extends HttpServlet {
 
         request.setAttribute("product_list", productList);
         request.setAttribute("category_list", categoryList);
-        RequestDispatcher requestDispatcher = request.getRequestDispatcher("shop.jsp");
+        RequestDispatcher requestDispatcher = request.getRequestDispatcher("/WEB-INF/shop.jsp");
         requestDispatcher.forward(request, response);
     }
 

@@ -31,7 +31,7 @@ public class ShopManagementControl  extends HttpServlet{
         if (shopName == null || shopName.trim().isEmpty()) {
             request.setAttribute("shop_update_msg", 
                 "<div class='alert alert-danger'>店铺名称不能为空！</div>");
-            request.getRequestDispatcher("profile-page.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/profile-page.jsp").forward(request, response);
             return;
         }
         
@@ -61,7 +61,7 @@ public class ShopManagementControl  extends HttpServlet{
                         "                        </p>\n" +
                         "                    </div>";
                 request.setAttribute("alert", alert);
-                request.getRequestDispatcher("profile-page.jsp").forward(request, response);
+                request.getRequestDispatcher("/WEB-INF/profile-page.jsp").forward(request, response);
             }else if ( existShop.getAccountId() != account.getId()) {
             	// 存在，属于其他用户，不可用；
 	                String alert = "<div class='alert alert-danger'>"
@@ -69,7 +69,7 @@ public class ShopManagementControl  extends HttpServlet{
 	                        + "</div>";
 	           request.setAttribute("shop_update_msg", alert);
 	           
-	           request.getRequestDispatcher("profile-page.jsp").forward(request, response);
+	           request.getRequestDispatcher("/WEB-INF/profile-page.jsp").forward(request, response);
 	           
             }
 		} catch (SQLException e) {

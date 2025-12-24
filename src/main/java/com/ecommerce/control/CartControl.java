@@ -57,7 +57,7 @@ public class CartControl extends HttpServlet {
             double totalPrice = (double) session.getAttribute("total_price");
             int productId = Integer.parseInt(request.getParameter("remove-product-id"));
             removeCartProduct(productId, order, totalPrice, color);
-            response.sendRedirect("cart.jsp");
+            response.sendRedirect("/WEB-INF/cart.jsp");
             return;
         }
 

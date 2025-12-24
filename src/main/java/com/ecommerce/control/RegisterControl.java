@@ -37,7 +37,7 @@ public class RegisterControl extends HttpServlet {
                     "                        </p>\n" +
                     "                    </div>";
             request.setAttribute("alert", alert);
-            request.getRequestDispatcher("register.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/register.jsp").forward(request, response);
         }
         // Check username is existed or not from database.
         else if (accountDao.checkUsernameExists(username)) {
@@ -47,7 +47,7 @@ public class RegisterControl extends HttpServlet {
                     "                        </p>\n" +
                     "                    </div>";
             request.setAttribute("alert", alert);
-            request.getRequestDispatcher("register.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/register.jsp").forward(request, response);
         }
         // Insert username, password to database and create account.
         else {

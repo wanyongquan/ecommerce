@@ -52,7 +52,7 @@ public class ProductDetail extends HttpServlet {
         request.setAttribute("product_list", productList);
 
         request.setAttribute("product_color_list", colorList);
-        RequestDispatcher requestDispatcher = request.getRequestDispatcher("product-detail.jsp");
+        RequestDispatcher requestDispatcher = request.getRequestDispatcher("/WEB-INF/product-detail.jsp");
         requestDispatcher.forward(request, response);
     }
 }

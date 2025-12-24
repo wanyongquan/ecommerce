@@ -48,7 +48,7 @@ public class RecipientAddressesControl extends HttpServlet {
          {
          	 System.err.println("失败: " + e.getMessage());
          }
-    	RequestDispatcher requestDispatcher = request.getRequestDispatcher("/recipient-addresses.jsp");
+    	RequestDispatcher requestDispatcher = request.getRequestDispatcher("/WEB-INF/recipient-addresses.jsp");
         requestDispatcher.forward(request, response);
     }
 

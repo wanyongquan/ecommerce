@@ -65,7 +65,7 @@ public class ShopControl extends HttpServlet {
         request.setAttribute("total_pages", totalPages);
         request.setAttribute("shop_active", active);
         request.setAttribute("page_active", index);
-        RequestDispatcher requestDispatcher = request.getRequestDispatcher("shop.jsp");
+        RequestDispatcher requestDispatcher = request.getRequestDispatcher("/WEB-INF/shop.jsp");
         requestDispatcher.forward(request, response);
     }
     

@@ -44,7 +44,7 @@ public class ProfileControl extends HttpServlet {
          {
          	 System.err.println("失败: " + e.getMessage());
          }
-    	RequestDispatcher requestDispatcher = request.getRequestDispatcher("profile-page.jsp");
+    	RequestDispatcher requestDispatcher = request.getRequestDispatcher("/WEB-INF/profile-page.jsp");
         requestDispatcher.forward(request, response);
     }
 
@@ -78,6 +78,6 @@ public class ProfileControl extends HttpServlet {
 		}
        
        
-        response.sendRedirect(request.getContextPath() + "/profile-page.jsp");
+        response.sendRedirect(request.getContextPath() + "/WEB-INF/profile-page.jsp");
     }
 }

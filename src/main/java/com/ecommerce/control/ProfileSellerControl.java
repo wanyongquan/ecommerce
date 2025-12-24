@@ -78,6 +78,6 @@ public class ProfileSellerControl extends HttpServlet {
 		}
        
        
-        response.sendRedirect(request.getContextPath() + "/profile-page.jsp");
+        response.sendRedirect(request.getContextPath() + "/WEB-INF/profile-page.jsp");
     }
 }

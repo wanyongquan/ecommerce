@@ -42,7 +42,7 @@ public class CheckoutControl extends HttpServlet {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-    	RequestDispatcher requestDispatcher = request.getRequestDispatcher("/checkout.jsp");
+    	RequestDispatcher requestDispatcher = request.getRequestDispatcher("/WEB-INF/checkout.jsp");
         requestDispatcher.forward(request, response);
 	}
 
@@ -92,7 +92,7 @@ public class CheckoutControl extends HttpServlet {
                 }
             }
             
-            RequestDispatcher requestDispatcher = request.getRequestDispatcher("thankyou.jsp");
+            RequestDispatcher requestDispatcher = request.getRequestDispatcher("/WEB-INF/thankyou.jsp");
             requestDispatcher.forward(request, response);
         }
     }

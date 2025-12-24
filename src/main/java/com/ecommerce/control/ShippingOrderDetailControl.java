@@ -33,7 +33,7 @@ public class ShippingOrderDetailControl extends HttpServlet {
         request.setAttribute("recipientInfo", recipientInfo);
         
         // Get request dispatcher and render to order-detail page.
-        RequestDispatcher requestDispatcher = request.getRequestDispatcher("shipping-order-detail.jsp");
+        RequestDispatcher requestDispatcher = request.getRequestDispatcher("/WEB-INF/shipping-order-detail.jsp");
         requestDispatcher.forward(request, response);
     }
 }
