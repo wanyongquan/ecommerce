@@ -332,24 +332,22 @@ public class ProductDao {
     public List<Product> get12ProductsOfPage(int index, String sort_method) {
     	
         StringBuilder sb_query = new StringBuilder( ""); 
-        sb_query.append("""
-                SELECT 
-                    p.product_id,
-                    p.product_name,
-                    p.product_image,
-                    p.product_price,
-                    p.product_description,
-                    p.fk_category_id,
-                    p.fk_account_id,
-                    p.product_is_deleted,
-                    p.product_amount,
-                    p.product_created_date,
-                    IFNULL(SUM(od.product_quantity), 0) AS sales
-                FROM product p
-                LEFT JOIN order_detail od 
-                    ON od.fk_product_id = p.product_id
-                WHERE p.product_is_deleted = false
-            """);
+        sb_query.append("  SELECT  "
+                + "            p.product_id, "
+                + "            p.product_name, "
+                + "            p.product_image, "
+                + "            p.product_price, "
+                + "            p.product_description, "
+                + "            p.fk_category_id, "
+                + "            p.fk_account_id, "
+                + "            p.product_is_deleted, "
+                + "            p.product_amount, "
+                + "            p.product_created_date, "
+                + "            IFNULL(SUM(od.product_quantity), 0) AS sales "
+                + "        FROM product p "
+                + "        LEFT JOIN order_detail od  "
+                + "            ON od.fk_product_id = p.product_id "
+                + "        WHERE p.product_is_deleted = false ");
 
             sb_query.append(" GROUP BY p.product_id ");
 

@@ -15,9 +15,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-@WebServlet(name = "ProfileSellerControl", value = "/profile-page-seller")
+@WebServlet(name = "ShopProfileControl", value = "/shop-profile")
 @MultipartConfig
-public class ProfileSellerControl extends HttpServlet {
+public class ShopProfileControl extends HttpServlet {
     // Call DAO class to access with the database.
     AccountDao accountDao = new AccountDao();
     ShopDao shopDao = new ShopDao();
@@ -27,10 +27,24 @@ public class ProfileSellerControl extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	// 设置请求编码，避免中文乱码
         request.setCharacterEncoding("UTF-8"); 
-    	
-        
-         
-    	RequestDispatcher requestDispatcher = request.getRequestDispatcher("/WEB-INF/profile-page-seller.jsp");
+    	HttpSession session = request.getSession();
+         Account account = (Account) session.getAttribute("account");
+         try {
+	         Shop shop = shopDao.getAccountShop(account.getId());
+	         request.setAttribute("account_shop", shop);
+         }
+         catch (SQLException e) {
+             // 更详细的错误处理
+             System.err.println("数据库操作失败:");
+             System.err.println("SQL状态码: " + e.getSQLState());
+             System.err.println("错误代码: " + e.getErrorCode());
+             System.err.println("错误信息: " + e.getMessage());
+         }
+         catch(Exception e)
+         {
+         	 System.err.println("失败: " + e.getMessage());
+         }
+    	RequestDispatcher requestDispatcher = request.getRequestDispatcher("/WEB-INF/shop-profile-page.jsp");
         requestDispatcher.forward(request, response);
     }
 

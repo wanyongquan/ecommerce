@@ -166,7 +166,7 @@
                 </div>
             </form>
              <!-- 新增：店铺信息管理区域 -->
-             <c:if test="${sessionScope.account.isSeller == 0}">
+             <c:if test="${not emptysessionScope.account}">
             <div class="row mb-5">
                 <div class="col-md-12">
                     <h2 class="h3 mb-3 text-black">账户信息</h2>
@@ -183,48 +183,8 @@
                       </div>
             </div>
             </c:if>  
-            <!-- 新增：店铺信息管理区域 -->
-             <c:if test="${sessionScope.account.isSeller == 1}">
-            <div class="row mb-5">
-                <div class="col-md-12">
-                    <h2 class="h3 mb-3 text-black">店铺信息管理</h2>
-                     ${alert}
-                    <form action="shop-management" method="post" class="border p-4 bg-light">
-                        <div class="form-group">
-                            <label for="shop_name" class="text-black font-weight-bold">
-                                店铺名称 <span class="text-danger">*</span>
-                            </label>
-                            <input type="text" class="form-control" id="shop_name" name="shop_name" 
-                                   value="${account_shop.shopName}" required
-                                   placeholder="请输入您的店铺名称">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="shop_description" class="text-black font-weight-bold">
-                                店铺说明
-                            </label>
-                            <textarea class="form-control" id="shop_description" name="shop_description" 
-                                      rows="4" placeholder="请简要描述您的店铺特色、主营商品等...">${account_shop.shopDescription}</textarea>
-                            <small class="form-text text-muted">店铺说明将显示在店铺首页，建议简洁明了。</small>
-                        </div>
-                        
-                        <div class="form-group mt-4">
-                            <button type="submit" class="btn btn-success btn-lg">
-                                <i class="icon icon-save"></i> 更新店铺信息
-                            </button>
-                            
-                        </div>
-                        
-                        <!-- 可选：显示操作反馈 -->
-                        <c:if test="${not empty shop_update_msg}">
-                            <div class="alert alert-info mt-3">
-                                ${shop_update_msg}
-                            </div>
-                        </c:if>
-                    </form>
-                </div>
-            </div>
-            </c:if>
+            
+            
        </div>
 	</section>
 	</div> <!-- /.content-wrapper -->

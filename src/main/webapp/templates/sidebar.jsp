@@ -25,7 +25,7 @@
                       </a>
                 </li>
                 <li class="nav-item">
-                      <a href="profile-page" class="nav-link">
+                      <a href="shop-profile" class="nav-link">
                           <i class="nav-icon fas fa-store"></i>
                           <p>店铺中心</p>
                       </a>
@@ -49,12 +49,12 @@
                           <p>待发货订单</p>
                       </a>
                 </li>
-                <li class="nav-item">
+                <!-- <li class="nav-item">
                       <a href="order-management" class="nav-link">
                           <i class="nav-icon fas fa-chart-line"></i>
-                         <!--  <p>商品销量排行</p> -->
+                           <p>商品销量排行</p> 
                       </a>
-                </li>
+                </li> -->
             </ul>
         </nav>
     </div>
