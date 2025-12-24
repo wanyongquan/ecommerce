@@ -8,7 +8,9 @@ import com.ecommerce.entity.Order;
 import com.ecommerce.entity.OrderShippingAddress;
 import com.ecommerce.entity.Product;
 //import com.oracle.wls.shaded.org.apache.xpath.operations.Or;
+import com.ecommerce.entity.TopNProductSales;
 
+import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -319,10 +321,16 @@ public class OrderDao {
     	 
     }
     // 返回指定商家的全部订单
-    public int getAmountOfOrder(Connection connection, int account_id) throws SQLException {
+    public int getAmountOfOrder(Connection connection, int account_id, OrderStatus status) throws SQLException {
     	String query = "select count(*) from shop.order where seller_account_id = ? ";
+    	 if (status != null) {
+         	query += " AND order_status = ?";
+         }
     	PreparedStatement pstmt = connection.prepareStatement(query);
     	pstmt.setInt(1, account_id);
+    	 if (status != null) {
+    		 pstmt.setInt(2, status.getValue());
+         }
     	resultSet = pstmt.executeQuery();
     	while (resultSet.next()) {
     		return resultSet.getInt(1);
@@ -330,8 +338,18 @@ public class OrderDao {
     	return 0;
     }
     
+    // 返回卖家的 全部订单的数量
+    public int getAmountOfAllOrders(Connection connection, int account_id) throws SQLException {
+    	return getAmountOfOrder(connection, account_id, null);
+    }
+    
+    // 返回卖家的 全部待发货订单的数量
+    public int getAmountOfPendingOrders(Connection connection, int account_id) throws SQLException {
+    	return getAmountOfOrder(connection, account_id, OrderStatus.PENDING);
+    }
+    
     public enum OrderStatus {
-        PENDING(0),   // 待发货
+        PENDING(0),   // 待发货(买家已付款）
         SHIPPED(1),   // 已发货
         FINISHED(2);  // 已完成
 
@@ -381,4 +399,17 @@ public class OrderDao {
    
         return list;
     }
+    
+    //  返回指定商家的销售总额
+    public BigDecimal getSaleAmountForSeller(Connection connection, int account_id) throws SQLException {
+    	String query = "select sum(order_total) from shop.order where seller_account_id = ? and order_status=2 ";
+    	PreparedStatement pstmt = connection.prepareStatement(query);
+    	pstmt.setInt(1, account_id);
+    	resultSet = pstmt.executeQuery();
+    	while (resultSet.next()) {
+    		return resultSet.getBigDecimal(1);
+    	}
+    	return new BigDecimal(0);
+    }
+    
 }

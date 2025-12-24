@@ -43,7 +43,7 @@
             <div class="container-fluid">
                 <!-- 信息卡片 -->
                 <div class="row">
-                    <div class="col-lg-4 col-6">
+                    <div class="col-lg-3 col-6">
                         <div class="small-box bg-info">
                             <div class="inner">
                                 <h3>${product_amount}</h3>
@@ -54,7 +54,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-4 col-6">
+                    <div class="col-lg-3 col-6">
                         <div class="small-box bg-success">
                             <div class="inner">
                                 <h3>${order_amount}</h3>
@@ -65,36 +65,75 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-4 col-6">
-                        <div class="small-box bg-warning">
-                            <div class="inner">
-                                <h3>${totalUsers}</h3>
-                                <p>用户总数</p>
-                            </div>
-                            <div class="icon">
-                                <i class="fas fa-users"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 商品展示 -->
-                <div class="row">
-                    <c:forEach items="${product_list}" var="o">
-                        <div class="col-lg-3 col-6">
-                            <div class="card">
-                                <img src="data:image/jpg;base64,${o.base64Image}" class="card-img-top"
-                                     alt="商品图片" style="height: 200px; object-fit: cover;">
-                                <div class="card-body">
-                                    <h5 class="card-title">${o.name}</h5>
-                                    <p class="card-text">¥${o.price}</p>
-                                    <p class="card-text">已售：${o.salesAmount}</p>
-                                    <a href="product-detail?id=${o.id}" class="btn btn-primary btn-sm">查看</a>
-                                </div>
-                            </div>
-                        </div>
-                    </c:forEach>
-                </div>
+                   <div class="col-lg-3 col-6">
+			        <div class="small-box bg-warning">
+			            <div class="inner">
+			                <h3>${pending_order_amount}</h3>
+			                <p>待发货订单</p>
+			            </div>
+			            <div class="icon">
+			                <i class="fas fa-truck"></i>
+			            </div>
+			        </div>
+			    </div>
+			
+			    <div class="col-lg-3 col-6">
+			        <div class="small-box bg-danger">
+			            <div class="inner">
+			                <h3>¥${total_sales_amount}</h3>
+			                <p>累计销售额</p>
+			            </div>
+			            <div class="icon">
+			                <i class="fas fa-yen-sign"></i>
+			            </div>
+			        </div>
+			    </div>
+            </div>
+            <div class="row">
+			    <div class="col-lg-12">
+			        <div class="card">
+			            <div class="card-header">
+			                <h3 class="card-title">热销商品 TOP 5</h3>
+			            </div>
+			            <div class="card-body">
+			                <div class="row">
+			                    <c:forEach items="${top_product_list}" var="o">
+			                        <div class="col-lg-3 col-6">
+			                            <div class="card">
+			                                <img src="data:image/jpg;base64,${o.base64Image}"
+			                                     class="card-img-top"
+			                                     style="height:160px;object-fit:cover;">
+			                                <div class="card-body">
+			                                    <h6>${o.productName}</h6>
+			                                    <p class="mb-1">¥${o.price}</p>
+			                                    <small>销量：${o.salesAmount}</small>
+			                                </div>
+			                            </div>
+			                        </div>
+			                    </c:forEach>
+			                </div>
+			            </div>
+			        </div>
+			    </div>
+			</div>
+			<div class="row">
+			    <div class="col-lg-12">
+			        <div class="card">
+			            <div class="card-header">
+			                <h3 class="card-title">近 7 日累计销售额</h3>
+			                <div class="card-tools">
+			                    <a href="sales-statistics" class="btn btn-sm btn-primary">
+			                        查看详细
+			                    </a>
+			                </div>
+			            </div>
+			            <div class="card-body">
+			                <canvas id="salesChart" height="120"></canvas>
+			            </div>
+			        </div>
+			    </div>
+			</div>
+							
 
             </div>
         </section>
@@ -117,5 +156,29 @@
 <script src="static/css/adminlte/plugins/jquery/jquery.min.js"></script>
 <script src="static/css/adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="static/css/adminlte/dist/js/adminlte.min.js"></script>
+<script src="static/css/adminlte/plugins/chart.js/Chart.min.js"></script>
+
+<script>
+    const ctx = document.getElementById('salesChart').getContext('2d');
+
+    const salesChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ${last7DaysLabels},   // 例如 ["06-01","06-02",...]
+            datasets: [{
+                label: '销售额（元）',
+                data: ${last7DaysSales}, // 例如 [1200, 900, 1500, ...]
+                borderColor: '#007bff',
+                fill: false,
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+</script>
+
 </body>
 </html>

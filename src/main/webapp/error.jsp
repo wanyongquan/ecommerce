@@ -23,12 +23,15 @@
     <div class="site-section">
         <div class="container">
             <div class="row justify-content-center">
+            
                 <div class="col-md-8">
                     <div class="card border-danger">
                         <div class="card-header bg-danger text-white">
                             <h3 class="mb-0"><i class="fas fa-exclamation-triangle mr-2"></i>系统错误</h3>
                         </div>
                         <div class="card-body">
+                        <p><strong>请求地址：</strong> ${pageContext.errorData.requestURI}</p>
+						<p><strong>状态码：</strong> ${pageContext.errorData.statusCode}</p>
                             <!-- 错误代码行 -->
                             <div class="row mb-3">
                                 <div class="col-md-3 font-weight-bold text-right">
@@ -97,9 +100,7 @@
                             <div class="row">
                                 <div class="col-md-12 text-center">
                                     <div class="btn-group" role="group">
-                                        <a href="javascript:history.back()" class="btn btn-outline-primary">
-                                            <i class="fas fa-arrow-left mr-1"></i>返回上一页
-                                        </a>
+                                        
                                         <a href="<%=request.getContextPath()%>/index.jsp" class="btn btn-primary">
                                             <i class="fas fa-home mr-1"></i>返回首页
                                         </a>

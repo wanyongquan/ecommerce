@@ -7,6 +7,7 @@ import com.ecommerce.entity.Category;
 import com.ecommerce.entity.ColorStock;
 
 import com.ecommerce.entity.Product;
+import com.ecommerce.entity.TopNProductSales;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -450,5 +451,53 @@ public class ProductDao {
     		return resultSet.getInt(1);
     	}
     	return 0;
+    }
+    
+ // 返回指定商家的TOP 5 商品
+    public List<TopNProductSales> getTop5ProductList(Connection connection, int account_id) throws SQLException, IOException {
+    	String query = "SELECT "
+    			+ "    p.product_id, "
+    			+ "    p.product_name,  p.product_price,  p.product_image, "
+    			+ "    SUM(od.product_quantity) AS total_sales "
+    			+ "FROM order_detail od "
+    			+ "JOIN `order` o "
+    			+ "    ON od.fk_order_id = o.order_id "
+    			+ "JOIN product p "
+    			+ "    ON od.fk_product_id = p.product_id "
+    			+ "WHERE "
+    			+ "    p.fk_account_id = ?             "
+    			+ "    AND o.order_status = '1'        "
+    			+ "    AND o.order_date_create >= DATE_SUB(CURDATE(), INTERVAL 7 DAY) "
+    			+ "GROUP BY "
+    			+ "    p.product_id "
+    			//+ "    p.product_name, p.product_image, p.product_price "
+    			+ "ORDER BY "
+    			+ "    total_sales DESC "
+    			+ "LIMIT 5; ";
+    	
+    	 
+    	PreparedStatement pstmt = connection.prepareStatement(query);
+    	pstmt.setInt(1, account_id);
+    	resultSet = pstmt.executeQuery();
+    	
+    	 List<TopNProductSales> list = new ArrayList<TopNProductSales>();
+    	resultSet = pstmt.executeQuery();
+    	while (resultSet.next()) {
+    		TopNProductSales top5Product =  new TopNProductSales();
+    		int productId =  resultSet.getInt(1);
+    		String productName = resultSet.getString(2);
+    		double price = resultSet.getDouble(3);
+    		int salesAmount = resultSet.getInt(5);
+    		
+    		top5Product.setProductId(productId);
+    		top5Product.setProductName(productName);
+    		top5Product.setPrice(price);
+    		 Blob blob = resultSet.getBlob("product_image");
+    		 top5Product.setBase64Image(getBase64Image(blob));
+    		 
+    		top5Product.setSalesAmount(salesAmount);
+    		list.add(top5Product);
+    	}
+    	return list;
     }
 }

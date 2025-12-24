@@ -5,6 +5,7 @@ import com.ecommerce.entity.CartProduct;
 import com.ecommerce.entity.Order;
 import com.ecommerce.entity.Product;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -169,5 +170,11 @@ public class CartControl extends HttpServlet {
             }
             response.sendRedirect("product-detail?id=" + productId);
         }
+        else 
+        {
+        	RequestDispatcher requestDispatcher = request.getRequestDispatcher("/WEB-INF/cart.jsp");
+        	requestDispatcher.forward(request, response);
+        }
     }
+    
 }

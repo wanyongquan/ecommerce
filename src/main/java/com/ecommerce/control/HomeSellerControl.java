@@ -8,6 +8,7 @@ import com.ecommerce.database.Database;
 import com.ecommerce.entity.Account;
 import com.ecommerce.entity.Category;
 import com.ecommerce.entity.Product;
+import com.ecommerce.entity.TopNProductSales;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -18,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -41,10 +43,15 @@ public class HomeSellerControl extends HttpServlet {
 	        connection = dbManager.getConnection();
 	    	int product_amount = productDao.getAmountOfProduct(connection, account.getId());
 	    	
-	    	int order_amount  = orderDao.getAmountOfOrder(connection, account.getId());
-	    	
+	    	int order_amount  = orderDao.getAmountOfAllOrders(connection, account.getId());
+	    	int pending_order_amount = orderDao.getAmountOfPendingOrders(connection, account.getId());
+	    	BigDecimal  sales_amount = orderDao.getSaleAmountForSeller(connection, account.getId());
+	    	List<TopNProductSales> top_product_list = productDao.getTop5ProductList(connection, account.getId());
 	    	request.setAttribute("product_amount", product_amount);
 	    	request.setAttribute("order_amount", order_amount);
+	    	request.setAttribute("pending_order_amount", pending_order_amount);
+	    	request.setAttribute("total_sales_amount", sales_amount);
+	    	request.setAttribute("top_product_list", top_product_list);
 	    	request.setAttribute("dashboard_active", "active");
 	       
 	    	 
