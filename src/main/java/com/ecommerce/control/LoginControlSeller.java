@@ -63,7 +63,7 @@ public class LoginControlSeller extends HttpServlet {
         	response.sendRedirect(targetUrl);
         }
         else { 
-               response.sendRedirect(request.getContextPath()+"/index_seller.jsp"); 
+               response.sendRedirect(request.getContextPath()+"/seller_home"); 
         }
     }
 
