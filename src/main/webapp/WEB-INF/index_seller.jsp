@@ -127,8 +127,8 @@
 			                    </a>
 			                </div>
 			            </div>
-			            <div class="card-body">
-			                <canvas id="salesChart" height="120"></canvas>
+			            <div class="card-body" style="height: 800px;">
+			                <canvas id="salesChart" height="800"></canvas>
 			            </div>
 			        </div>
 			    </div>

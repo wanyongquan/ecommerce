@@ -23,7 +23,12 @@
 hs_err_pid*
 replay_pid*
 .DS_Store
+**/.DS_Store
 target/.DS_Store
 target/
-screenshot/
+screenshots/
 .classpath
+target/.DS_Store
+target/classes/.DS_Store
+src/main/webapp/static/.DS_Store
+**/.DS_Store

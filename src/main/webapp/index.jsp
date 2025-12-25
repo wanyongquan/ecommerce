@@ -101,7 +101,7 @@
         </div>
     </div>
 
-    <jsp:include page="templates/footer.jsp"/>
+<%--     <jsp:include page="templates/footer.jsp"/> --%>
 </div>
 
 <jsp:include page="templates/scripts.jsp"/>
