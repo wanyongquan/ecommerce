@@ -101,6 +101,26 @@
                     </div>
                 </div>
             </c:if>
+            
+            <!-- 商品评论列表 -->
+			<c:if test="${not empty product_comment_list}">
+			    <div class="site-section">
+			        <div class="container">
+			            <h3 class="mb-4">用户评论</h3>
+			            <c:forEach items="${product_comment_list}" var="comment">
+			                <div class="card mb-3">
+			                    <div class="card-body">
+			                        <!-- 第一行：评论人姓名 -->
+			                        <h5 class="card-title mb-2">${comment.userName}</h5>
+			                        <!-- 第二行：评论内容 -->
+			                        <p class="card-text">${comment.comment}</p>
+			                    </div>
+			                </div>
+			            </c:forEach>
+			        </div>
+			    </div>
+			</c:if>
+			            
         </div>
     </div>
 

@@ -5,8 +5,9 @@ import com.ecommerce.entity.Account;
 import com.ecommerce.entity.Category;
 
 import com.ecommerce.entity.ColorStock;
-
+import com.ecommerce.entity.Order;
 import com.ecommerce.entity.Product;
+import com.ecommerce.entity.ProductComment;
 import com.ecommerce.entity.TopNProductSales;
 
 import java.io.ByteArrayOutputStream;
@@ -497,5 +498,78 @@ public class ProductDao {
     		list.add(top5Product);
     	}
     	return list;
+    }
+    
+    public void createComment(Connection connection, int orderId, int productId, int userId, String comment, int rating) throws SQLException {
+      
+    	String query =" INSERT INTO  product_comment (fk_order_id, fk_product_id, fk_user_id, rating, comment_content) "
+    			+  " values( ?, ?, ?, ? ,?)";
+    	PreparedStatement pstmt = connection.prepareStatement(query);
+    	pstmt.setInt(1, orderId);
+    	pstmt.setInt(2, productId);
+    	pstmt.setInt(3, userId);
+    	pstmt.setInt(4, rating);
+    	pstmt.setString(5, comment);
+   	
+    	pstmt.executeUpdate();
+    	
+    }
+    
+    public ProductComment getProductComment(Connection connection, int orderId, int productId, int userId ) throws SQLException {
+    	String query = "SELECT * from product_comment where fk_order_id =? and fk_product_id = ? and fk_user_id = ? ";
+    	PreparedStatement pstmt = connection.prepareStatement(query);
+    	pstmt.setInt(1, orderId);
+    	pstmt.setInt(2, productId);
+    	pstmt.setInt(3, userId);
+    	resultSet = pstmt.executeQuery();
+    	while (resultSet.next()) {
+    		String comment_content = resultSet.getString("comment_content");
+    		int commentId = resultSet.getInt("comment_id");
+    		int rating = resultSet.getInt("rating");
+    		Date date_comment = resultSet.getDate("comment_time");
+    		
+    		ProductComment comment =  new  ProductComment();
+    		comment.setCommentId(commentId);
+    		comment.setOrderId(orderId);
+    		comment.setProductId(productId);
+    		comment.setUserId(userId);
+    		comment.setComment(comment_content);
+    		comment.setRating(rating);
+    		comment.setCreatedTime(date_comment);
+    		return comment;
+    	}
+    	return null;
+    }
+    
+    public List<ProductComment> getProductCommentList(Connection connection, int productId ) throws SQLException{
+    	String query = "SELECT *  FROM  product_comment oc " + 
+    				" join product p on oc.fk_product_id = p.product_id  " +
+    				" join ACCOUNT ac on ac.account_id = oc.fk_user_id " +
+    				" where oc.fk_product_id = ?";
+    	PreparedStatement pstmt = connection.prepareStatement(query);
+    	pstmt.setInt(1, productId);
+    	resultSet  = pstmt.executeQuery();
+    	List<ProductComment>  commentList = new ArrayList<ProductComment>();
+    	while (resultSet.next()) {
+    		String comment_content = resultSet.getString("comment_content");
+    		int commentId = resultSet.getInt("comment_id");
+    		int orderId = resultSet.getInt("fk_order_id");
+    		int userId = resultSet.getInt("fk_user_id");
+    		int rating = resultSet.getInt("rating");
+    		Date date_comment = resultSet.getDate("comment_time");
+    		String username = resultSet.getString("account_first_name");
+    		
+    		ProductComment comment =  new  ProductComment();
+    		comment.setCommentId(commentId);
+    		comment.setOrderId(orderId);
+    		comment.setProductId(productId);
+    		comment.setUserId(userId);
+    		comment.setComment(comment_content);
+    		comment.setRating(rating);
+    		comment.setCreatedTime(date_comment);
+    		comment.setUserName(username);
+    		commentList.add(comment);
+    	}
+    	return commentList;
     }
 }

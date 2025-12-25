@@ -152,24 +152,28 @@
 	                        <table class="table table-bordered">
 	                            <thead>
 	                            <tr>
+	                            	<th>图片</th>
 	                                <th>编号</th>
 	                                <th>商品</th>
 	                                <th>商品规格</th>
 	                                <th>购买数量</th>
 	                                <th>商品单价</th>
-	                                
+	                                <th></th>
 	                                <!-- <th>订单金额</th> -->
 	                            </tr>
 	                            </thead>
 	                            <tbody>
 	                            <c:forEach items="${order_detail_list}" var="o">
 	                                <tr>
+	                                    <td> <img src="data:image/jpg;base64,${o.product.base64Image}" alt="商品图片"
+                                                class="img-fluid" style="width: 200px; height: 250px; object-fit: cover;"></td>
 	                                    <td>${o.product.id}</td>
 									    <td>${o.product.name}</td>
 									    <td>${o.pickedColor}</td>
 	                                    <td>${o.quantity}</td>
 	                                    <td>¥${o.price}</td>				    
-	                                    <!-- <td>$${o.price * o.quantity}</td> -->
+	                                     <td><a href="order-comment?order_id=${order.id}&product_id=${o.product.id}&sku=${o.pickedColor}" class="btn">
+	                                      <span>评论</span></a> </td> 
 	
 	                                </tr>
 	                            </c:forEach>

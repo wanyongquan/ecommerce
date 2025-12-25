@@ -114,8 +114,9 @@ public class AuthFilter extends HttpFilter implements Filter {
         Account account = (session == null)
                 ? null
                 : (Account) session.getAttribute("account");
-
+        System.out.println("AUTH : " + " 检查是否已经登录");
         if (account == null) {
+        	
         	redirectToLogin(req, resp, rule);
             return;
         }

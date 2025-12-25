@@ -1,10 +1,12 @@
 package com.ecommerce.control;
 
+import com.ecommerce.Exception.AppException;
 import com.ecommerce.dao.ProductDao;
-
+import com.ecommerce.database.Database;
 import com.ecommerce.entity.ColorStock;
 
 import com.ecommerce.entity.Product;
+import com.ecommerce.entity.ProductComment;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -13,13 +15,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 
 @WebServlet(name = "ProductDetail", value = "/product-detail")
 public class ProductDetail extends HttpServlet {
     // Call DAO class to access with database.
     ProductDao productDao = new ProductDao();
-
+    Database dbManager = new Database();
+    
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Check if the sending link from out of stock request or not.
@@ -29,7 +34,22 @@ public class ProductDetail extends HttpServlet {
 
         // Get product from database with the given id.
         Product product = productDao.getProduct(id);
-
+        Connection connection=null;
+		try {
+			connection = dbManager.getConnection();
+			 List<ProductComment> comment_list = productDao.getProductCommentList(connection, id);
+			 request.setAttribute("product_comment_list", comment_list);
+		}catch (Exception e) {
+            
+            throw new AppException("数据库操作异常",e); // 继续向上抛
+        }finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException ignored) {}
+            }
+        }
+       
         // Check number product available.
         String disabled = "";
         if (product.getAmount() <= 0) {
