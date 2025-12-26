@@ -140,3 +140,49 @@ ADD CONSTRAINT `fk_seller_id`
   
   ALTER TABLE `shop`.`order` 
 CHANGE COLUMN `order_total` `order_total` DECIMAL(10,2) NULL DEFAULT NULL ;
+
+-- 12.25  评论表
+CREATE TABLE `product_comment` (
+  `comment_id` int NOT NULL AUTO_INCREMENT,
+  `fk_order_id` int NOT NULL,
+  `fk_product_id` int NOT NULL,
+  `fk_user_id` int NOT NULL,
+  `rating` tinyint NOT NULL COMMENT '评分：1~5',
+  `comment_content` varchar(1000) DEFAULT NULL,
+  `is_anonymous` tinyint(1) DEFAULT '0',
+  `comment_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `comment_status` tinyint DEFAULT '1' COMMENT '1-正常 0-隐藏',
+  `seller_reply` varchar(1000) DEFAULT NULL COMMENT '商家回复内容',
+  `reply_time` timestamp NULL DEFAULT NULL COMMENT '商家回复时间',
+  PRIMARY KEY (`comment_id`),
+  UNIQUE KEY `uk_order_product` (`fk_order_id`,`fk_product_id`),
+  KEY `idx_product` (`fk_product_id`),
+  KEY `idx_user` (`fk_user_id`),
+  CONSTRAINT `fk_comment_order` FOREIGN KEY (`fk_order_id`) REFERENCES `order` (`order_id`),
+  CONSTRAINT `fk_comment_product` FOREIGN KEY (`fk_product_id`) REFERENCES `product` (`product_id`),
+  CONSTRAINT `fk_comment_user` FOREIGN KEY (`fk_user_id`) REFERENCES `account` (`account_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+-- 12.26  售后
+CREATE TABLE `after_sales_apply` (
+  `after_sales_apply_id` int NOT NULL AUTO_INCREMENT,
+  `fk_order_id` int DEFAULT NULL,
+  `fk_product_id` int DEFAULT NULL,
+  `apply_account_id` int DEFAULT NULL,
+  `service_type` int NOT NULL,
+  `reason` varchar(50) NOT NULL,
+  `service_description` varchar(500) NOT NULL,
+  `date_created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `service_status` int DEFAULT '0',
+  PRIMARY KEY (`idafter_sales_apply_id`),
+  KEY `fk_order_id_idx` (`fk_order_id`),
+  KEY `fk_product_id_idx` (`fk_product_id`),
+  KEY `aftersales_fk3_idx` (`apply_account_id`),
+  CONSTRAINT `aftersales_fk1` FOREIGN KEY (`fk_order_id`) REFERENCES `order` (`order_id`),
+  CONSTRAINT `aftersales_fk2` FOREIGN KEY (`fk_product_id`) REFERENCES `product` (`product_id`),
+  CONSTRAINT `aftersales_fk3` FOREIGN KEY (`apply_account_id`) REFERENCES `account` (`account_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+

@@ -57,6 +57,7 @@ public class GlobalExceptionFilter extends HttpFilter implements Filter {
 				HttpServletRequest req = (HttpServletRequest) request;
 				HttpServletResponse resp = (HttpServletResponse) response;
 				resp.sendRedirect(req.getContextPath() + "/login.jsp");
+				return;
 			}
 			// 1. 记录完整日志（开发者）
             ex.printStackTrace();
@@ -70,8 +71,8 @@ public class GlobalExceptionFilter extends HttpFilter implements Filter {
             String userMessage = getFriendlyMessage(req, ex);
             req.setAttribute("errorMessage", userMessage);
            
-            req.setAttribute("errorCode", ex.getErrorCode());
-            req.setAttribute("errorDetail", ex.getStackTrace());
+//            req.setAttribute("errorCode", ex.getErrorCode());
+            req.setAttribute("errorDetail", ex.getMessage());
             req.getRequestDispatcher("error.jsp").forward(req, resp);
 		}
 		catch (Exception ex) {
@@ -84,7 +85,7 @@ public class GlobalExceptionFilter extends HttpFilter implements Filter {
             req.setAttribute("errorMessage", ex.getMessage());
 //            req.setAttribute("errorMessage", "系统发生未知错误，请联系管理员");
 //            resp.setStatus(500);
-            req.setAttribute("errorCode", ex.getCause().getClass().getName());
+            req.setAttribute("errorCode", (ex.getCause()!= null)? ex.getCause().getClass().getName():"-1");
             req.setAttribute("errorDetail", ex.getStackTrace());
             req.getRequestDispatcher("error.jsp").forward(req, resp);
         }

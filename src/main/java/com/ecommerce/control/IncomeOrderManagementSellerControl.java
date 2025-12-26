@@ -14,7 +14,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-@WebServlet(name = "IncomeOrderManagementSellerControl", value = "/incomeorder-management")
+@WebServlet(name = "IncomeOrderManagementSellerControl", value = "/income-order-management")
 public class IncomeOrderManagementSellerControl extends HttpServlet {
     // Call DAO class to access with database.
 	// Oder management DAO for seller; 

@@ -144,14 +144,24 @@ public class RecipientAddressesControl extends HttpServlet {
     
     private void setDefaultRecipientAddress(HttpServletRequest request) {
     	 int addressId = Integer.parseInt( request.getParameter("addr_id"));
-    	 try (Connection connection = dbManager.getConnection();) {
+    	 Connection connection = null;
+    	 try {
+    		 connection = dbManager.getConnection();
+    	 
     		 dbManager.beginTransaction();
     		 accountDao.removeRecipientAddressDefault(connection);
     		 accountDao.setRecipientAddressDefault(connection, addressId);
     		 dbManager.commitTransaction();
     		 
-    	 } catch (SQLException e) {
-			throw new AppException(e.getMessage(), e.getErrorCode(), e);
-		}
+    	 } catch (Exception e) {
+        	dbManager.rollbackTransaction();
+            throw new AppException("数据库操作异常",e); // 继续向上抛
+	    }finally {
+	        if (connection != null) {
+	            try {
+	                connection.close();
+	            } catch (SQLException ignored) {}
+	        }
+	    }
     }
 }

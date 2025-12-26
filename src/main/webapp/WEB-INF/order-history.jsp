@@ -34,6 +34,7 @@
 
                                 <th>订单ID</th>
                                 <th>订单总额</th>
+                                <th>收件人</th>
                                 <th>下单时间</th>
                                 <th>订单状态</th>
                                 <th style="min-width: 195px">查看详情</th>
@@ -46,7 +47,7 @@
                                     <td>${o.id}</td>
 								
                                     <td>¥${o.total}</td>
-
+									<td> TODO:改成收件人 ¥${o.total}</td>
                                     <td>${o.date}</td>
 									<td><c:choose>
 								        <c:when test="${o.status == 0}">买家已付款</c:when>

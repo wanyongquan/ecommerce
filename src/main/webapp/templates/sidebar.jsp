@@ -44,17 +44,17 @@
                     </a>
                 </li>
                  <li class="nav-item ${income_order_management_active}">
-                      <a href="incomeorder-management" class="nav-link">
+                      <a href="income-order-management" class="nav-link">
                           <i class="nav-icon fas fa-truck"></i>
                           <p>待发货订单</p>
                       </a>
                 </li>
-                <!-- <li class="nav-item">
-                      <a href="order-management" class="nav-link">
-                          <i class="nav-icon fas fa-chart-line"></i>
-                           <p>商品销量排行</p> 
+                <li class="nav-item">
+                      <a href="after-sales-management" class="nav-link">
+                          <i class="nav-icon fas fa-headset"></i>
+                           <p>售后服务管理</p> 
                       </a>
-                </li> -->
+                </li> 
             </ul>
         </nav>
     </div>

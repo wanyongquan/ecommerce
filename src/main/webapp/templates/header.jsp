@@ -41,6 +41,7 @@
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuReference">
                                         <a class="dropdown-item" href="profile-page">我的个人中心</a>
                                         <a class="dropdown-item" href="recipient-addresses">收货人地址</a>
+                                        <a class="dropdown-item" href=" after-sales-history">售后服务</a>                                       
                                         <a class="dropdown-item" href="logout">退出登录</a>
                                     </div>
                                 </li>

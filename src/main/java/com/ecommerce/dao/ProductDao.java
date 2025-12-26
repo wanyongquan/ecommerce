@@ -1,7 +1,10 @@
 package com.ecommerce.dao;
 
+import com.ecommerce.Exception.AppException;
 import com.ecommerce.database.Database;
 import com.ecommerce.entity.Account;
+import com.ecommerce.entity.AfterSalesService;
+import com.ecommerce.entity.CartProduct;
 import com.ecommerce.entity.Category;
 
 import com.ecommerce.entity.ColorStock;
@@ -13,6 +16,7 @@ import com.ecommerce.entity.TopNProductSales;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -500,6 +504,7 @@ public class ProductDao {
     	return list;
     }
     
+    // 创建评论
     public void createComment(Connection connection, int orderId, int productId, int userId, String comment, int rating) throws SQLException {
       
     	String query =" INSERT INTO  product_comment (fk_order_id, fk_product_id, fk_user_id, rating, comment_content) "
@@ -515,6 +520,7 @@ public class ProductDao {
     	
     }
     
+    // 查询评论
     public ProductComment getProductComment(Connection connection, int orderId, int productId, int userId ) throws SQLException {
     	String query = "SELECT * from product_comment where fk_order_id =? and fk_product_id = ? and fk_user_id = ? ";
     	PreparedStatement pstmt = connection.prepareStatement(query);
@@ -541,6 +547,7 @@ public class ProductDao {
     	return null;
     }
     
+    // 查询指定产品的评论的列表
     public List<ProductComment> getProductCommentList(Connection connection, int productId ) throws SQLException{
     	String query = "SELECT *  FROM  product_comment oc " + 
     				" join product p on oc.fk_product_id = p.product_id  " +
@@ -571,5 +578,226 @@ public class ProductDao {
     		commentList.add(comment);
     	}
     	return commentList;
+    }
+    
+    // 创建售后申请；
+    public void createAfterSalesApply(Connection connection, int orderId, int productId, int apply_account_id, int serviceType, String reason, String description) throws SQLException{
+    	String query = "INSERT INTO  after_sales_apply (fk_order_id, fk_product_id, apply_account_id, service_type, reason, service_description )" 
+    			+ " VALUES (?, ?, ?, 0, ?, ?)";
+    	PreparedStatement pstmt = connection.prepareStatement(query);
+    	pstmt.setInt(1, orderId);
+    	pstmt.setInt(2, productId);
+    	pstmt.setInt(3, apply_account_id);
+    	pstmt.setString(4, reason);
+    	pstmt.setString(5, description);
+    	
+    	pstmt.executeUpdate();
+    }
+    
+    public CartProduct getOrderDetail(Connection connection, int orderId, int productId) throws SQLException, IOException{
+    	String query = "SELECT * FROM shop.order_detail  od, product p where od.fk_product_id = p.product_id "
+    			+ " and od.fk_order_id= ? and od.fk_product_id = ?";
+    	PreparedStatement pstmt = connection.prepareStatement(query);
+    	pstmt.setInt(1, orderId);
+    	pstmt.setInt(2, productId);
+    	
+    	resultSet = pstmt.executeQuery();
+    	while (resultSet.next()) {
+    		int quantity = resultSet.getInt("product_quantity");
+            double price = resultSet.getDouble("product_price");
+
+            String color = resultSet.getString("product_color");
+            
+            Product product = new Product();
+            product.setId(resultSet.getInt("product_id"));
+            product.setName(resultSet.getString("product_name"));
+            product.setPrice(resultSet.getDouble("product_price"));
+            product.setDescription(resultSet.getString("product_description"));
+            product.setDeleted(resultSet.getBoolean("product_is_deleted"));
+            product.setAmount(resultSet.getInt("product_amount"));
+            Blob blob = resultSet.getBlob("product_image");
+            product.setBase64Image(getBase64Image(blob));
+            
+    		CartProduct cartProduct = new CartProduct(product, quantity, price, color);
+    		return cartProduct;
+    	}
+    	return null;
+    }
+    
+    // 查询是否存在售后申请；
+    public boolean checkAfterSalesApplyExists(Connection connection, int orderId, int productId) throws SQLException{
+    	String query = "SELECT * FROM  after_sales_apply WHERE fk_order_id = ? and  fk_product_id = ?";
+    	PreparedStatement pstmt = connection.prepareStatement(query);
+    	pstmt.setInt(1, orderId);
+    	pstmt.setInt(2, productId);
+    	
+    	resultSet = pstmt.executeQuery();
+    	while (resultSet.next()) {
+    		return true;
+    	}
+    	return false;
+    }
+    
+    // 查询买家的售后申请历史
+    public List<AfterSalesService> getAfterSalesServiceHistory(Connection connection, int apply_account_id) throws SQLException{
+    	String query = "SELECT * FROM  after_sales_apply asa , product p  WHERE asa.fk_product_id = p.product_id and apply_account_id = ? order by service_status";
+    	PreparedStatement pstmt = connection.prepareStatement(query);
+    	pstmt.setInt(1, apply_account_id);
+        	
+    	List<AfterSalesService>  list= new ArrayList<>();
+    	resultSet = pstmt.executeQuery();
+    	while (resultSet.next()) {
+    		int id = resultSet.getInt("after_sales_apply_id");
+    		int orderId = resultSet.getInt("fk_order_id");
+    		int productId = resultSet.getInt("fk_product_id");
+    		String productName = resultSet.getString("product_name");
+    		String reason = resultSet.getString("reason");
+    		String serviceDescription = resultSet.getString("service_description");
+    		Date  date_created = resultSet.getDate("date_created");
+    		int status = resultSet.getInt("service_status");
+    		AfterSalesService afterSales = new AfterSalesService();
+    		afterSales.setServiceId(id);
+    		afterSales.setOrderId(orderId);
+    		afterSales.setProductId(productId);
+    		afterSales.setApply_accont_id(apply_account_id);
+    		afterSales.setProductName(productName);
+    		afterSales.setReason(reason);
+    		afterSales.setServiceDescription(serviceDescription);
+    		afterSales.setAppliedDate(date_created);
+    		afterSales.setStatus(status);
+    		
+    		list.add(afterSales);
+    	}
+    	return list;
+    }
+    
+    // 查询卖家的售后服务历史；
+    public List<AfterSalesService> getAfterSalesServiceHistoryForSeller(Connection connection, int seller_account_id) throws SQLException{
+    	String query = "SELECT * FROM  after_sales_apply asa , product p , account a "
+    			+ " WHERE asa.fk_product_id = p.product_id and "
+    			+ " p.fk_account_id = a.account_id "
+    			+ " and a.account_id = ? "
+    			+ " order by service_status" ;
+    	PreparedStatement pstmt = connection.prepareStatement(query);
+    	pstmt.setInt(1, seller_account_id);
+        	
+    	List<AfterSalesService>  list= new ArrayList<>();
+    	resultSet = pstmt.executeQuery();
+    	while (resultSet.next()) {
+    		int id = resultSet.getInt("after_sales_apply_id");
+    		int orderId = resultSet.getInt("fk_order_id");
+    		int productId = resultSet.getInt("fk_product_id");
+    		int apply_accountId = resultSet.getInt("apply_account_id");
+    		String productName = resultSet.getString("product_name");
+    		String reason = resultSet.getString("reason");
+    		String serviceDescription = resultSet.getString("service_description");
+    		Date  date_created = resultSet.getDate("date_created");
+    		int status = resultSet.getInt("service_status");
+    		AfterSalesService afterSales = new AfterSalesService();
+    		afterSales.setServiceId(id);
+    		afterSales.setOrderId(orderId);
+    		afterSales.setProductId(productId);
+    		afterSales.setApply_accont_id(apply_accountId);
+    		afterSales.setProductName(productName);
+    		afterSales.setReason(reason);
+    		afterSales.setServiceDescription(serviceDescription);
+    		afterSales.setAppliedDate(date_created);
+    		afterSales.setStatus(status);
+    		
+    		list.add(afterSales);
+    	}
+    	return list;
+    }
+    
+    // 拒绝退款；
+    public void rejectRefund(Connection connection, int serviceId) throws SQLException {
+    	String query = "UPDATE after_sales_apply set service_status = 2 where after_sales_apply_id = ?";
+    	
+    	PreparedStatement pstmt = connection.prepareStatement(query);
+    	pstmt.setInt(1, serviceId);
+    	
+    	pstmt.executeUpdate();
+    }
+  
+    // 统一退款
+    public void approveRefund(Connection connection, int serviceId, int orderId, int productId,  int seller_account_id) throws SQLException {
+    	// 查询 商品当初的售价； 
+    	BigDecimal product_price = getProductPrice(connection, orderId, productId);
+    	
+    	// Step 1.  order_detail 表 ，更新商品的状态为 已退款；
+    	
+    	// step 2.  order 表， order_total 中扣除 该商品的售价； 
+    	
+    	updateOrderTotal(connection, orderId, product_price);
+    	// step 3.  account 表， 给卖家 扣除 售价， 买家 加上 售价; 
+    	refund(connection, 0, seller_account_id, 10.0);
+    	// step 4. after_sales表， 设置状态为已退款；
+    	updateAfterSalesStatus(connection, serviceId, AfterSalesApplyStatus.APPROVED);
+    }
+    
+    public BigDecimal getProductPrice(Connection connection, int orderId, int productId) throws SQLException{
+    	String query = "select product_price from order_detail where fk_order_id = ? and fk_product_id = ? ";
+    	PreparedStatement pstmt = connection.prepareStatement(query);
+    	pstmt.setInt(1, orderId);
+    	pstmt.setInt(2, productId);
+    	resultSet = pstmt.executeQuery();
+    	while (resultSet.next()) {
+    		return resultSet.getBigDecimal("product_price");
+    	}
+    	return BigDecimal.ZERO;
+    }
+    
+    public void  updateOrderTotal(Connection connection, int orderId, BigDecimal amount) throws SQLException{
+    	String query = "UPDATE shop.order set order_total = order_total - ? where order_id = ?";
+    	
+    	PreparedStatement pstmt = connection.prepareStatement(query);
+    	pstmt.setBigDecimal(1, amount);
+    	pstmt.setInt(2, orderId);
+    	
+    	pstmt.executeUpdate();
+    }
+    
+    public void  updateAfterSalesStatus(Connection connection, int serviceId, AfterSalesApplyStatus service_status) throws SQLException{
+    	String query = "UPDATE after_sales_apply set service_status = ? where after_sales_apply_id = ?";
+    	
+    	PreparedStatement pstmt = connection.prepareStatement(query);
+    	pstmt.setInt(1, service_status.getValue());
+    	pstmt.setInt(2, serviceId);
+    	
+    	pstmt.executeUpdate();
+    }
+    
+    public void refund(Connection connection, int buyer_account_id, int seller_account_id, double balance) throws SQLException {
+    	
+        // 卖家 扣款
+    	String deduct_query = "UPDATE ACCOUNT SET account_balance = account_balance - ?  where account_id = ? ;" ;
+    	
+    	 PreparedStatement deduct_pstmt = connection.prepareStatement(deduct_query) ;
+    	 deduct_pstmt.setDouble(1, balance);
+    	 deduct_pstmt.setInt(2, seller_account_id);
+    	 deduct_pstmt.executeUpdate();
+    	 //  买家 加款
+    	 String add_query = "UPDATE ACCOUNT SET account_balance = account_balance + ? where account_id = ?";
+    	 PreparedStatement add_pstmt = connection.prepareStatement(add_query) ;
+    	 add_pstmt.setDouble(1, balance);
+    	 add_pstmt.setInt(2, buyer_account_id);
+    	 add_pstmt.executeUpdate();
+    	 
+    }
+    
+    public enum AfterSalesApplyStatus {
+        APPLIED(0),   // 已申请
+        APPROVED(1),   // 已退款
+        REJECTED(2);  // 拒绝退款
+
+        private final int value;
+
+        AfterSalesApplyStatus(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
     }
 }

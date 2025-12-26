@@ -158,7 +158,7 @@
 	                                <th>商品规格</th>
 	                                <th>购买数量</th>
 	                                <th>商品单价</th>
-	                                <th></th>
+	                                <th>操作</th>
 	                                <!-- <th>订单金额</th> -->
 	                            </tr>
 	                            </thead>
@@ -173,7 +173,8 @@
 	                                    <td>${o.quantity}</td>
 	                                    <td>¥${o.price}</td>				    
 	                                     <td><a href="order-comment?order_id=${order.id}&product_id=${o.product.id}&sku=${o.pickedColor}" class="btn">
-	                                      <span>评论</span></a> </td> 
+	                                      <span>评论</span></a> | <a href="after-sales-apply?order_id=${order.id}&product_id=${o.product.id}&sku=${o.pickedColor}" class="btn">
+	                                      <span>申请售后</span></a></td> 
 	
 	                                </tr>
 	                            </c:forEach>
