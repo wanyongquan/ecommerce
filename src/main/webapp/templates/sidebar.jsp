@@ -25,7 +25,7 @@
                       </a>
                 </li>
                 <li class="nav-item">
-                      <a href="shop-profile" class="nav-link">
+                      <a href="shop-management" class="nav-link">
                           <i class="nav-icon fas fa-store"></i>
                           <p>店铺中心</p>
                       </a>

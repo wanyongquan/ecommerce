@@ -59,6 +59,8 @@ public class AuthFilter extends HttpFilter implements Filter {
         AUTH_RULES.put("/shipping-order-detail", Set.of(AuthFilter.SELLER));
         AUTH_RULES.put("/after-sales-management", Set.of(AuthFilter.SELLER));
         AUTH_RULES.put("/profile-page-seller",  Set.of(AuthFilter.SELLER));
+        AUTH_RULES.put("/shop-management",  Set.of(AuthFilter.SELLER));
+        
         // 多角色共用页面
         
         AUTH_RULES.put("/recipient-addresses", Set.of(AuthFilter.USER, AuthFilter.SELLER));

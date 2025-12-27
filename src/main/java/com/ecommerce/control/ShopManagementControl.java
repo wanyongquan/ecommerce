@@ -3,6 +3,7 @@ package com.ecommerce.control;
 import java.io.IOException;
 import java.sql.SQLException;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.*;
 import javax.servlet.http.*;
@@ -18,6 +19,40 @@ public class ShopManagementControl  extends HttpServlet{
 	ShopDao shopDao = new ShopDao();
 
 	@Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    	// 设置请求编码，避免中文乱码
+        request.setCharacterEncoding("UTF-8"); 
+    	HttpSession session = request.getSession();
+         Account account = (Account) session.getAttribute("account");
+         String alertMsg = (String) session.getAttribute("alertMsg");
+         String alertType = (String) session.getAttribute("alertType");
+         if (alertMsg != null) {
+        	    request.setAttribute("alertMsg", alertMsg);
+        	    request.setAttribute("alertType", alertType);
+
+        	    session.removeAttribute("alertMsg");
+        	    session.removeAttribute("alertType");
+        	}
+         try {
+	         Shop shop = shopDao.getAccountShop(account.getId());
+	         request.setAttribute("account_shop", shop);
+         }
+         catch (SQLException e) {
+             // 更详细的错误处理
+             System.err.println("数据库操作失败:");
+             System.err.println("SQL状态码: " + e.getSQLState());
+             System.err.println("错误代码: " + e.getErrorCode());
+             System.err.println("错误信息: " + e.getMessage());
+         }
+         catch(Exception e)
+         {
+         	 System.err.println("失败: " + e.getMessage());
+         }
+    	RequestDispatcher requestDispatcher = request.getRequestDispatcher("/WEB-INF/shop-profile-page.jsp");
+        requestDispatcher.forward(request, response);
+    }
+	
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// 设置请求编码，避免中文乱码
         request.setCharacterEncoding("UTF-8");
@@ -29,9 +64,10 @@ public class ShopManagementControl  extends HttpServlet{
 		
 		// 3. 参数校验
         if (shopName == null || shopName.trim().isEmpty()) {
-            request.setAttribute("shop_update_msg", 
-                "<div class='alert alert-danger'>店铺名称不能为空！</div>");
-            request.getRequestDispatcher("/WEB-INF/profile-page.jsp").forward(request, response);
+        	session.setAttribute("alertMsg", "店铺名称不能为空");
+        	session.setAttribute("alertType", "danger");
+		    
+            response.sendRedirect(request.getContextPath() + "/shop-management");
             return;
         }
         
@@ -40,38 +76,47 @@ public class ShopManagementControl  extends HttpServlet{
             shopDescription = shopDescription.trim();
         }
         
-		try {
-			// 4. 检查店铺名称是否已存在
+		try {			
+			// 4. 检查当前账户是否已有店铺
+			boolean hasShop = shopDao.checkAccountShopExists(account.getId());
+			// 5. 根据店名查询店铺
 			Shop existShop = shopDao.getShop(shopName);
-            if (existShop == null) {
-            	// 不存在，可用；
-            	if  (shopDao.checkAccountShopExists(account.getId())) {
-            		//更新店铺；
-            		shopDao.updateShopInformation(account.getId(), shopName, shopDescription);
-            	}
-            	else {
-            		
-	            	// 不存在，新建店铺；
-	            	shopDao.CreateShop(account.getId(), shopName, shopDescription);
-            	
-            	}
-            	String alert = "<div class=\"alert alert-success wrap-input100\">\n" +
-                        "                        <p style=\"font-family: Ubuntu-Bold; font-size: 18px; margin: 0.25em 0; text-align: center\">\n" +
-                        "                            保存成功!\n" +
-                        "                        </p>\n" +
-                        "                    </div>";
-                request.setAttribute("alert", alert);
-                request.getRequestDispatcher("/WEB-INF/profile-page.jsp").forward(request, response);
-            }else if ( existShop.getAccountId() != account.getId()) {
-            	// 存在，属于其他用户，不可用；
-	                String alert = "<div class='alert alert-danger'>"
-	                        + "    <strong>更新失败！</strong>店铺名称 \"" + shopName + "\" 已存在，请使用其他名称。"
-	                        + "</div>";
-	           request.setAttribute("shop_update_msg", alert);
-	           
-	           request.getRequestDispatcher("/WEB-INF/profile-page.jsp").forward(request, response);
-	           
-            }
+			/*
+			 * 情况分析：
+			 * 1）无 shop + 名字未被占用 → 创建
+			 * 2）无 shop + 名字被占用 → 提示
+			 * 3）有 shop + 名字未被占用 → 更新
+			 * 4）有 shop + 名字被占用（非自己）→ 提示
+			 */
+			// ===== 情况 2 / 4：名字被占用且不是自己的 =====
+			if (existShop != null && existShop.getAccountId() != account.getId()) {
+
+				session.setAttribute("alertMsg", "店铺名称已被使用，请选择其他名称");
+				session.setAttribute("alertType", "danger");
+			    
+
+			    response.sendRedirect(request.getContextPath() + "/shop-management");	
+			    return;
+			}
+			// ===== 情况 1：无 shop + 名字可用 → 创建 =====
+			if (!hasShop) {
+
+			    shopDao.CreateShop(account.getId(), shopName, shopDescription);
+
+			}
+			// ===== 情况 3：有 shop + 名字可用 → 更新 =====
+			else {
+
+			    shopDao.updateShopInformation(account.getId(), shopName, shopDescription);
+			}
+			// ===== 成功提示 =====
+			session.setAttribute("alertMsg", "保存成功！");
+			session.setAttribute("alertType", "success");
+
+               
+            response.sendRedirect(request.getContextPath() + "/shop-management");	
+	        return; 
+            
 		} catch (SQLException e) {
             // 更详细的错误处理
             System.err.println("数据库操作失败:");
@@ -83,6 +128,7 @@ public class ShopManagementControl  extends HttpServlet{
         {
         	 System.err.println("失败: " + e.getMessage());
         }
+		 response.sendRedirect(request.getContextPath() + "/shop-management");	
 	}
 	
 

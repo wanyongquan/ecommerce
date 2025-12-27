@@ -108,7 +108,7 @@
                 <c:if test="${sessionScope.account.isAdmin == 1}">
                     <li class="${websitem_active}"><a href="#">网站管理</a></li>
                 </c:if>
-                <li class="${about_active}"><a href="${pageContext.request.contextPath}${pageContext.request.servletPath}/../about.jsp">关于</a></li>
+                <li class="${about_active}"><a href="${pageContext.request.contextPath}/about.jsp">关于</a></li>
             </ul>
         </div>
     </nav>

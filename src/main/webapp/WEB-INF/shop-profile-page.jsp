@@ -6,7 +6,6 @@
 <html lang="zh-CN">
 <jsp:include page="/templates/head-admin.jsp"/>
 
-<body>
 <body class="hold-transition sidebar-mini">
 	<div class="wrapper">
 	<!-- 顶部 navbar -->
@@ -88,7 +87,39 @@
 <%--     <jsp:include page="/templates/footer.jsp"/> --%>
 </div><!-- /.wrapper -->
 
-
 <jsp:include page="/templates/scripts.jsp"/>
+<c:if test="${not empty alertMsg}">
+<div class="modal fade" id="alertModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header bg-${alertType}">
+                <h5 class="modal-title text-white">
+                    提示
+                </h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body text-center">
+                <p>${alertMsg}</p>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary"
+                        data-dismiss="modal">确定</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('#alertModal').modal('show');
+    });
+</script>
+</c:if>
 </body>
 </html>

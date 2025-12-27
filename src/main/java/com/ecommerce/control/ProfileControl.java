@@ -31,11 +31,15 @@ public class ProfileControl extends HttpServlet {
     	HttpSession session = request.getSession();
          Account account = (Account) session.getAttribute("account");
          
-         String alert = (String) session.getAttribute("alert");
-         if (alert != null) {
-             request.setAttribute("alert", alert);
-             session.removeAttribute("alert"); // 关键：只显示一次
-         }
+         String alertMsg = (String) session.getAttribute("alertMsg");
+         String alertType = (String) session.getAttribute("alertType");
+ 		if (alertMsg != null) {
+     	    request.setAttribute("alertMsg", alertMsg);
+     	    request.setAttribute("alertType", alertType);
+
+     	    session.removeAttribute("alertMsg");
+     	    session.removeAttribute("alertType");
+     	}
          try {
 	         Shop shop = shopDao.getAccountShop(account.getId());
 	         request.setAttribute("account_shop", shop);
@@ -82,12 +86,8 @@ public class ProfileControl extends HttpServlet {
 				 // 更新session中的Account的value
 				 Account account_new = accountDao.getAccount(accountId);
 				 session.setAttribute("account", account_new);
-				 String alert = "<div class=\"alert alert-success wrap-input100\">\n" +
-		                    "                        <p style=\"font-family: Ubuntu-Bold; font-size: 18px; margin: 0.25em 0; text-align: center\">\n" +
-		                    "                            个人信息成功保存!\n" +
-		                    "                        </p>\n" +
-		                    "                    </div>";
-				 session.setAttribute("alert", alert);		 
+				 session.setAttribute("alertMsg", "个人信息保存成功！");
+					session.setAttribute("alertType", "success");	 
 			} catch (Exception e) {
 		        
 		        throw new AppException("数据库操作异常",e); // 继续向上抛
@@ -111,12 +111,8 @@ public class ProfileControl extends HttpServlet {
 				 // 更新session中的Account的value
 				 Account account_new = accountDao.getAccount(accountId);
 				 session.setAttribute("account", account_new);
-				 String alert = "<div class=\"alert alert-success wrap-input100\">\n" +
-		                    "                        <p style=\"font-family: Ubuntu-Bold; font-size: 18px; margin: 0.25em 0; text-align: center\">\n" +
-		                    "                            头像成功保存!\n" +
-		                    "                        </p>\n" +
-		                    "                    </div>";
-				 session.setAttribute("alert", alert);		 
+				 session.setAttribute("alertMsg", "头像保存成功！");
+				 session.setAttribute("alertType", "success");
 			} catch (Exception e) {
 		        
 		        throw new AppException("数据库操作异常",e); // 继续向上抛

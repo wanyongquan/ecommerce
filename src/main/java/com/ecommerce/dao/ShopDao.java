@@ -91,13 +91,14 @@ public class ShopDao {
 	
 	public int updateShopInformation(int accountId, String shopName, String shopDescription) throws SQLException{
 		String query = "Update shop.shop set " + 
-				"shop_name = ? " + 
-				"shop_description = ?";
+				"shop_name = ?, " + 
+				"shop_description = ? where fk_account_id= ?";
 		
 		try (Connection connection = new Database().getConnection();
    	         PreparedStatement pstmt = connection.prepareStatement(query)) {
 			pstmt.setString(1, shopName);
 			pstmt.setString(2, shopDescription);
+			pstmt.setInt(3, accountId);
 			
 	           // 执行更新，返回受影响的行数
             int affectedRows = pstmt.executeUpdate();

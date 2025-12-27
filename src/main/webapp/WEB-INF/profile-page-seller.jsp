@@ -38,7 +38,7 @@
 	</section>
 	<section class="content">
 	    <div class="container-fluid">
-                     ${alert}
+                     
             <!-- Tab 导航 -->
 			<ul class="nav nav-tabs mb-4" role="tablist">
 			    <li class="nav-item">
@@ -188,5 +188,39 @@
     }
 </script>
 <jsp:include page="/templates/scripts.jsp"/>
+<c:if test="${not empty alertMsg}">
+<div class="modal fade" id="alertModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header bg-${alertType}">
+                <h5 class="modal-title text-white">
+                    提示
+                </h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body text-center">
+                <p>${alertMsg}</p>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary"
+                        data-dismiss="modal">确定</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('#alertModal').modal('show');
+    });
+</script>
+</c:if>
+
 </body>
 </html>
