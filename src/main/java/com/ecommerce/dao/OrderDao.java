@@ -377,8 +377,9 @@ public class OrderDao {
         List<Order> list = new ArrayList<>();
         String query = "SELECT * FROM `order` WHERE seller_account_id = ? " ;
         if (status != null) {
-        	query += " AND order_status = ?";
+        	query += " AND order_status = ? ";
         }
+        query += " order by order_status, order_date_create desc ";
                 
         preparedStatement = connection.prepareStatement(query);
         preparedStatement.setInt(1, seller_accountId);

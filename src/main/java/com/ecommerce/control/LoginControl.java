@@ -83,7 +83,7 @@ public class LoginControl extends HttpServlet {
         }
         else {
           // 登录成功后跳转到首页
-          response.sendRedirect(request.getContextPath() + "/index.jsp");
+          response.sendRedirect(request.getContextPath() + "");
         }
 
     }
