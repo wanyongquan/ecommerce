@@ -35,7 +35,8 @@ public class AfterSalesControl extends HttpServlet {
         request.setCharacterEncoding("UTF-8"); 
         HttpSession session = request.getSession();
         Account account = (Account) session.getAttribute("account");
-        System.out.println("Comment : " + " 检查是否已经登录");
+        
+        System.out.println("Comment : " + " 检查是否已经登录： ");
         if (account == null) {
         	throw new AppException("LoginRequired");
         }

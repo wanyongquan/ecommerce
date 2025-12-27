@@ -47,7 +47,7 @@
                                     <td>${o.id}</td>
 								
                                     <td>¥${o.total}</td>
-									<td> TODO:改成收件人 ¥${o.total}</td>
+									<td>${o.recipientName}</td>
                                     <td>${o.date}</td>
 									<td><c:choose>
 								        <c:when test="${o.status == 0}">买家已付款</c:when>

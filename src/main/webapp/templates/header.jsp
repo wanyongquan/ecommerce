@@ -24,15 +24,15 @@
                         <ul>
                             <c:if test="${sessionScope.account != null}">
                                 <li>
-                                    <c:if test="${account.base64Image != null}">
+                                    <c:if test="${not empty account.base64Image}">
                                         <img class="icon" src="data:image/jpg;base64,${account.base64Image}"
                                              id="dropdownMenuReference"
                                              data-toggle="dropdown" alt="image"
                                              style="width: 1.5em; border-radius: 50%; margin-right: 10px; margin-bottom: 10px">
                                     </c:if>
 
-                                    <c:if test="${account.base64Image == null}">
-                                        <img class="icon" src="../static/images/blank_avatar.png"
+                                    <c:if test="${empty account.base64Image}">
+                                        <img class="icon" src="${pageContext.request.contextPath}/static/images/blank_avatar.png"
                                              id="dropdownMenuReference"
                                              data-toggle="dropdown" alt="image"
                                              style="width: 1.5em; border-radius: 50%; margin-right: 10px; margin-bottom: 10px">
@@ -41,7 +41,7 @@
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuReference">
                                         <a class="dropdown-item" href="profile-page">我的个人中心</a>
                                         <a class="dropdown-item" href="recipient-addresses">收货人地址</a>
-                                        <a class="dropdown-item" href=" after-sales-history">售后服务</a>                                       
+                                        <a class="dropdown-item" href="after-sales-history">售后服务</a>                                       
                                         <a class="dropdown-item" href="logout">退出登录</a>
                                     </div>
                                 </li>
@@ -92,9 +92,8 @@
                 <li class="${home_active}"><a href="${pageContext.request.contextPath}/">主页</a></li>
                 
                 <li class="${shop_active}"><a href="${pageContext.request.contextPath}/shop">商城</a></li>
-                <li class="${contact_active}"><a href="${pageContext.request.contextPath}${pageContext.request.servletPath}/../contact.jsp"> 售后服务</a></li>
-                <%-- <li class="${product_management_active}"><a href="${pageContext.request.contextPath}${pageContext.request.servletPath}/../product-management.jsp">商品管理</a></li>
- --%>
+                <li class="${after_sales_active}"><a href="${pageContext.request.contextPath}/after-sales-history"> 售后服务</a></li>
+                
 
                 <c:if test="${sessionScope.account.isSeller == 0}">
                     <li class="${order_history_active}"><a href="order-history">我的订单</a></li>

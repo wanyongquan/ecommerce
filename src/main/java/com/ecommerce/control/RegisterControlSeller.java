@@ -58,7 +58,7 @@ public class RegisterControlSeller extends HttpServlet {
                     "                        </p>\n" +
                     "                    </div>";
             request.setAttribute("alert", alert);
-            request.getRequestDispatcher("login_seller.jsp").forward(request, response);
+            request.getRequestDispatcher("login-seller.jsp").forward(request, response);
         }
     }
 }

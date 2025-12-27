@@ -44,6 +44,12 @@ public class HomeSellerControl extends HttpServlet {
         request.setCharacterEncoding("UTF-8"); 
     	HttpSession session = request.getSession();
          Account account = (Account) session.getAttribute("account");
+         // 检查当前用户是否卖家，如果不是， 转到 卖家登录页面； 
+         System.out.println("Seller Home : " + " 检查是否已经登录 ，是否商家账号");
+         if (account == null || account.getIsSeller() != 1) {
+        	 request.getRequestDispatcher("login-seller.jsp").forward(request, response);
+        	 return ;
+         }
     	// get the amount of the all products; 
          Connection connection= null;
         try {

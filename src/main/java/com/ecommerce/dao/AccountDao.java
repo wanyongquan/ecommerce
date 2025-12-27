@@ -129,32 +129,45 @@ public class AccountDao {
 
 
     // Method to edit profile information.
-    public void editProfileInformation(Connection connection, int accountId, String firstName, String lastName, String address, String email, String phone, InputStream image) {
+    public void editProfileInformation(Connection connection, int accountId, String firstName, String lastName, String address, String email, String phone) throws SQLException {
         String query = "UPDATE account SET " +
                 "account_first_name = ?, " +
                 "account_last_name = ?, " +
                 "account_address = ?, " +
                 "account_email = ?, " +
-                "account_phone = ?, " +
-                "account_image = ?" +
+                "account_phone = ? " +
+                
                 "WHERE account_id = ?";
-        try {
-            
-            
+       
+                       
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, firstName);
             preparedStatement.setString(2, lastName);
             preparedStatement.setString(3, address);
             preparedStatement.setString(4, email);
             preparedStatement.setString(5, phone);
-            preparedStatement.setBinaryStream(6, image);
-            preparedStatement.setInt(7, accountId);
+          
+            preparedStatement.setInt(6, accountId);
             preparedStatement.executeUpdate();
-        } catch ( SQLException e) {
-            System.out.println("Update profile catch: " + e.getMessage());
-        }
+       
     }
 
+ // Method to edit profile avatar.
+    public void editProfileAvatar(Connection connection, int accountId, InputStream image) throws SQLException {
+        String query = "UPDATE account SET " +
+                "account_image = ?" +
+                "WHERE account_id = ?";
+       
+                       
+            preparedStatement = connection.prepareStatement(query);
+           
+            preparedStatement.setBinaryStream(1, image);
+            
+            preparedStatement.setInt(2, accountId);
+            preparedStatement.executeUpdate();
+       
+    }
+    
     // Method to update profile information.
     public void updateProfileInformation(int accountId, String firstName, String lastName, String address, String email, String phone) {
         String query = "UPDATE account SET " +

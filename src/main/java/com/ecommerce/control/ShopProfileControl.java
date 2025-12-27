@@ -78,6 +78,6 @@ public class ShopProfileControl extends HttpServlet {
 		}
        
        
-        response.sendRedirect(request.getContextPath() + "/WEB-INF/profile-page.jsp");
+        response.sendRedirect(request.getContextPath() + "/shop-profile");
     }
 }

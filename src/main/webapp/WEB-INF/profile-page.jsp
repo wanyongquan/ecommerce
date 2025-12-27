@@ -5,7 +5,14 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <jsp:include page="/templates/head.jsp"/>
-
+<style>
+    /* 强制头像 Tab 内容从顶部开始 */
+   #tab-avatar {
+        display: block !important;
+        height: auto !important;
+        min-height: 0 !important;
+    }
+</style>
 <body>
 <div class="site-wrap">
      <jsp:include page="/templates/header.jsp"/>
@@ -23,74 +30,40 @@
 
     <div class="site-section">
         <div class="container">
-            <form class="row" action="profile-page" method="post" enctype="multipart/form-data">
-                <div class="col-md-4">
-                    <div class="row">
-                        <div class="col-md-12">
-
-                            <h2 class="h3 mb-3 text-black">头像</h2>
-
-
-                            <div class="p-3 border d-flex justify-content-center">
-                                <label class="m-0" for="imgInp">
-                                    <figure class="d-flex justify-content-center m-0">
-                                        <c:if test="${account.base64Image != null}">
-                                            <img class="icon" src="data:image/jpg;base64,${account.base64Image}"
-                                                 id="blah"
-
-                                                 data-toggle="dropdown" alt="个人头像"
-
-                                                 style="width: 15em; height: 15em; border-radius: 50%;">
-                                        </c:if>
-
-                                        <c:if test="${account.base64Image == null}">
-                                            <img class="icon" src="../static/images/blank_avatar.png"
-                                                 id="blah"
-
-                                                 data-toggle="dropdown" alt="默认头像"
-
-                                                 style="width: 15em; height: 15em; border-radius: 50%;">
-                                        </c:if>
-                                    </figure>
-
-                                    <figcaption style="text-align: center">
-
-                                        点击此处更换头像
-
-                                    </figcaption>
-                                </label>
-
-                                <input name="profile-image" type="file" id="imgInp" style="display: none;">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-8 mb-5 mb-md-0">
-
-                    <h2 class="h3 mb-3 text-black">个人信息</h2>
-
+           ${alert}
+            <!-- Tab 导航 -->
+			<ul class="nav nav-tabs mb-4" role="tablist">
+			    <li class="nav-item">
+			        <a class="nav-link active" data-toggle="tab" href="#tab-info" role="tab">个人信息</a>
+			    </li>
+			    <li class="nav-item">
+			        <a class="nav-link" data-toggle="tab" href="#tab-avatar" role="tab">头像设置</a>
+			    </li>
+			</ul>
+			
+			<div class="tab-content">       
+                        
+                <!-- ================= 个人信息 Tab ================= -->
+				<div class="tab-pane fade show active col-md-12" id="tab-info" role="tabpanel">
+				    <form action="profile-page" method="post">
+	        		<input type="hidden" name="updateType" value="info">
+	
+	        		<h2 class="h3 mb-3 text-black">个人信息</h2>
 
                     <div class="p-3 p-lg-5 border">
                         <div class="form-group row">
                             <div class="col-md-6">
                                 <label for="first-name" class="text-black">
-
                                     名 <span class="text-danger">*</span>
-
                                 </label>
-
                                 <input type="text" class="form-control" id="first-name" name="first-name"
                                        value="${account.firstName}">
                             </div>
 
                             <div class="col-md-6">
                                 <label for="last-name" class="text-black">
-
                                     姓 <span class="text-danger">*</span>
-
                                 </label>
-
                                 <input type="text" class="form-control" id="last-name" name="last-name"
                                        value="${account.lastName}">
                             </div>
@@ -99,11 +72,8 @@
                         <div class="form-group row">
                             <div class="col-md-12">
                                 <label for="address" class="text-black">
-
                                     地址 <span class="text-danger">*</span>
-
                                 </label>
-
                                 <input type="text" class="form-control" id="address" name="address"
                                        value="${account.address}">
                             </div>
@@ -112,108 +82,92 @@
                         <div class="form-group row mb-5">
                             <div class="col-md-6">
                                 <label for="email" class="text-black">
-
                                     电子邮箱 <span class="text-danger">*</span>
-
                                 </label>
-
                                 <input type="text" class="form-control" id="email" name="email"
                                        value="${account.email}">
                             </div>
                             <div class="col-md-6">
                                 <label for="phone" class="text-black">
-
                                     手机号码 <span class="text-danger">*</span>
-
                                 </label>
-
                                 <input type="text" class="form-control" id="phone" name="phone"
                                        value="${account.phone}">
-                            </div>
-                             
+                            </div>                      
                         </div>
-
                         <div class="form-group">
                             <label for="summary" class="text-black">
-
                                 个人简介
                             </label>
-
                             <textarea name="summary" id="summary" cols="30" rows="5" class="form-control"
                                       placeholder="在此填写您的个人备注..."></textarea>
                         </div>
 
                         <div class="form-group">
                             <button type="submit" onclick="window.location.href='${pageContext.request.contextPath}/index.jsp'" class="btn btn-primary btn-lg py-3 btn-block">更新资料</button>
-
-                        </div>
-                    </div>
-                </div>
-            </form>
-             <!-- 新增：店铺信息管理区域 -->
-             <c:if test="${sessionScope.account.isSeller == 0}">
-            <div class="row mb-5">
-                <div class="col-md-12">
-                    <h2 class="h3 mb-3 text-black">账户信息</h2>
-                     ${alert}
-                     <div class="col-md-6">
-                          <label for="balance" class="text-black">
-
-                              账户余额 <span class="text-danger">*</span>
-
-                          </label>
-
-                          <input type="text" readonly class="form-control" id="balance" name="balance"
-                                 value="${account.balance}">
-                      </div>
-            </div>
-            </c:if>  
-            <!-- 新增：店铺信息管理区域 -->
-             <c:if test="${sessionScope.account.isSeller == 1}">
-            <div class="row mb-5">
-                <div class="col-md-12">
-                    <h2 class="h3 mb-3 text-black">店铺信息管理</h2>
-                     ${alert}
-                    <form action="shop-management" method="post" class="border p-4 bg-light">
-                        <div class="form-group">
-                            <label for="shop_name" class="text-black font-weight-bold">
-                                店铺名称 <span class="text-danger">*</span>
-                            </label>
-                            <input type="text" class="form-control" id="shop_name" name="shop_name" 
-                                   value="${account_shop.shopName}" required
-                                   placeholder="请输入您的店铺名称">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="shop_description" class="text-black font-weight-bold">
-                                店铺说明
-                            </label>
-                            <textarea class="form-control" id="shop_description" name="shop_description" 
-                                      rows="4" placeholder="请简要描述您的店铺特色、主营商品等...">${account_shop.shopDescription}</textarea>
-                            <small class="form-text text-muted">店铺说明将显示在店铺首页，建议简洁明了。</small>
-                        </div>
-                        
-                        <div class="form-group mt-4">
-                            <button type="submit" class="btn btn-success btn-lg">
-                                <i class="icon icon-save"></i> 更新店铺信息
-                            </button>
-                            
-                        </div>
-                        
-                        <!-- 可选：显示操作反馈 -->
-                        <c:if test="${not empty shop_update_msg}">
-                            <div class="alert alert-info mt-3">
-                                ${shop_update_msg}
+						 </div>
+                         </div>
+				</form>
+				<!-- 账户信息（移入个人信息 Tab，独立区域） -->
+                        <c:if test="${sessionScope.account.isSeller == 0}">
+                            <div class="mt-4 p-3 p-lg-4 border">
+                                <h3 class="h5 mb-3 text-black">账户信息</h3>
+                                <div class="form-group col-md-6 pl-0">
+                                    <label class="text-black">账户余额</label>
+                                    <input type="text"
+                                           readonly
+                                           class="form-control"
+                                           value="${account.balance}">
+                                </div>
                             </div>
                         </c:if>
-                    </form>
-                </div>
-            </div>
-            </c:if>
-        </div>
-    </div>
+               </div>
+            
+             <!-- ================= 头像设置 Tab ================= -->
+               <div class="tab-pane fade col-md-12" id="tab-avatar" role="tabpanel">
+                   <form action="profile-page" method="post" enctype="multipart/form-data">
+                       <input type="hidden" name="updateType" value="avatar">
 
-    <%--     <jsp:include page="../templates/footer.jsp"/> --%>
+                       <h2 class="h3 mb-3 text-black">头像</h2>
+						<!-- 居上对齐容器 --> 
+                       <div class="border p-4 text-center">                   
+                             <figure class="mb-3">
+                                 <c:if test="${not empty account.base64Image}">
+                                     <img id="blah"
+                                          src="data:image/jpg;base64,${account.base64Image}"
+                                          alt="个人头像"
+                                          style="width:15em;height:15em;border-radius:50%;">
+                                 </c:if>
+                                 <c:if test="${empty account.base64Image}">
+                                     <img id="blah"
+                                          src="${pageContext.request.contextPath}/static/images/blank_avatar.png"
+                                          alt="默认头像"
+                                          style="width:15em;height:15em;border-radius:50%;">
+                                 </c:if>
+                             </figure>
+                             <label class="d-block mb-3" for="imgInp"
+                                     style="cursor:pointer;">
+                                 点击此处更换头像                         
+                         	</label>
+                           <input name="profile-image" type="file"
+                                  id="imgInp" style="display:none;">
+                       </div>
+
+                       <div class="text-center mt-3">
+                           <button type="submit" class="btn btn-primary mt-2">
+                               更新头像
+                           </button>
+                       </div>
+                   </form>
+               </div>
+
+               
+            </div>   
+          
+           </div> <!-- container -->
+          
+        </div><!-- tab-content -->
+
 </div><!-- /.wrapper -->
 
 
@@ -226,6 +180,6 @@
     }
 </script>
 <jsp:include page="../templates/scripts.jsp"/>
-<style>
+
 </body>
 </html>

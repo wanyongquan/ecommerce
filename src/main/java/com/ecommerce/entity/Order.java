@@ -12,6 +12,8 @@ public class Order {
     private int status;
     private int seller_account_id = -1;
     
+    private String recipientName;
+    
     public Order() {
     }
 
@@ -103,6 +105,15 @@ public class Order {
 
 	public void setSeller_account_id(int seller_account_id) {
 		this.seller_account_id = seller_account_id;
+	}
+
+	
+	public String getRecipientName() {
+		return recipientName;
+	}
+
+	public void setRecipientName(String recipientName) {
+		this.recipientName = recipientName;
 	}
 
 	@Override

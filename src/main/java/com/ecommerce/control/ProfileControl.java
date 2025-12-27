@@ -1,5 +1,6 @@
 package com.ecommerce.control;
 
+import com.ecommerce.Exception.AppException;
 import com.ecommerce.dao.AccountDao;
 import com.ecommerce.dao.ShopDao;
 import com.ecommerce.database.Database;
@@ -29,6 +30,12 @@ public class ProfileControl extends HttpServlet {
         request.setCharacterEncoding("UTF-8"); 
     	HttpSession session = request.getSession();
          Account account = (Account) session.getAttribute("account");
+         
+         String alert = (String) session.getAttribute("alert");
+         if (alert != null) {
+             request.setAttribute("alert", alert);
+             session.removeAttribute("alert"); // 关键：只显示一次
+         }
          try {
 	         Shop shop = shopDao.getAccountShop(account.getId());
 	         request.setAttribute("account_shop", shop);
@@ -57,27 +64,73 @@ public class ProfileControl extends HttpServlet {
         Account account = (Account) session.getAttribute("account");
 
         int accountId = account.getId();
-        String firstName = request.getParameter("first-name");
-        String lastName = request.getParameter("last-name");
-        String address = request.getParameter("address");
-        String email = request.getParameter("email");
-        String phone = request.getParameter("phone");
-
-        // Set default profile image for account.
-        Part part = request.getPart("profile-image");
-        InputStream inputStream = part.getInputStream();
-
-        System.out.println(accountId + " " + firstName + " " + lastName + " " + address + " " + email + " " + phone);
-        
-        try (Connection connection = dbManager.getConnection();) {
-        
-			 accountDao.editProfileInformation(connection, accountId, firstName, lastName, address, email, phone, inputStream);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        String updateType = request.getParameter("updateType");
+        Connection connection = null;
+        if ("info".equals(updateType)) {
+	        String firstName = request.getParameter("first-name");
+	        String lastName = request.getParameter("last-name");
+	        String address = request.getParameter("address");
+	        String email = request.getParameter("email");
+	        String phone = request.getParameter("phone");
+	
+	        System.out.println(accountId + " " + firstName + " " + lastName + " " + address + " " + email + " " + phone);
+	       
+	        try {
+	        	connection = dbManager.getConnection();
+	        
+				 accountDao.editProfileInformation(connection, accountId, firstName, lastName, address, email, phone);
+				 // 更新session中的Account的value
+				 Account account_new = accountDao.getAccount(accountId);
+				 session.setAttribute("account", account_new);
+				 String alert = "<div class=\"alert alert-success wrap-input100\">\n" +
+		                    "                        <p style=\"font-family: Ubuntu-Bold; font-size: 18px; margin: 0.25em 0; text-align: center\">\n" +
+		                    "                            个人信息成功保存!\n" +
+		                    "                        </p>\n" +
+		                    "                    </div>";
+				 session.setAttribute("alert", alert);		 
+			} catch (Exception e) {
+		        
+		        throw new AppException("数据库操作异常",e); // 继续向上抛
+		    }finally {
+		        if (connection != null) {
+		            try {
+		                connection.close();
+		            } catch (SQLException ignored) {}
+		        }
+		    }
+        } else if ("avatar".equals(updateType)) {
+            // 只处理头像（只读 Part）
+        	 // Set default profile image for account.
+	        Part part = request.getPart("profile-image");
+	        InputStream inputStream = part.getInputStream();
+	        
+	        try {
+	        	connection = dbManager.getConnection();
+	        
+				 accountDao.editProfileAvatar(connection, accountId, inputStream);
+				 // 更新session中的Account的value
+				 Account account_new = accountDao.getAccount(accountId);
+				 session.setAttribute("account", account_new);
+				 String alert = "<div class=\"alert alert-success wrap-input100\">\n" +
+		                    "                        <p style=\"font-family: Ubuntu-Bold; font-size: 18px; margin: 0.25em 0; text-align: center\">\n" +
+		                    "                            头像成功保存!\n" +
+		                    "                        </p>\n" +
+		                    "                    </div>";
+				 session.setAttribute("alert", alert);		 
+			} catch (Exception e) {
+		        
+		        throw new AppException("数据库操作异常",e); // 继续向上抛
+		    }finally {
+		        if (connection != null) {
+		            try {
+		                connection.close();
+		            } catch (SQLException ignored) {}
+		        }
+		    }
+        }
        
-       
-        response.sendRedirect(request.getContextPath() + "/WEB-INF/profile-page.jsp");
+        response.sendRedirect(request.getContextPath() + "/profile-page");
     }
+    
+    
 }

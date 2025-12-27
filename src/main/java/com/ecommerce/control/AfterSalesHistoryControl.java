@@ -50,7 +50,7 @@ public class AfterSalesHistoryControl extends HttpServlet {
         	List<AfterSalesService> afterSalesList = productDao.getAfterSalesServiceHistory(connection, accountId); 
         	
         	request.setAttribute("after_sales_service_history", afterSalesList);
-        	
+        	request.setAttribute("after_sales_active", "active");
         	RequestDispatcher requestDispatcher = request.getRequestDispatcher("/WEB-INF/after-sales-history.jsp");
             requestDispatcher.forward(request, response);
         	

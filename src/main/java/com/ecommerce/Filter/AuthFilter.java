@@ -47,18 +47,20 @@ public class AuthFilter extends HttpFilter implements Filter {
         AUTH_RULES.put("/order-detail", Set.of(AuthFilter.USER));
         AUTH_RULES.put("/checkout", Set.of(AuthFilter.USER));
         AUTH_RULES.put("/cart", Set.of(AuthFilter.USER));
-        AUTH_RULES.put("after-sales.jsp", Set.of(AuthFilter.USER));
-
-        
+        AUTH_RULES.put("/after-sales", Set.of(AuthFilter.USER));
+        AUTH_RULES.put("/profile-page",  Set.of(AuthFilter.USER));
+        AUTH_RULES.put("/after-sales-history",  Set.of(AuthFilter.USER));
+        AUTH_RULES.put("/order-comment", Set.of(AuthFilter.USER));
         
         // 商家管理页面
         AUTH_RULES.put("/seller_home", Set.of(AuthFilter.SELLER));
-        AUTH_RULES.put("/order-management", Set.of(AuthFilter.SELLER));
+        AUTH_RULES.put("/order-management-seller", Set.of(AuthFilter.SELLER));
         AUTH_RULES.put("/product-management", Set.of(AuthFilter.SELLER));
         AUTH_RULES.put("/shipping-order-detail", Set.of(AuthFilter.SELLER));
         AUTH_RULES.put("/after-sales-management", Set.of(AuthFilter.SELLER));
+        AUTH_RULES.put("/profile-page-seller",  Set.of(AuthFilter.SELLER));
         // 多角色共用页面
-        AUTH_RULES.put("/profile-page",  Set.of(AuthFilter.USER, AuthFilter.SELLER));
+        
         AUTH_RULES.put("/recipient-addresses", Set.of(AuthFilter.USER, AuthFilter.SELLER));
     }
     
@@ -99,7 +101,7 @@ public class AuthFilter extends HttpFilter implements Filter {
         }
         Set<String> rule = null;
         for(String key : AUTH_RULES.keySet()) {
-            if(path.startsWith(key)) {
+            if(path.equals(key)) {
                 rule = AUTH_RULES.get(key);
                 break;
             }
@@ -109,26 +111,19 @@ public class AuthFilter extends HttpFilter implements Filter {
             chain.doFilter(req, resp);
             return;
         }
-        System.out.print("\n当前访问的路径：" + uri); 
+        System.out.println("\n当前访问的路径：" + uri); 
         HttpSession session = req.getSession(false);
         Account account = (session == null)
                 ? null
                 : (Account) session.getAttribute("account");
-        System.out.println("AUTH : " + " 检查是否已经登录");
-        if (account == null) {
-        	
+        System.out.println("AUTH : " + " 检查是否已经登录：   "  + (account != null ? "已登录": "未登录" ));
+        if (account == null 
+        	|| !rule.contains(account.getRole().toUpperCase())) {
+        	// 未登录 或 已登录但无权限
         	redirectToLogin(req, resp, rule);
             return;
         }
-         // 已登录但无权限
-        if (!rule.contains(account.getRole().toUpperCase())) {
-//            resp.sendError(HttpServletResponse.SC_FORBIDDEN, "无权限访问");
-        	throw new AppException(
-        		    HttpServletResponse.SC_FORBIDDEN,
-        		    "您没有权限访问该页面"        		   
-        		);
-            
-        }
+         
         // 放行
         chain.doFilter(req, resp);
            
@@ -165,16 +160,17 @@ public class AuthFilter extends HttpFilter implements Filter {
         // 保存到session中
         HttpSession session = request.getSession();
         session.setAttribute("targetUrl", targetUrl);
-        
+        System.out.println(" 当前要访问的 URL：  " + targetUrl); 
     	// 取第一个角色
         String role = rule.iterator().next();
         String loginPage = ROLE_LOGIN_PAGE.get(role);
         
-        System.out.println(" 要求先登录 " + loginPage); 
+        System.out.println(" 要求先登录： " + loginPage); 
         if(loginPage == null) {
             loginPage = "/login.jsp"; // 默认兜底
         }
 
         response.sendRedirect(request.getContextPath() + loginPage);
     }
+    
 }

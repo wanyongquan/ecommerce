@@ -109,7 +109,7 @@
                 <p class="txt1" style="color: #999999">
 
                     还没有账号？
-                    <a href="register" class="txt1">
+                    <a href="register.jsp" class="txt1">
                         立即注册
 
                     </a>

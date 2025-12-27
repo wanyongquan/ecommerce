@@ -165,29 +165,25 @@ public class OrderDao {
     	
     }
     // Method to get order history of a customer.
-    public List<Order> getOrderHistory(int accountId) {
+    public List<Order> getOrderHistory(Connection connection, int accountId) throws SQLException {
         List<Order> list = new ArrayList<>();
-        String query = "SELECT * FROM `order` WHERE fk_account_id = " + accountId;
-        try {
-
-            Class.forName("com.mysql.cj.jdbc.Driver");
-
-            connection = new Database().getConnection();
-            preparedStatement = connection.prepareStatement(query);
-            resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                int orderId = resultSet.getInt(1);
-                double orderTotal = resultSet.getDouble(3);
-                Date orderDate = resultSet.getDate(4);
-                int status = resultSet.getInt(5);
-                int seller_id = resultSet.getInt(6);
-
-                list.add(new Order(orderId, orderTotal, orderDate, seller_id, status));
-            }
-        } catch (ClassNotFoundException | SQLException e) {
-            System.out.println("Order history catch:");
-            System.out.println(e.getMessage());
+//        String query = "SELECT * FROM `order` WHERE fk_account_id = " + accountId;
+        String query = "SELECT * FROM shop.order o , order_shipping_address osa where o.order_id = osa.order_id order by order_date_create desc";
+              
+        preparedStatement = connection.prepareStatement(query);
+        resultSet = preparedStatement.executeQuery();
+        while (resultSet.next()) {
+            int orderId = resultSet.getInt(1);
+            double orderTotal = resultSet.getDouble(3);
+            Date orderDate = resultSet.getDate(4);
+            int status = resultSet.getInt(5);
+            int seller_id = resultSet.getInt(6);
+            String recipientName = resultSet.getString("recipient_name");
+            Order order = new Order(orderId, orderTotal, orderDate, seller_id, status);
+            order.setRecipientName(recipientName);
+            list.add(order);
         }
+        
         return list;
     }
 

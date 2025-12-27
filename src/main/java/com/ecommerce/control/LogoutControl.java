@@ -15,7 +15,7 @@ public class LogoutControl extends HttpServlet {
         // Remove session.
         HttpSession session = request.getSession();
         session.removeAttribute("account");
-
+        session.removeAttribute("targetUrl");
         // Remove cookies.
         Cookie[] cookies = request.getCookies();
         for (Cookie cookie : cookies) {
