@@ -37,7 +37,7 @@ public class CartControl extends HttpServlet {
             		cartProduct.getPickedColor().equals(color)) {
                 // Remove price of deleting product from total price.
                 totalPrice -= (cartProduct.getPrice() * cartProduct.getQuantity());
-
+                order.setTotal(totalPrice);
                 // Remove product from cart.
                 iterator.remove();
             }
@@ -48,32 +48,20 @@ public class CartControl extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
         String color = null;
+      
         if (request.getParameter("color") != null) {
         	// Get the color of the product 
         	color = request.getParameter("color");                	
         }
-        // Check if request is remove product from cart or not.
+        // 从购物车移除商品
         if (request.getParameter("remove-product-id") != null) {
-            Order order = (Order) session.getAttribute("order");
-            double totalPrice = (double) session.getAttribute("total_price");
-            int productId = Integer.parseInt(request.getParameter("remove-product-id"));
-            removeCartProduct(productId, order, totalPrice, color);
-            response.sendRedirect("/WEB-INF/cart.jsp");
+            removeProductFromCart(request, response, session, color);
             return;
         }
 
         // Initialize default value for quantity and productId.
         int quantity = 1;
         int productId;
-
-
-        // Check is the total price of order exist or not.
-        double totalPrice;
-        if (session.getAttribute("total_price") == null) {
-            totalPrice = 0;
-        } else {
-            totalPrice = (double) session.getAttribute("total_price");
-        }
 
         // Generate if product exist in database.
         if (request.getParameter("product-id") != null) {
@@ -94,78 +82,11 @@ public class CartControl extends HttpServlet {
                     }
                 }
 
-
-
                 // Check the product has been added to cart yet.
                 if (session.getAttribute("order") == null) {
-                    // Create an order and list of product for it.
-                    Order order = new Order();
-                    List<CartProduct> list = new ArrayList<>();
-
-                    // Create a product and its quantity for the order.
-                    CartProduct cartProduct = new CartProduct();
-                    cartProduct.setQuantity(quantity);
-                    cartProduct.setProduct(product);
-                    cartProduct.setPrice(product.getPrice());
-                    cartProduct.setPickedColor(color);
-
-
-                    // Count the total price of the order.
-                    totalPrice += product.getPrice() * quantity;
-
-                    // Add product to list.
-                    
-                    list.add(cartProduct);
-                    // set seller account id;
-                    if ( order.getSeller_account_id() == -1) {
-                    	order.setSeller_account_id(product.getAccount().getId());
-                    }
-                    
-                    // Add list of cart products to order.
-                    order.setCartProducts(list);
-
-                    session.setAttribute("total_price", totalPrice);
-                    session.setAttribute("order", order);
+                    createOrderWithProduct(session, color, quantity, product);
                 } else {
-                    // Get exist order from session.
-                    Order order = (Order) session.getAttribute("order");
-                    // Get the list of products from order.
-                    List<CartProduct> list = order.getCartProducts();
-
-                    // Increase the product quantity if it is already exist in cart.
-                    boolean flag = false;
-                    for (CartProduct cartProduct : list) {
-
-                    	//TODO:  update the exist CartProduct, only if both ProductID and Color are identity;otherwise, create a new one;
-
-//                        if (cartProduct.getProduct().getId() == product.getId()) {
-//                            cartProduct.setQuantity(cartProduct.getQuantity() + quantity);
-//                            totalPrice += product.getPrice() * quantity;
-//                            flag = true;
-//                        }
-                    	if(cartProduct.getProduct().getId() == product.getId() && 
-                    			cartProduct.getPickedColor().equals(color)) {
-                    		// id 和规格都相同，则增加cartProduct的数量
-                    		cartProduct.setQuantity(cartProduct.getQuantity() + quantity);
-                    		totalPrice += product.getPrice() * quantity;
-                    		flag = true;
-                    	}
-                    }
-
-                    // Add new product to existing cart.
-                    if (!flag) {
-                        CartProduct cartProduct = new CartProduct();
-                        cartProduct.setQuantity(quantity);
-                        cartProduct.setProduct(product);
-                        cartProduct.setPrice(product.getPrice());
-                        cartProduct.setPickedColor(color);
-
-                        totalPrice += product.getPrice() * quantity;
-                        list.add(cartProduct);
-                    }
-
-                    session.setAttribute("total_price", totalPrice);
-                    session.setAttribute("order", order);
+                    addProductToOrder(session, color, quantity, product);
                 }
             }
             response.sendRedirect("product-detail?id=" + productId);
@@ -176,5 +97,85 @@ public class CartControl extends HttpServlet {
         	requestDispatcher.forward(request, response);
         }
     }
+
+    // 在已有的订单对象中增加商品；
+	public void addProductToOrder(HttpSession session, String color, int quantity, Product product) {
+		// Get exist order from session.
+		Order order = (Order) session.getAttribute("order");
+		double totalPrice = order.getTotal();
+		// Get the list of products from order.
+		List<CartProduct> list = order.getCartProducts();
+
+		// Increase the product quantity if it is already exist in cart.
+		boolean flag = false; // 标志 当前商品是否已经在订单中；
+		for (CartProduct cartProduct : list) {
+			if(cartProduct.getProduct().getId() == product.getId() && 
+					cartProduct.getPickedColor().equals(color)) {
+				// id 和规格都相同，则增加cartProduct的数量
+				cartProduct.setQuantity(cartProduct.getQuantity() + quantity);
+				totalPrice += product.getPrice() * quantity;
+				order.setTotal(totalPrice);
+				flag = true;
+			}
+		}
+
+		// Add new product to existing cart.
+		if (!flag) {
+		    CartProduct cartProduct = new CartProduct();
+		    cartProduct.setQuantity(quantity);
+		    cartProduct.setProduct(product);
+		    cartProduct.setPrice(product.getPrice());
+		    cartProduct.setPickedColor(color);
+
+		     totalPrice += product.getPrice() * quantity;
+		     order.setTotal(totalPrice);
+		    list.add(cartProduct);
+		}
+
+		session.setAttribute("order", order);
+	}
+
+	// 创建一个新订单， 并把当前商品加入订单；
+	public void createOrderWithProduct(HttpSession session, String color, int quantity, Product product) {
+		// Create an order and list of product for it.
+		Order order = new Order();
+		List<CartProduct> list = new ArrayList<>();
+
+		// Create a product and its quantity for the order.
+		CartProduct cartProduct = new CartProduct();
+		cartProduct.setQuantity(quantity);
+		cartProduct.setProduct(product);
+		cartProduct.setPrice(product.getPrice());
+		cartProduct.setPickedColor(color);
+
+		// Count the total price of the order.
+		double totalPrice = product.getPrice() * quantity;
+		order.setTotal(totalPrice);
+		
+		// Add product to list.		
+		list.add(cartProduct);
+		
+		// set seller account id;
+		if ( order.getSeller_account_id() == -1) {
+			order.setSeller_account_id(product.getAccount().getId());
+		}
+		
+		// Add list of cart products to order.
+		order.setCartProducts(list);
+
+		session.setAttribute("order", order);
+	}
+
+    //  从购物车移除商品
+	public void removeProductFromCart(HttpServletRequest request, HttpServletResponse response, HttpSession session,
+			String color) throws ServletException, IOException {
+		Order order = (Order) session.getAttribute("order");
+		
+		int productId = Integer.parseInt(request.getParameter("remove-product-id"));
+		removeCartProduct(productId, order, order.getTotal(), color);
+		session.setAttribute("order", order);
+		RequestDispatcher requestDispatcher = request.getRequestDispatcher("/WEB-INF/cart.jsp");
+		requestDispatcher.forward(request, response);
+	}
     
 }

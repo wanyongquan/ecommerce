@@ -113,20 +113,7 @@
 
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-12">
-
-                            <label class="text-black h4" for="coupon">优惠券</label>
-                            <p>如有优惠券，请输入优惠码。</p>
-                        </div>
-                        <div class="col-md-8 mb-3 mb-md-0">
-                            <input type="text" class="form-control py-3" id="coupon" placeholder="优惠码">
-                        </div>
-                        <div class="col-md-4">
-                            <button class="btn btn-primary btn-sm">使用优惠券</button>
-
-                        </div>
-                    </div>
+                    
                 </div>
                 <div class="col-md-6 pl-5">
                     <div class="row justify-content-end">
@@ -147,7 +134,7 @@
 
                                 <div class="col-md-6 text-right">
                                     <input name="order-price-total" class="form-control-plaintext h5 text-black"
-                                           value="${total_price}" style="text-align: center" readonly>
+                                           value="${order.total}" style="text-align: center" readonly>
                                 </div>
                             </div>
 

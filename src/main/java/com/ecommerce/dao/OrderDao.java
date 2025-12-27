@@ -82,12 +82,13 @@ public class OrderDao {
     // Method to insert order information to database.
     public int createOrder(Connection connection, int buyer_accountId, double totalPrice, List<CartProduct> cartProducts, int seller_account_id) throws SQLException {
         
-        String query = "INSERT INTO `order` (fk_account_id, order_total) VALUES (?, ?);";
+        String query = "INSERT INTO `order` (fk_account_id, order_total, seller_account_id) VALUES (?, ?, ?);";
         
 
         preparedStatement = connection.prepareStatement(query,Statement.RETURN_GENERATED_KEYS);
         preparedStatement.setInt(1, buyer_accountId);
         preparedStatement.setDouble(2, totalPrice);
+        preparedStatement.setInt(3, seller_account_id);
         int affectedRows = preparedStatement.executeUpdate();
         
         int newOrderId = -1;
