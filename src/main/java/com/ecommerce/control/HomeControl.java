@@ -35,7 +35,7 @@ public class HomeControl extends HttpServlet {
 	        List<TopNProductSales> productList = productDao.getTop5SalesProductList(connection);
 	        // Get all categories from database.
 	        List<Category> categoryList = categoryDao.getAllCategories();
-	
+	        System.out.println("HomeControl:   doGet" );
 	
 	        request.setAttribute("recommend_product_list", productList);
 	        request.setAttribute("category_list", categoryList);

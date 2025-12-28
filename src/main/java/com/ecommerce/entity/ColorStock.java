@@ -1,6 +1,7 @@
 package com.ecommerce.entity;
 
 public class ColorStock {
+	private int id;
 	private int productId; 
 	private String colorName;
 	private int amount;
@@ -10,6 +11,21 @@ public class ColorStock {
 		this.productId = productId;
 		this.colorName = colorname;
 		this.amount = amount;
+	}
+
+	public ColorStock(int id, int productId, String colorname, int amount) {
+		this.id = id;
+		this.productId = productId;
+		this.colorName = colorname;
+		this.amount = amount;
+	}
+	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public int getProductId() {

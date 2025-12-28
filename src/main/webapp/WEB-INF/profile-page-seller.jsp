@@ -6,7 +6,7 @@
 <html lang="zh-CN">
 <jsp:include page="/templates/head-admin.jsp"/>
 
-<body>
+
 <body class="hold-transition sidebar-mini">
 	<div class="wrapper">
 	<!-- 顶部 navbar -->

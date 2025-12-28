@@ -150,6 +150,7 @@ public class ProductDao {
                 // 2 每一行只创建一个color_amount; 
 //                、、int colorId = resultSet.getInt("product_id");
                 ColorStock clrStock = new ColorStock();
+                clrStock.setId(resultSet.getInt("id"));
                 clrStock.setProductId(id);
                 clrStock.setColorName(resultSet.getString("color_name"));
                 clrStock.setAmount(resultSet.getInt("stock_amount"));
@@ -219,6 +220,7 @@ public class ProductDao {
             
             while (resultSet.next()) {
             	ColorStock colorEntity = new ColorStock();
+            	colorEntity.setId(resultSet.getInt("id"));
             	colorEntity.setProductId(resultSet.getInt(2));
             	colorEntity.setColorName(resultSet.getString(3));
             	colorEntity.setAmount(resultSet.getInt(4));
@@ -311,26 +313,36 @@ public class ProductDao {
     }
     
 
-    // Method to edit product in database.
-    public void editProduct(int productId, String productName, InputStream productImage, double productPrice, String productDescription, int productCategory, int productAmount) {
-        String query = "UPDATE product SET product_name = ?, product_image = ?, product_price = ?, product_description = ?, fk_category_id = ?, product_amount = ? WHERE product_id = ?";
-        try {
-
-            Class.forName("com.mysql.cj.jdbc.Driver");
-
+    // 编辑产品基本信息
+    public void editProduct(Connection connection, int productId, String productName,  double productPrice, String productDescription, int productCategory) throws SQLException {
+        String query = "UPDATE product SET product_name = ?,  product_price = ?, product_description = ?, fk_category_id = ? WHERE product_id = ?";
+        
             connection = new Database().getConnection();
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, productName);
-            preparedStatement.setBinaryStream(2, productImage);
-            preparedStatement.setDouble(3, productPrice);
-            preparedStatement.setString(4, productDescription);
-            preparedStatement.setInt(5, productCategory);
-            preparedStatement.setInt(6, productId);
-            preparedStatement.setInt(7, productAmount);
+   
+            preparedStatement.setDouble(2, productPrice);
+            preparedStatement.setString(3, productDescription);
+            preparedStatement.setInt(4, productCategory);
+            preparedStatement.setInt(5, productId);
             preparedStatement.executeUpdate();
-        } catch (ClassNotFoundException | SQLException e) {
-            System.out.println(e.getMessage());
-        }
+        
+    }
+    
+    // Method to edit product image.
+    public void editProductImage(Connection connection, int productId, InputStream image) throws SQLException {
+        String query = "UPDATE product SET " +
+                "product_image = ?" +
+                "WHERE product_id = ?";
+       
+                       
+            preparedStatement = connection.prepareStatement(query);
+           
+            preparedStatement.setBinaryStream(1, image);
+            
+            preparedStatement.setInt(2, productId);
+            preparedStatement.executeUpdate();
+       
     }
 
     // Method to get 12 products to display on each page.
@@ -422,26 +434,23 @@ public class ProductDao {
         }
     }
 
-    /************  12.17 ************/
+    /************  12.17 
+     * @throws SQLException ************/
     // 在ProductDao类中添加以下方法
-    public void addProductColors(int productId, Map<String, Integer> colorStocks) {
+    public void addProductColors(Connection connection, int productId, Map<String, Integer> colorStocks) throws SQLException {
         String query = "INSERT INTO product_color_amount (product_id, color_name, stock_amount) VALUES (?, ?, ?)";
         
-        try (Connection conn = new Database().getConnection();
-             PreparedStatement ps = conn.prepareStatement(query)) {
+		PreparedStatement ps = connection.prepareStatement(query);
+
+		for (Map.Entry<String, Integer> entry : colorStocks.entrySet()) {
+			ps.setInt(1, productId);
+			ps.setString(2, entry.getKey());
+			ps.setInt(3, entry.getValue());
+			ps.addBatch();
+		}
+
+		ps.executeBatch();
             
-            for (Map.Entry<String, Integer> entry : colorStocks.entrySet()) {
-                ps.setInt(1, productId);
-                ps.setString(2, entry.getKey());
-                ps.setInt(3, entry.getValue());
-                ps.addBatch();
-            }
-            
-            ps.executeBatch();
-            
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
    
     //  返回指定商家的在售商品总数
@@ -847,4 +856,18 @@ public class ProductDao {
             return value;
         }
     }
+    
+    public void updateSku(Connection conn, int skuId, String color, int qty) throws SQLException
+    {
+    		String query = "UPDATE shop.product_color_amount set color_name= ? , stock_amount = ? where id = ?";
+	    	
+	    	PreparedStatement pstmt = connection.prepareStatement(query);
+	    	pstmt.setString(1, color);
+	    	pstmt.setInt(2, qty);
+	    	pstmt.setInt(3, skuId);
+	    	
+	    	pstmt.executeUpdate();
+    }
+
+
 }

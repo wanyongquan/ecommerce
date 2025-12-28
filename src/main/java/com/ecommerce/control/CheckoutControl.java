@@ -58,7 +58,6 @@ public class CheckoutControl extends HttpServlet {
             response.sendRedirect("login.jsp");
         }
         else {
-            double totalPrice = (double) session.getAttribute("total_price");
             Order order = (Order) session.getAttribute("order");
             Account account = (Account) session.getAttribute("account");
             Connection connection = null;
@@ -73,7 +72,7 @@ public class CheckoutControl extends HttpServlet {
 	            
 
 	            // Insert order to database.
-	            int new_orderId =  orderDao.createOrder(connection, account.getId(), totalPrice, order.getCartProducts(), order.getSeller_account_id());
+	            int new_orderId =  orderDao.createOrder(connection, account.getId(), order.getTotal(), order.getCartProducts(), order.getSeller_account_id());
 	           
 	            // 记录收件人信息； 
 

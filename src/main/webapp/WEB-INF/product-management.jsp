@@ -94,10 +94,10 @@
                                     <td>${(o.isDeleted) ? "已下架" : "在售中"}</td>
                                     <td>
                                         <!-- 修正跳转路径，避免404 -->
-                                        <a href="${pageContext.request.contextPath}/edit-product?product-id=${o.id}" 
+                                        <a href="${pageContext.request.contextPath}/edit-product?product-id=${o.id}&action=edit-info" 
                                            class="btn btn-primary btn-sm" style="background-color: green ; border-color: green">
                                             <span class="icon icon-pencil"></span> 编辑
-                                        </a>
+                                        </a>                                       
                                         <a href="${pageContext.request.contextPath}/remove-product?product-id=${o.id}"
                                            class="btn btn-primary btn-sm ${(o.isDeleted) ? "disabled" : " "}"
                                            style="background-color: red ; border-color: red">
